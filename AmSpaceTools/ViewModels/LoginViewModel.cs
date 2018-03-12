@@ -15,7 +15,13 @@ namespace AmSpaceTools.ViewModels
         private ICommand _loginCommand;
         private SecureString _password;
         private string _name;
-        public BaseViewModel MainViewModel { get; private set; }
+        public MainWindowViewModel MainViewModel
+        {
+            get
+            {
+                return Services.Container.GetInstance<MainWindowViewModel>();
+            }
+        }
 
         public ICommand LoginCommand
         {
@@ -39,9 +45,8 @@ namespace AmSpaceTools.ViewModels
             set { _password = value; }
         }
 
-        public LoginViewModel(BaseViewModel mainVm)
+        public LoginViewModel(IAmSpaceClient client)
         {
-            MainViewModel = mainVm;
             LoginCommand = new RelayCommand(Login);
             IsLoading = false;
         }

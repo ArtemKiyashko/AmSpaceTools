@@ -1,4 +1,5 @@
-﻿using AmSpaceTools.ViewModels;
+﻿using AmSpaceTools.Infrastructure;
+using AmSpaceTools.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +25,7 @@ namespace AmSpaceTools
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = new MainWindowViewModel();
+            DataContext = Services.Container.GetInstance<MainWindowViewModel>();
         }
     }
 }

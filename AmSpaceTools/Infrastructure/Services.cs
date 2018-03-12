@@ -1,4 +1,5 @@
 ﻿using AmSpaceClient;
+using AmSpaceTools.ViewModels;
 using StructureMap;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,11 @@ namespace AmSpaceTools.Infrastructure
         {
             _container = new Container(_ => {
                 _.For<IAmSpaceClient>().Use<AmSpaceClient.AmSpaceClient>().Singleton();
+                _.For<MainWindowViewModel>().Use<MainWindowViewModel>().Singleton();
+                _.Scan(scanner => {
+                    scanner.TheCallingAssembly();
+                    scanner.WithDefaultConventions();
+                });
             });
         }
     }
