@@ -1,7 +1,8 @@
-﻿using AmSpaceTools.ViewModels;
+﻿using AmSpaceTools.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -14,17 +15,24 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace AmSpaceTools
+namespace AmSpaceTools.Views
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for Login.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class Login : UserControl, IHavePassword
     {
-        public MainWindow()
+        public Login()
         {
             InitializeComponent();
-            DataContext = new MainWindowViewModel();
+        }
+
+        public SecureString Password
+        {
+            get
+            {
+                return PasswordTextBox.SecurePassword;
+            }
         }
     }
 }

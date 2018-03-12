@@ -1,0 +1,65 @@
+﻿<UserControl x:Class="AmSpaceTools.Views.Login"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:AmSpaceTools.Views"
+             xmlns:infrastructure="clr-namespace:AmSpaceTools.Infrastructure"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" 
+             d:DesignHeight="300"
+             x:Name="root">
+    <Grid VerticalAlignment="Center" HorizontalAlignment="Center" FocusManager.FocusedElement="{Binding ElementName=NameTextBox}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <TextBox
+          Grid.Row="0"
+          Grid.Column="0"
+          x:Name="NameTextBox"
+          Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+          materialDesign:HintAssist.Hint="Name">
+            <TextBox.Text>
+                <Binding
+                  Path="Name"
+                  UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <infrastructure:NotEmptyValidationRule ValidatesOnTargetUpdated="True" />
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
+        <PasswordBox
+            Grid.Row="2"
+            Grid.Column="0"
+            x:Name="PasswordTextBox"
+            materialDesign:HintAssist.Hint="Password"
+            Style="{StaticResource MaterialDesignFloatingHintPasswordBox}" />
+        <Button
+          x:Name="LoginButton"
+          IsDefault="True"
+          Grid.Row="4"
+          Grid.Column="0"
+          Command="{Binding LoginCommand}"
+          CommandParameter="{Binding ElementName=root}"
+          Style="{StaticResource MaterialDesignFloatingActionButton}"
+          materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding IsLoading}"
+          materialDesign:ButtonProgressAssist.Value="-1"
+          materialDesign:ButtonProgressAssist.IsIndeterminate="True">
+            <materialDesign:PackIcon
+                Kind="LoginVariant"
+                Height="24"
+                Width="24" />
+        </Button>
+    </Grid>
+</UserControl>

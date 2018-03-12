@@ -4,9 +4,20 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AmSpaceTools"
+        xmlns:views="clr-namespace:AmSpaceTools.Views"
+        xmlns:vm="clr-namespace:AmSpaceTools.ViewModels"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
-    <Grid>
-        
-    </Grid>
+        Title="AmSpace Tools" Height="600" Width="800">
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type vm:LoginViewModel}">
+            <views:Login/>
+        </DataTemplate>
+        <!--<DataTemplate DataType="{x:Type vm:ProfileViewModel}">
+            <views:Profile/>
+        </DataTemplate>-->
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </Window.Resources>
+    <DockPanel>
+        <ContentControl x:Name="Pages" DockPanel.Dock="Right" Content="{Binding SelectedViewModel}"/>
+    </DockPanel>
 </Window>

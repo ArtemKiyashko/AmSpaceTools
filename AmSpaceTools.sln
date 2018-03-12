@@ -5,6 +5,10 @@ VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmSpaceTools", "AmSpaceTools\AmSpaceTools.csproj", "{A8BEB032-FFBF-47B6-A719-CCC8FA093B70}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmSpaceClient", "AmSpaceClient\AmSpaceClient.csproj", "{2EBE6313-6229-436D-A30E-EFEBAAC79DAD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmSpaceModels", "AmSpaceModels\AmSpaceModels.csproj", "{5C08369F-DD2D-4A5B-936D-6815B607DFB7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{A8BEB032-FFBF-47B6-A719-CCC8FA093B70}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A8BEB032-FFBF-47B6-A719-CCC8FA093B70}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A8BEB032-FFBF-47B6-A719-CCC8FA093B70}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2EBE6313-6229-436D-A30E-EFEBAAC79DAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2EBE6313-6229-436D-A30E-EFEBAAC79DAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2EBE6313-6229-436D-A30E-EFEBAAC79DAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2EBE6313-6229-436D-A30E-EFEBAAC79DAD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C08369F-DD2D-4A5B-936D-6815B607DFB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C08369F-DD2D-4A5B-936D-6815B607DFB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C08369F-DD2D-4A5B-936D-6815B607DFB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C08369F-DD2D-4A5B-936D-6815B607DFB7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
