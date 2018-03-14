@@ -43,6 +43,7 @@
     <Compile Include="AmSpaceClient.cs" />
     <Compile Include="IAmSpaceClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SecureStringExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AmSpaceModels\AmSpaceModels.csproj">

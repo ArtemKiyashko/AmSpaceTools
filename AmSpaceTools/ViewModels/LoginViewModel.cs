@@ -15,13 +15,7 @@ namespace AmSpaceTools.ViewModels
         private ICommand _loginCommand;
         private SecureString _password;
         private string _name;
-        public MainWindowViewModel MainViewModel
-        {
-            get
-            {
-                return Services.Container.GetInstance<MainWindowViewModel>();
-            }
-        }
+        private IAmSpaceClient _client;
 
         public ICommand LoginCommand
         {
@@ -47,6 +41,7 @@ namespace AmSpaceTools.ViewModels
 
         public LoginViewModel(IAmSpaceClient client)
         {
+            _client = client;
             LoginCommand = new RelayCommand(Login);
             IsLoading = false;
         }
@@ -64,11 +59,10 @@ namespace AmSpaceTools.ViewModels
         private async void LoginRequest()
         {
             IsLoading = true;
-            var client = Services.Container.GetInstance<IAmSpaceClient>();
-            var result = await client.LoginRequestAsync(Name, Password);
+            var result = await _client.LoginRequestAsync(Name, Password);
             if (!result) throw new Exception();
-            var profileModel = await client.ProfileRequestAsync();
-            MainViewModel.SelectedViewModel = new ProfileViewModel();
+            var profileModel = await _client.ProfileRequestAsync();
+            MainViewModel.SelectedViewModel = Services.Container.GetInstance<ProfileViewModel>();
             IsLoading = false;
         }
     }
