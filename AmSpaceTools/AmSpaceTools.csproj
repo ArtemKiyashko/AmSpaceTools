@@ -66,12 +66,15 @@
     <Compile Include="Infrastructure\IHavePassword.cs" />
     <Compile Include="Infrastructure\NotEmptyValidationRule.cs" />
     <Compile Include="Infrastructure\RelayCommand.cs" />
-    <Compile Include="Infrastructure\SecureStringExtensions.cs" />
     <Compile Include="Infrastructure\Services.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
+    <Compile Include="ViewModels\IdpTranslationsPreviewViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModel.cs" />
+    <Compile Include="Views\IdpTranslationsPreviewer.xaml.cs">
+      <DependentUpon>IdpTranslationsPreviewer.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
@@ -87,6 +90,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\IdpTranslationsPreviewer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Login.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -127,6 +134,10 @@
     <ProjectReference Include="..\AmSpaceModels\AmSpaceModels.csproj">
       <Project>{5c08369f-dd2d-4a5b-936d-6815b607dfb7}</Project>
       <Name>AmSpaceModels</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ExcelWorker\ExcelWorker.csproj">
+      <Project>{ebe6d9ba-8e09-4216-8663-84af37f661fe}</Project>
+      <Name>ExcelWorker</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

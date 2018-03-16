@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AmSpaceTools.Infrastructure;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -36,6 +37,15 @@ namespace AmSpaceTools.ViewModels
                 OnPropertyChanged(nameof(IsLoading));
             }
         }
+
+        public MainWindowViewModel MainViewModel
+        {
+            get
+            {
+                return Services.Container.GetInstance<MainWindowViewModel>();
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public void OnPropertyChanged(string propName)
