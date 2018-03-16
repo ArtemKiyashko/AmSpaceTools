@@ -25,7 +25,7 @@ namespace AmSpaceTools.Infrastructure
             _container = new Container(_ => {
                 _.For<IAmSpaceClient>().Use<AmSpaceClient.AmSpaceClient>().Singleton();
                 _.For<MainWindowViewModel>().Use<MainWindowViewModel>().Singleton();
-                _.For<IExcelWorker>().Use<AmSpaceExcelWorker>().ContainerScoped();
+                _.For<IExcelWorker>().Use<AmSpaceExcelWorker>().Transient();
                 _.Scan(scanner => {
                     scanner.TheCallingAssembly();
                     scanner.WithDefaultConventions();

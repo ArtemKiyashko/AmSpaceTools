@@ -25,10 +25,4 @@ namespace AmSpaceTools.Views
             InitializeComponent();
         }
     }
-
-    public class TestItem
-    {
-        public List<string> Translations { get; set; }
-        public List<string> Examples { get; set; }
-    }
 }

@@ -1,6 +1,7 @@
 ﻿using AmSpaceModels;
 using AmSpaceTools.Infrastructure;
 using ExcelWorker;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,8 +15,9 @@ namespace AmSpaceTools.ViewModels
     {
         private IEnumerable<IdpExcelColumn> _excelColumnsPreview;
         private IExcelWorker _excelWorker;
-        private ICommand _loadDataCommand;
+        private ICommand _openFileCommand;
         private IEnumerable<IdpExcelColumn> _allColumns;
+        private ICommand _uploadDataCommand;
 
         public IEnumerable<IdpExcelColumn> ExcelColumnsPreview
         {
@@ -34,19 +36,55 @@ namespace AmSpaceTools.ViewModels
         public IdpTranslationsPreviewViewModel(IExcelWorker excelWorker)
         {
             _excelWorker = excelWorker;
-            LoadDataCommand = new RelayCommand(LoadData);
+            OpenFileCommand = new RelayCommand(OpenFile);
+            UploadDataCommand = new RelayCommand(UploadData);
         }
 
-        public ICommand LoadDataCommand
+        private void UploadData(object obj)
         {
-            get { return _loadDataCommand; }
-            set { _loadDataCommand = value; }
+            throw new NotImplementedException();
         }
 
-        private void LoadData(object obj)
+        public ICommand UploadDataCommand
         {
-            _allColumns = _excelWorker.GetData(@"C:\Users\artem.kiyashko\Documents\idp_hr.xlsx");
-            //ExcelColumnsPreview = _allColumns.Where(_ => ).Take(5);
+            get { return _uploadDataCommand; }
+            set { _uploadDataCommand = value; }
+        }
+        public ICommand OpenFileCommand
+        {
+            get { return _openFileCommand; }
+            set { _openFileCommand = value; }
+        }
+
+        private void OpenFile(object obj)
+        {
+            var dialog = new OpenFileDialog
+            {
+                Filter = "Excel files (*.xlsx)|*.xlsx",
+                Multiselect = false
+            };
+            if (dialog.ShowDialog() == true)
+            {
+                _allColumns = _excelWorker.GetData(dialog.FileName);
+                ShowPreview(_allColumns);
+            }
+        }
+
+        private void ShowPreview(IEnumerable<IdpExcelColumn> source)
+        {
+            var firstWorksheet = _allColumns
+               .Where(_ => _.WorkSheet == _allColumns.Select(w => w.WorkSheet).Min()).ToList();
+            var resultPreview = new List<IdpExcelColumn>();
+            foreach (var c in firstWorksheet)
+            {
+                var preview = new IdpExcelColumn();
+                preview.ColumntAddress = c.ColumntAddress;
+                preview.ColumnType = c.ColumnType;
+                preview.WorkSheet = c.WorkSheet;
+                preview.ColumnData = c.ColumnData.Take(5);
+                resultPreview.Add(preview);
+            }
+            ExcelColumnsPreview = resultPreview;
         }
     }
 }
