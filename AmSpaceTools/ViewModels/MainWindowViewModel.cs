@@ -11,7 +11,7 @@ namespace AmSpaceTools.ViewModels
     {
         public MainWindowViewModel()
         {
-            SelectedViewModel = Services.Container.GetInstance<IdpTranslationsPreviewViewModel>();
+            SelectedViewModel = Services.Container.GetInstance<LoginViewModel>();
         }
     }
 }
