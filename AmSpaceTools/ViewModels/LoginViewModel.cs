@@ -62,7 +62,7 @@ namespace AmSpaceTools.ViewModels
             var result = await _client.LoginRequestAsync(Name, Password);
             if (!result) throw new Exception();
             var profileModel = await _client.ProfileRequestAsync();
-            MainViewModel.SelectedViewModel = Services.Container.GetInstance<ProfileViewModel>();
+            MainViewModel.SelectedViewModel = Services.Container.GetInstance<IdpTranslationsPreviewViewModel>();
             IsLoading = false;
         }
     }

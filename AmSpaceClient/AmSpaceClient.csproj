@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AmSpaceClient.cs" />
+    <Compile Include="FakeClient.cs" />
     <Compile Include="IAmSpaceClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SecureStringExtensions.cs" />

@@ -23,7 +23,7 @@ namespace AmSpaceTools.Infrastructure
         static Services()
         {
             _container = new Container(_ => {
-                _.For<IAmSpaceClient>().Use<AmSpaceClient.AmSpaceClient>().Singleton();
+                _.For<IAmSpaceClient>().Use<AmSpaceClient.FakeClient>().Singleton();
                 _.For<MainWindowViewModel>().Use<MainWindowViewModel>().Singleton();
                 _.For<IExcelWorker>().Use<AmSpaceExcelWorker>().Transient();
                 _.Scan(scanner => {
