@@ -1,5 +1,7 @@
 ﻿using AmSpaceModels;
 using AmSpaceTools.Infrastructure;
+using AmSpaceTools.ModelConverters;
+using AutoMapper;
 using ExcelWorker;
 using Microsoft.Win32;
 using System;
@@ -14,10 +16,12 @@ namespace AmSpaceTools.ViewModels
     public class IdpTranslationsPreviewViewModel : BaseViewModel
     {
         private IEnumerable<IdpExcelColumn> _excelColumnsPreview;
-        private IExcelWorker _excelWorker;
+        private IExcelWorker<CompetencyActionDto> _excelWorker;
         private ICommand _openFileCommand;
-        private IEnumerable<IdpExcelColumn> _allColumns;
+        private IEnumerable<IdpExcelRow> _allRows;
         private ICommand _uploadDataCommand;
+        private string _currentFilePath;
+        private IMapper _mapper;
 
         public IEnumerable<IdpExcelColumn> ExcelColumnsPreview
         {
@@ -29,19 +33,29 @@ namespace AmSpaceTools.ViewModels
             set
             {
                 _excelColumnsPreview = value;
-                OnPropertyChanged(nameof(ExcelColumnsPreview));
+                OnPropertyChanged();
             }
         }
 
-        public IdpTranslationsPreviewViewModel(IExcelWorker excelWorker)
+        public string CurrentFilePath
+        {
+            get { return _currentFilePath; }
+            set { _currentFilePath = value; }
+        }
+
+        public IdpTranslationsPreviewViewModel(IExcelWorker<CompetencyActionDto> excelWorker, IMapper mapper)
         {
             _excelWorker = excelWorker;
             OpenFileCommand = new RelayCommand(OpenFile);
             UploadDataCommand = new RelayCommand(UploadData);
+            _mapper = mapper;
         }
 
         private void UploadData(object obj)
         {
+            if (_excelWorker.ValidateColumnDefinitions(ExcelColumnsPreview).Any())
+                //show errors
+                //return
             throw new NotImplementedException();
         }
 
@@ -63,28 +77,12 @@ namespace AmSpaceTools.ViewModels
                 Filter = "Excel files (*.xlsx)|*.xlsx",
                 Multiselect = false
             };
+
             if (dialog.ShowDialog() == true)
             {
-                _allColumns = _excelWorker.GetData(dialog.FileName);
-                ShowPreview(_allColumns);
+                CurrentFilePath = dialog.FileName;
+                ExcelColumnsPreview = _excelWorker.GetColumnDataPreview(CurrentFilePath, 6);
             }
-        }
-
-        private void ShowPreview(IEnumerable<IdpExcelColumn> source)
-        {
-            var firstWorksheet = _allColumns
-               .Where(_ => _.WorkSheet == _allColumns.Select(w => w.WorkSheet).Min()).ToList();
-            var resultPreview = new List<IdpExcelColumn>();
-            foreach (var c in firstWorksheet)
-            {
-                var preview = new IdpExcelColumn();
-                preview.ColumntAddress = c.ColumntAddress;
-                preview.ColumnType = c.ColumnType;
-                preview.WorkSheet = c.WorkSheet;
-                preview.ColumnData = c.ColumnData.Take(5);
-                resultPreview.Add(preview);
-            }
-            ExcelColumnsPreview = resultPreview;
         }
     }
 }
