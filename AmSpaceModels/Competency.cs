@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AmSpaceModels
 {
-    public partial class Competency
+    public partial class CompetencyPager
     {
         [JsonProperty("count")]
         public long Count { get; set; }
@@ -19,10 +19,10 @@ namespace AmSpaceModels
         public object Previous { get; set; }
 
         [JsonProperty("results")]
-        public List<Result> Results { get; set; }
+        public List<Competency> Results { get; set; }
     }
 
-    public partial class Result
+    public partial class Competency
     {
         [JsonProperty("id")]
         public long Id { get; set; }

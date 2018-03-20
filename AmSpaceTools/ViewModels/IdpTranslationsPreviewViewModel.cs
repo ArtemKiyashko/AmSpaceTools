@@ -1,4 +1,5 @@
-﻿using AmSpaceModels;
+﻿using AmSpaceClient;
+using AmSpaceModels;
 using AmSpaceTools.Infrastructure;
 using AmSpaceTools.ModelConverters;
 using AutoMapper;
@@ -22,6 +23,7 @@ namespace AmSpaceTools.ViewModels
         private ICommand _uploadDataCommand;
         private string _currentFilePath;
         private IMapper _mapper;
+        private IAmSpaceClient _client;
 
         public IEnumerable<IdpExcelColumn> ExcelColumnsPreview
         {
@@ -43,20 +45,29 @@ namespace AmSpaceTools.ViewModels
             set { _currentFilePath = value; }
         }
 
-        public IdpTranslationsPreviewViewModel(IExcelWorker<CompetencyActionDto> excelWorker, IMapper mapper)
+        public IdpTranslationsPreviewViewModel(IExcelWorker<CompetencyActionDto> excelWorker, IMapper mapper, IAmSpaceClient client)
         {
             _excelWorker = excelWorker;
+            _mapper = mapper;
+            _client = client;
             OpenFileCommand = new RelayCommand(OpenFile);
             UploadDataCommand = new RelayCommand(UploadData);
-            _mapper = mapper;
         }
 
-        private void UploadData(object obj)
+        private async void UploadData(object obj)
         {
-            if (_excelWorker.ValidateColumnDefinitions(ExcelColumnsPreview).Any())
-                //show errors
-                //return
-            throw new NotImplementedException();
+            var competencies = await _client.GetCompetenciesAsync();
+            var levels = await _client.GetLevelsAsync();
+            foreach(var competency in competencies)
+            {
+                var actions = await _client.GetCompetencyActionsAsync(competency.Id);
+            }
+        }
+
+        public IEnumerable<IdpExcelRow> GetAllRows()
+        {
+            _allRows = _excelWorker.GetAllRows(CurrentFilePath, ExcelColumnsPreview);
+            return _allRows;
         }
 
         public ICommand UploadDataCommand

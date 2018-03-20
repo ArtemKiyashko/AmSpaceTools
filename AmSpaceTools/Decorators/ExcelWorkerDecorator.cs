@@ -52,5 +52,19 @@ namespace AmSpaceTools.Decorators
             //TODO
             return _decoratee.ValidateColumnDefinitions(columnDefinitions);
         }
+
+        public IEnumerable<IdpExcelRow> GetAllRows(string fileName, IEnumerable<IdpExcelColumn> columnDefinitions, bool ignoreFirstRow = true)
+        {
+            _logger.Info($"Reading all rows from {fileName}");
+            try
+            {
+                return _decoratee.GetAllRows(fileName, columnDefinitions, ignoreFirstRow);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Error during reading rows from {fileName}", ex);
+                throw;
+            }
+        }
     }
 }

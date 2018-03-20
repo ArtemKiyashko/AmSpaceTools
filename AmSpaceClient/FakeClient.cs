@@ -10,12 +10,12 @@ namespace AmSpaceClient
 {
     public class FakeClient : IAmSpaceClient
     {
-        public Task<IEnumerable<Competency>> GetCompetenciesAsync(List<Competency> competencies, string pageUrl)
+        public Task<IEnumerable<Competency>> GetCompetenciesAsync()
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<CompetencyAction>> GetCompetencyActionsAsync()
+        public Task<IEnumerable<CompetencyAction>> GetCompetencyActionsAsync(long competencyId)
         {
             throw new NotImplementedException();
         }
