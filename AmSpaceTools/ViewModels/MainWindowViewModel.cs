@@ -2,6 +2,7 @@
 using AmSpaceTools.Views;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,8 +11,8 @@ namespace AmSpaceTools.ViewModels
 {
     public class MainWindowViewModel : BaseViewModel
     {
-        private List<MenuItem> _menuItems;
-        public List<MenuItem> MenuItems
+        private ObservableCollection<MenuItem> _menuItems;
+        public ObservableCollection<MenuItem> MenuItems
         {
             get
             {
@@ -26,8 +27,8 @@ namespace AmSpaceTools.ViewModels
         public MainWindowViewModel()
         {
             SelectedViewModel = Services.Container.GetInstance<LoginViewModel>();
-
-            MenuItems = new List<MenuItem>
+            
+            MenuItems = new ObservableCollection<MenuItem>
             {
                 new MenuItem("Login", Services.Container.GetInstance<LoginViewModel>())
             };

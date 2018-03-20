@@ -31,13 +31,20 @@
                                     HorizontalAlignment="Right" Margin="16"
                                     IsChecked="{Binding ElementName=MenuToggleButton, Path=IsChecked, Mode=TwoWay}" />
                     <ListBox x:Name="MenuItemsListBox" Margin="0 16 0 16" SelectedIndex="0"                         
-                             ItemsSource="{Binding MenuItems}"
+                             ItemsSource="{Binding MenuItems}" 
                              PreviewMouseLeftButtonUp="UIElement_OnPreviewMouseLeftButtonUp">
                         <ListBox.ItemTemplate>
                             <DataTemplate DataType="infrastructure:MenuItem">
-                                <TextBlock Text="{Binding Name}" Margin="32 0 32 0" />
+                                <Button DataContext=""
+                                        Command="{Binding ChangeViewCommand}"
+                                        CommandParameter="{Binding ElementName=MenuItemsListBox, Path=SelectedItem.Content}"
+                                        Margin="4" HorizontalAlignment="Center"
+                                        Content="{Binding Name}"        
+                                        Style="{DynamicResource MaterialDesignFlatButton}">
+                                </Button>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
+
                     </ListBox>
                 </DockPanel>
             </materialDesign:DrawerHost.LeftDrawerContent>
