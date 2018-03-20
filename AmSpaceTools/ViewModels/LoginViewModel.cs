@@ -1,5 +1,6 @@
 ﻿using AmSpaceClient;
 using AmSpaceTools.Infrastructure;
+using AmSpaceTools.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -63,6 +64,10 @@ namespace AmSpaceTools.ViewModels
             if (!result) throw new Exception();
             var profileModel = await _client.ProfileRequestAsync();
             MainViewModel.SelectedViewModel = Services.Container.GetInstance<IdpTranslationsPreviewViewModel>();
+            MainViewModel.MenuItems.AddRange(new List<MenuItem>()
+            {
+                new MenuItem("IDP Translation", Services.Container.GetInstance<IdpTranslationsPreviewViewModel>())
+            });
             IsLoading = false;
         }
     }
