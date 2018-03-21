@@ -72,6 +72,7 @@ namespace AmSpaceTools.ViewModels
 
         private void ShowPreview(IEnumerable<IdpExcelColumn> source)
         {
+            IsLoading = true;
             var firstWorksheet = _allColumns
                .Where(_ => _.WorkSheet == _allColumns.Select(w => w.WorkSheet).Min()).ToList();
             var resultPreview = new List<IdpExcelColumn>();
@@ -85,6 +86,7 @@ namespace AmSpaceTools.ViewModels
                 resultPreview.Add(preview);
             }
             ExcelColumnsPreview = resultPreview;
+            IsLoading = false;
         }
     }
 }

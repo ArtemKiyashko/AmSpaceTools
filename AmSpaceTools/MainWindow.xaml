@@ -20,7 +20,7 @@
         <!--<DataTemplate DataType="{x:Type vm:ProfileViewModel}">
             <views:Profile/>
         </DataTemplate>-->
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <infrastructure:IsLoadingToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </Window.Resources>
     <materialDesign:DialogHost Identifier="RootDialog">
         <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
