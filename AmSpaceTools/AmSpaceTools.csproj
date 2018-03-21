@@ -64,6 +64,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Infrastructure\IHavePassword.cs" />
+    <Compile Include="Infrastructure\IsLoadingToVisibilityConverter.cs" />
     <Compile Include="Infrastructure\MenuItem.cs" />
     <Compile Include="Infrastructure\NotEmptyValidationRule.cs" />
     <Compile Include="Infrastructure\NotifyPropertyChangedExtension.cs" />
