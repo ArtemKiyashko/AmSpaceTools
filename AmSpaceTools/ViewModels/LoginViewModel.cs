@@ -14,7 +14,6 @@ namespace AmSpaceTools.ViewModels
     public class LoginViewModel : BaseViewModel
     {
         private ICommand _loginCommand;
-        private ICommand _changeViewCommand;
         private SecureString _password;
         private string _name;
         private IAmSpaceClient _client;
@@ -31,17 +30,7 @@ namespace AmSpaceTools.ViewModels
             }
         }
 
-        public ICommand ChangeViewCommand
-        {
-            get
-            {
-                return _changeViewCommand;
-            }
-            set
-            {
-                _changeViewCommand = value;
-            }
-        }
+        
 
         public string Name
         {
@@ -58,7 +47,6 @@ namespace AmSpaceTools.ViewModels
         {
             _client = client;
             LoginCommand = new RelayCommand(Login);
-            _changeViewCommand = new RelayCommand(ChangeView);
             IsLoading = false;
         }
 
@@ -70,15 +58,6 @@ namespace AmSpaceTools.ViewModels
                 Password = passwordContainer.Password;
             }
             LoginRequest();
-        }
-
-        private void ChangeView(object obj)
-        {
-            var viewModelContainer = obj as BaseViewModel;
-            if (viewModelContainer != null)
-            {
-                MainViewModel.SelectedViewModel = viewModelContainer;
-            }
         }
 
         private async void LoginRequest()

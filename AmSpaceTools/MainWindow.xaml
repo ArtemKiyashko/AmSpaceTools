@@ -35,11 +35,9 @@
                              PreviewMouseLeftButtonUp="UIElement_OnPreviewMouseLeftButtonUp">
                         <ListBox.ItemTemplate>
                             <DataTemplate DataType="infrastructure:MenuItem">
-                                <Button DataContext=""
-                                        Command="{Binding ChangeViewCommand}"
-                                        CommandParameter="{Binding ElementName=MenuItemsListBox, Path=SelectedItem.Content}"
+                                <Button Command="{Binding ChangeViewCommand}"
+                                        Content="{Binding Name}"
                                         Margin="4" HorizontalAlignment="Center"
-                                        Content="{Binding Name}"        
                                         Style="{DynamicResource MaterialDesignFlatButton}">
                                 </Button>
                             </DataTemplate>

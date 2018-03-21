@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AmSpaceTools.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -6,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace AmSpaceTools.Infrastructure
 {
@@ -13,18 +15,32 @@ namespace AmSpaceTools.Infrastructure
     /// <summary>
     /// Item of left-side menu
     /// </summary>
-    public class MenuItem : INotifyPropertyChanged
+    public class MenuItem : BaseViewModel
     {
         private string _name;
-        private object _content;
+        private BaseViewModel _content;
         private ScrollBarVisibility _horizontalScrollBarVisibilityRequirement;
         private ScrollBarVisibility _verticalScrollBarVisibilityRequirement;
         private Thickness _marginRequirement = new Thickness(16);
+        private ICommand _changeViewCommand;
 
-        public MenuItem(string name, object content)
+        public ICommand ChangeViewCommand
+        {
+            get
+            {
+                return _changeViewCommand;
+            }
+            set
+            {
+                _changeViewCommand = value;
+            }
+        }
+
+        public MenuItem(string name, BaseViewModel content)
         {
             _name = name;
             Content = content;
+            _changeViewCommand = new RelayCommand(ChangeView);
         }
 
         public string Name
@@ -33,7 +49,7 @@ namespace AmSpaceTools.Infrastructure
             set { this.MutateVerbose(ref _name, value, RaisePropertyChanged()); }
         }
 
-        public object Content
+        public BaseViewModel Content
         {
             get { return _content; }
             set { this.MutateVerbose(ref _content, value, RaisePropertyChanged()); }
@@ -62,6 +78,11 @@ namespace AmSpaceTools.Infrastructure
         private Action<PropertyChangedEventArgs> RaisePropertyChanged()
         {
             return args => PropertyChanged?.Invoke(this, args);
+        }
+
+        private void ChangeView(object obj)
+        {
+            MainViewModel.SelectedViewModel = Content;
         }
     }
 }
