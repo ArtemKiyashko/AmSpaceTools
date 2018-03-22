@@ -9,7 +9,7 @@ using System.Windows.Data;
 
 namespace AmSpaceTools.Infrastructure
 {
-    public class IsLoadingToVisibilityConverter : IValueConverter
+    public class BoolToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

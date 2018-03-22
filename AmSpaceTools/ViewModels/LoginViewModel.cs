@@ -66,9 +66,11 @@ namespace AmSpaceTools.ViewModels
             var result = await _client.LoginRequestAsync(Name, Password);
             if (!result) throw new Exception();
             var profileModel = await _client.ProfileRequestAsync();
-            MainViewModel.SelectedViewModel = Services.Container.GetInstance<IdpTranslationsPreviewViewModel>();
-            MainViewModel.MenuItems.Remove(MainViewModel.MenuItems.FirstOrDefault());
-            MainViewModel.MenuItems.Add(new MenuItem("IDP Translation", Services.Container.GetInstance<IdpTranslationsPreviewViewModel>()));
+            var idpTranslationViewModel = Services.Container.GetInstance<IdpTranslationsPreviewViewModel>();
+            MainViewModel.SelectedViewModel = idpTranslationViewModel;
+            MainViewModel.MenuItems.Add(new MenuItem("IDP Translation", idpTranslationViewModel));
+            MainViewModel.SelectedMenuItem = MainViewModel.MenuItems.FirstOrDefault(item => item.Content == idpTranslationViewModel);
+            MainViewModel.MenuItems.Remove(MainViewModel.MenuItems.FirstOrDefault(item => item.Content == this));
             IsLoading = false;
         }
     }

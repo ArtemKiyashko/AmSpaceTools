@@ -7,11 +7,11 @@
              xmlns:models="clr-namespace:AmSpaceModels;assembly=AmSpaceModels"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             xmlns:Infrastructure="clr-namespace:AmSpaceTools.Infrastructure" x:Class="AmSpaceTools.Views.IdpTranslationsPreviewer"
+             xmlns:infrastructure="clr-namespace:AmSpaceTools.Infrastructure" x:Class="AmSpaceTools.Views.IdpTranslationsPreviewer"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
-        <Infrastructure:IsLoadingToVisibilityConverter x:Key="IsLoadingToVisibilityConverter"/>
+        <infrastructure:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <ObjectDataProvider x:Key="ColumnActionFromEnum"
                             MethodName="GetValues" 
                             ObjectType="{x:Type sys:Enum}">
@@ -63,7 +63,7 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </ScrollViewer>
-        <ProgressBar IsIndeterminate="True" Visibility="{Binding IsLoading, Converter={StaticResource IsLoadingToVisibilityConverter}}" />
+        <ProgressBar IsIndeterminate="True" Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}" />
         <Button Command="{Binding OpenFileCommand}">
             <TextBlock Text="Open source file"/>
         </Button>

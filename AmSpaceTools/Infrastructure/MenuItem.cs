@@ -23,6 +23,78 @@ namespace AmSpaceTools.Infrastructure
         private ScrollBarVisibility _verticalScrollBarVisibilityRequirement;
         private Thickness _marginRequirement = new Thickness(16);
         private ICommand _changeViewCommand;
+        
+        public MenuItem(string name, BaseViewModel content)
+        {
+            _name = name;
+            Content = content;
+            _changeViewCommand = new RelayCommand(ChangeView);
+        }
+
+        public string Name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                _name = value;
+                OnPropertyChanged(nameof(Name));
+            }
+        }
+
+        public BaseViewModel Content
+        {
+            get
+            {
+                return _content;
+            }
+            set
+            {
+                _content = value;
+                OnPropertyChanged(nameof(Content));
+            }
+        }
+
+        public ScrollBarVisibility HorizontalScrollBarVisibilityRequirement
+        {
+            get
+            {
+                return _horizontalScrollBarVisibilityRequirement;
+            }
+            set
+            {
+                _horizontalScrollBarVisibilityRequirement = value;
+                OnPropertyChanged(nameof(HorizontalScrollBarVisibilityRequirement));
+            }
+        }
+
+        public ScrollBarVisibility VerticalScrollBarVisibilityRequirement
+        {
+            get
+            {
+                return _verticalScrollBarVisibilityRequirement;
+            }
+            set
+            {
+                _verticalScrollBarVisibilityRequirement = value;
+                OnPropertyChanged(nameof(VerticalScrollBarVisibilityRequirement));
+            }
+        }
+
+        public Thickness MarginRequirement
+        {
+            get
+            {
+                return _marginRequirement;
+            }
+            set
+            {
+                _marginRequirement = value;
+                OnPropertyChanged(nameof(MarginRequirement));
+            }
+        }
 
         public ICommand ChangeViewCommand
         {
@@ -36,53 +108,10 @@ namespace AmSpaceTools.Infrastructure
             }
         }
 
-        public MenuItem(string name, BaseViewModel content)
-        {
-            _name = name;
-            Content = content;
-            _changeViewCommand = new RelayCommand(ChangeView);
-        }
-
-        public string Name
-        {
-            get { return _name; }
-            set { this.MutateVerbose(ref _name, value, RaisePropertyChanged()); }
-        }
-
-        public BaseViewModel Content
-        {
-            get { return _content; }
-            set { this.MutateVerbose(ref _content, value, RaisePropertyChanged()); }
-        }
-
-        public ScrollBarVisibility HorizontalScrollBarVisibilityRequirement
-        {
-            get { return _horizontalScrollBarVisibilityRequirement; }
-            set { this.MutateVerbose(ref _horizontalScrollBarVisibilityRequirement, value, RaisePropertyChanged()); }
-        }
-
-        public ScrollBarVisibility VerticalScrollBarVisibilityRequirement
-        {
-            get { return _verticalScrollBarVisibilityRequirement; }
-            set { this.MutateVerbose(ref _verticalScrollBarVisibilityRequirement, value, RaisePropertyChanged()); }
-        }
-
-        public Thickness MarginRequirement
-        {
-            get { return _marginRequirement; }
-            set { this.MutateVerbose(ref _marginRequirement, value, RaisePropertyChanged()); }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private Action<PropertyChangedEventArgs> RaisePropertyChanged()
-        {
-            return args => PropertyChanged?.Invoke(this, args);
-        }
-
         private void ChangeView(object obj)
         {
             MainViewModel.SelectedViewModel = Content;
+            MainViewModel.SelectedMenuItem = this;
         }
     }
 }

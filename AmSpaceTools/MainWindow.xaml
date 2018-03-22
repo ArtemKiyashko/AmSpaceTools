@@ -20,7 +20,6 @@
         <!--<DataTemplate DataType="{x:Type vm:ProfileViewModel}">
             <views:Profile/>
         </DataTemplate>-->
-        <infrastructure:IsLoadingToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </Window.Resources>
     <materialDesign:DialogHost Identifier="RootDialog">
         <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
@@ -30,19 +29,22 @@
                                     DockPanel.Dock="Top"
                                     HorizontalAlignment="Right" Margin="16"
                                     IsChecked="{Binding ElementName=MenuToggleButton, Path=IsChecked, Mode=TwoWay}" />
-                    <ListBox x:Name="MenuItemsListBox" Margin="0 16 0 16" SelectedIndex="0"                         
+                    <ListBox x:Name="MenuItemsListBox" Margin="0 16 0 16" SelectedItem="{Binding SelectedMenuItem}"
                              ItemsSource="{Binding MenuItems}" 
+                             HorizontalContentAlignment="Stretch"
+                             VerticalContentAlignment="Stretch"
                              PreviewMouseLeftButtonUp="UIElement_OnPreviewMouseLeftButtonUp">
                         <ListBox.ItemTemplate>
-                            <DataTemplate DataType="infrastructure:MenuItem">
+                            <DataTemplate DataType="infrastructure:MenuItem" >
                                 <Button Command="{Binding ChangeViewCommand}"
                                         Content="{Binding Name}"
-                                        Margin="4" HorizontalAlignment="Center"
+                                        Width="Auto"
+                                        Height="Auto"
+                                        Margin="-7"
                                         Style="{DynamicResource MaterialDesignFlatButton}">
                                 </Button>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
-
                     </ListBox>
                 </DockPanel>
             </materialDesign:DrawerHost.LeftDrawerContent>
@@ -72,7 +74,7 @@
                                   HorizontalScrollBarVisibility="{Binding ElementName=MenuItemsListBox, Path=SelectedItem.HorizontalScrollBarVisibilityRequirement}"
                                   VerticalScrollBarVisibility="{Binding ElementName=MenuItemsListBox, Path=SelectedItem.VerticalScrollBarVisibilityRequirement}" 
                                   Padding="{Binding ElementName=MenuItemsListBox, Path=SelectedItem.MarginRequirement}">
-                        <ContentControl x:Name="Pages" Content="{Binding SelectedViewModel}" />
+                        <ContentControl x:Name="Pages" Content="{Binding SelectedViewModel}"/>
                     </ScrollViewer>
                 </Grid>
             </DockPanel>

@@ -27,11 +27,11 @@ namespace AmSpaceTools.ViewModels
         public MainWindowViewModel()
         {
             SelectedViewModel = Services.Container.GetInstance<LoginViewModel>();
-            
             MenuItems = new ObservableCollection<MenuItem>
             {
-                new MenuItem("Login", Services.Container.GetInstance<LoginViewModel>())
+                new MenuItem("Login", SelectedViewModel)
             };
+            SelectedMenuItem = MenuItems[0];
         }
     }
 }
