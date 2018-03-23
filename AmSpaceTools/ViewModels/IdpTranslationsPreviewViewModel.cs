@@ -75,19 +75,12 @@ namespace AmSpaceTools.ViewModels
             get { return _uploadDataCommand; }
             set { _uploadDataCommand = value; }
         }
+
         public ICommand OpenFileCommand
         {
             get { return _openFileCommand; }
             set { _openFileCommand = value; }
         }
-
-        private void OpenFile(object obj)
-        {
-            var dialog = new OpenFileDialog
-            {
-                Filter = "Excel files (*.xlsx)|*.xlsx",
-                Multiselect = false
-            };
 
         private void OpenFile(object obj)
         {
