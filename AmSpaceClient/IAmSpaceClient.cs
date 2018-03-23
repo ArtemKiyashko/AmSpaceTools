@@ -12,9 +12,9 @@ namespace AmSpaceClient
     {
         Task<bool> LoginRequestAsync(string userName, SecureString password);
         Task<Profile> ProfileRequestAsync();
-        Task<IEnumerable<Competency>> GetCompetenciesAsync(List<Competency> competencies, string pageUrl);
+        Task<IEnumerable<Competency>> GetCompetenciesAsync();
         Task<IEnumerable<Level>> GetLevelsAsync();
-        Task<IEnumerable<CompetencyAction>> GetCompetencyActionsAsync();
+        Task<IEnumerable<CompetencyAction>> GetCompetencyActionsAsync(long competencyId);
         Task UpdateActionAsync(UpdateAction model, long competencyId);
     }
 }

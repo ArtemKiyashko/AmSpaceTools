@@ -8,9 +8,10 @@ namespace AmSpaceModels
 {
     public class IdpExcelColumn
     {
-        public string ColumntAddress { get; set; }
+        public string ColumnAddress { get; set; }
         public ColumnActionType ColumnType { get; set; }
         public IEnumerable<string> ColumnData { get; set; }
+        public int ColumnIndex { get; set; }
         public int WorkSheet { get; set; }
     }
 
