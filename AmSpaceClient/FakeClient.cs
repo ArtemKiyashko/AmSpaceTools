@@ -254,10 +254,19 @@ namespace AmSpaceClient
 
         public Task<Profile> ProfileRequestAsync()
         {
+            ContractDatum fakeContract = new ContractDatum{
+                Position = new Position
+                {
+                    Name = "Fake Department"
+                }
+            };
+            ContractDatum[] fakeContractData = { fakeContract };
+
             var result = new Profile
             {
                 FirstName = "MyName",
-                LastName = "MySurname"
+                LastName = "MySurname",
+                ContractData = fakeContractData
             };
             return Task.FromResult(result);
         }

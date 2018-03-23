@@ -42,6 +42,7 @@ namespace AmSpaceTools.Infrastructure
             _container = new Container(_ => {
                 _.For<IAmSpaceClient>().Use<AmSpaceClient.FakeClient>().Singleton();
                 _.For<MainWindowViewModel>().Use<MainWindowViewModel>().Singleton();
+                _.For<ProfileViewModel>().Use<ProfileViewModel>().Singleton();
                 _.For<IExcelWorker<CompetencyActionDto>>().Use<AmSpaceExcelWorker<CompetencyActionDto>>().Transient();
                 _.For<IExcelWorker<CompetencyActionDto>>().DecorateAllWith<ExcelWorkerDecorator<CompetencyActionDto>>();
                 _.For<ILog>().Use(a => LogManager.GetLogger(typeof(App)));

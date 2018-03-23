@@ -17,6 +17,9 @@
         <DataTemplate DataType="{x:Type vm:IdpTranslationsPreviewViewModel}">
             <views:IdpTranslationsPreviewer/>
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:ProfileViewModel}">
+            <views:Profile/>
+        </DataTemplate>
         <!--<DataTemplate DataType="{x:Type vm:ProfileViewModel}">
             <views:Profile/>
         </DataTemplate>-->
@@ -51,18 +54,11 @@
             <DockPanel>
                 <materialDesign:ColorZone Padding="16" materialDesign:ShadowAssist.ShadowDepth="Depth2"
                                             Mode="PrimaryMid" DockPanel.Dock="Top">
-                    <DockPanel>
-                        <ToggleButton Style="{StaticResource MaterialDesignHamburgerToggleButton}" IsChecked="False"
+                    <DockPanel >
+                        <ToggleButton DockPanel.Dock="Left"  Style="{StaticResource MaterialDesignHamburgerToggleButton}" IsChecked="False"
                                         x:Name="MenuToggleButton"/>
-                        <materialDesign:PopupBox DockPanel.Dock="Right" PlacementMode="BottomAndAlignRightEdges" StaysOpen="False">
-                            <StackPanel>
-                                <Button Content="Do something"/>
-                                <Button Content="lol u can't click me"/>
-                                <Separator/>
-                                <Button Content="LogOut"/>
-                            </StackPanel>
-                        </materialDesign:PopupBox>
-                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22">AmSpace Tools 4000</TextBlock>
+                        <TextBlock HorizontalAlignment="Center" Margin="30, 0, 0, 0" VerticalAlignment="Center" FontSize="22" Width="Auto">AmSpace Tools 4000</TextBlock>
+                        <ContentControl DockPanel.Dock="Right"  x:Name="ProfileView" Content="{Binding ProfileViewModel}" HorizontalAlignment="Right"/>
                     </DockPanel>
                 </materialDesign:ColorZone>
                 <Grid>
