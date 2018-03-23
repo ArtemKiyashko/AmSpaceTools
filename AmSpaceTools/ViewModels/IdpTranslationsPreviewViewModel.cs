@@ -89,11 +89,21 @@ namespace AmSpaceTools.ViewModels
                 Multiselect = false
             };
 
+        private void OpenFile(object obj)
+        {
+            IsLoading = true;
+            var dialog = new OpenFileDialog
+            {
+                Filter = "Excel files (*.xlsx)|*.xlsx",
+                Multiselect = false
+            };
+
             if (dialog.ShowDialog() == true)
             {
                 CurrentFilePath = dialog.FileName;
                 ExcelColumnsPreview = _excelWorker.GetColumnDataPreview(CurrentFilePath, 6);
             }
+            IsLoading = false;
         }
     }
 }

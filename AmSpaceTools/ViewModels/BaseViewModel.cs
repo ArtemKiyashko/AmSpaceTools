@@ -12,7 +12,9 @@ namespace AmSpaceTools.ViewModels
     public abstract class BaseViewModel : INotifyPropertyChanged
     {
         private BaseViewModel _selectedViewModel;
+        private MenuItem _selectedMenuItem;
         private bool _isLoading;
+
         public BaseViewModel SelectedViewModel
         {
             get
@@ -23,6 +25,19 @@ namespace AmSpaceTools.ViewModels
             {
                 _selectedViewModel = value;
                 OnPropertyChanged();
+            }
+        }
+
+        public MenuItem SelectedMenuItem
+        {
+            get
+            {
+                return _selectedMenuItem;
+            }
+            set
+            {
+                _selectedMenuItem = value;
+                OnPropertyChanged(nameof(SelectedMenuItem));
             }
         }
 
