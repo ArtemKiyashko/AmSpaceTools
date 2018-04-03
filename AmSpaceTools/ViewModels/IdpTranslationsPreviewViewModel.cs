@@ -39,6 +39,16 @@ namespace AmSpaceTools.ViewModels
             }
         }
 
+        public IEnumerable<IdpExcelRow> AllRows
+        {
+            get
+            {
+                if (_allRows == null)
+                    _allRows = _excelWorker.GetAllRows(CurrentFilePath, ExcelColumnsPreview);
+                return _allRows;
+            }
+        }
+
         public string CurrentFilePath
         {
             get { return _currentFilePath; }
@@ -58,16 +68,12 @@ namespace AmSpaceTools.ViewModels
         {
             var competencies = await _client.GetCompetenciesAsync();
             var levels = await _client.GetLevelsAsync();
-            foreach(var competency in competencies)
+            foreach (var competency in competencies)
             {
                 var actions = await _client.GetCompetencyActionsAsync(competency.Id);
+                var transformedActions = _mapper.Map<IEnumerable<UpdateAction>>(actions);
+                var inputActions = _mapper.Map<IEnumerable<UpdateAction>>(AllRows);
             }
-        }
-
-        public IEnumerable<IdpExcelRow> GetAllRows()
-        {
-            _allRows = _excelWorker.GetAllRows(CurrentFilePath, ExcelColumnsPreview);
-            return _allRows;
         }
 
         public ICommand UploadDataCommand

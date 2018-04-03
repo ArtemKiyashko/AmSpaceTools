@@ -52,7 +52,14 @@ namespace ExcelWorker
                         c.CompetencyLevel = ws.GetValue<int>(i, columnDefinitions.First(_ => _.ColumnType == ColumnActionType.CompetencyLevel).ColumnIndex);
                         c.ActionPercentage = ws.GetValue<int>(i, columnDefinitions.First(_ => _.ColumnType == ColumnActionType.ActionPercentage).ColumnIndex);
                         c.ActionSourceDescription = ws.GetValue<string>(i, columnDefinitions.First(_ => _.ColumnType == ColumnActionType.SourceText).ColumnIndex);
-                        c.ActionTargetDescription = ws.GetValue<string>(i, columnDefinitions.First(_ => _.ColumnType == ColumnActionType.Translation).ColumnIndex);
+                        c.Translations = new List<Translation>();
+                        foreach(var translation in columnDefinitions.Where(_ => _.ColumnType == ColumnActionType.Translation))
+                        {
+                            c.Translations.Add(new Translation {
+                                Language = translation.Language.ToString().ToLower(),
+                                Name = ws.GetValue<string>(i, translation.ColumnIndex)
+                            });
+                        }
                         result.Add(c);
                     }
                 }

@@ -19,6 +19,13 @@
                 <x:Type TypeName="models:ColumnActionType"/>
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
+        <ObjectDataProvider x:Key="TranslationFromEnum"
+                            MethodName="GetValues" 
+                            ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="models:TranslationLanguage"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
     </UserControl.Resources>
     <StackPanel>
         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Hidden">
@@ -35,6 +42,7 @@
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" MaxWidth="200" />
+                                <ColumnDefinition Width="Auto" MaxWidth="200" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
@@ -46,6 +54,20 @@
                                 Margin="15 0 0 0"
                                 ItemsSource="{Binding Source={StaticResource ColumnActionFromEnum}}"
                                 SelectedItem="{Binding ColumnType}"
+                                Grid.Row="0">
+                                <ComboBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <VirtualizingStackPanel />
+                                    </ItemsPanelTemplate>
+                                </ComboBox.ItemsPanel>
+                            </ComboBox>
+                            <ComboBox
+                                Width="Auto"
+                                Grid.Column="1"
+                                Margin="15 0 0 0"
+                                ItemsSource="{Binding Source={StaticResource TranslationFromEnum}}"
+                                SelectedItem="{Binding Language}"
+                                Visibility="{Binding IsLanguageVisible, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"
                                 Grid.Row="0">
                                 <ComboBox.ItemsPanel>
                                     <ItemsPanelTemplate>
