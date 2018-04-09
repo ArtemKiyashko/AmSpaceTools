@@ -78,6 +78,7 @@
     <Compile Include="Infrastructure\NotEmptyValidationRule.cs" />
     <Compile Include="Infrastructure\RelayCommand.cs" />
     <Compile Include="Infrastructure\Services.cs" />
+    <Compile Include="ModelConverters\ActionToUpdateConverter.cs" />
     <Compile Include="ModelConverters\CompetencyActionConverter.cs" />
     <Compile Include="ModelConverters\CompetencyActionsToUpdateConverter.cs" />
     <Compile Include="ModelConverters\IdpExcelRowToUpdateConverter.cs" />

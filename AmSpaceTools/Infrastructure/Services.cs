@@ -26,6 +26,7 @@ namespace AmSpaceTools.Infrastructure
                     cfg.CreateMap<IEnumerable<CompetencyActionViewModel>, IEnumerable<CompetencyActionDto>>().ConvertUsing(new CompetencyActionConverter());
                     cfg.CreateMap<IEnumerable<CompetencyAction>, IEnumerable<UpdateAction>>().ConvertUsing(new CompetencyActionsToUpdateConverter());
                     cfg.CreateMap<IEnumerable<IdpExcelRow>, IEnumerable<UpdateAction>>().ConvertUsing(new IdpExcelRowToUpdateConverter());
+                    cfg.CreateMap<CompetencyAction, UpdateAction>().ConvertUsing(new ActionToUpdateConverter());
                 });
             }
         }

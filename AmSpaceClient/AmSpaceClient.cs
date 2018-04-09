@@ -15,7 +15,7 @@ namespace AmSpaceClient
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<CompetencyAction>> GetCompetencyActionsAsync(long competencyId)
+        public Task<CompetencyAction> GetCompetencyActionsAsync(long competencyId)
         {
             throw new NotImplementedException();
         }

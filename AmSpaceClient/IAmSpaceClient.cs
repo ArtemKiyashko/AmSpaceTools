@@ -14,7 +14,7 @@ namespace AmSpaceClient
         Task<Profile> ProfileRequestAsync();
         Task<IEnumerable<Competency>> GetCompetenciesAsync();
         Task<IEnumerable<Level>> GetLevelsAsync();
-        Task<IEnumerable<CompetencyAction>> GetCompetencyActionsAsync(long competencyId);
+        Task<CompetencyAction> GetCompetencyActionsAsync(long competencyId);
         Task UpdateActionAsync(UpdateAction model, long competencyId);
     }
 }

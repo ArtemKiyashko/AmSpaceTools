@@ -21,7 +21,7 @@ namespace AmSpaceModels
         public IEnumerable<string> ColumnData { get; set; }
         public int ColumnIndex { get; set; }
         public int WorkSheet { get; set; }
-        public TranslationLanguage Language { get; set; }
+        public string Language { get; set; }
 
         public bool IsLanguageVisible
         {
@@ -30,14 +30,34 @@ namespace AmSpaceModels
                 return ColumnType == ColumnActionType.Translation;
             }
         }
-    }
 
-    public enum TranslationLanguage
-    {
-        PL,
-        EN,
-        BG,
-        SK
+        private IEnumerable<string> _langs;
+
+        public IEnumerable<string> Langs
+        {
+            get
+            {
+                if (_langs == null)
+                    _langs = new List<string>
+                    {
+                        "en",
+                        "pl",
+                        "cs",
+                        "hu",
+                        "sk",
+                        "bg",
+                        "de",
+                        "es",
+                        "ro",
+                        "ru",
+                        "rs",
+                        "zh-hans",
+                        "fr",
+                        "hr"
+                    };
+                return _langs;
+            }
+        }
     }
 
     public enum ColumnActionType

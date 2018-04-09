@@ -25,6 +25,15 @@ namespace AmSpaceTools.ViewModels
         private IMapper _mapper;
         private IAmSpaceClient _client;
 
+        public bool IsUploadVisible
+        {
+            get
+            {
+                return !string.IsNullOrEmpty(CurrentFilePath);
+            }
+        }
+
+
         public IEnumerable<IdpExcelColumn> ExcelColumnsPreview
         {
             get
@@ -52,7 +61,11 @@ namespace AmSpaceTools.ViewModels
         public string CurrentFilePath
         {
             get { return _currentFilePath; }
-            set { _currentFilePath = value; }
+            set
+            {
+                _currentFilePath = value;
+                OnPropertyChanged(nameof(IsUploadVisible));
+            }
         }
 
         public IdpTranslationsPreviewViewModel(IExcelWorker<CompetencyActionDto> excelWorker, IMapper mapper, IAmSpaceClient client)
@@ -66,14 +79,37 @@ namespace AmSpaceTools.ViewModels
 
         private async void UploadData(object obj)
         {
+            IsLoading = true;
             var competencies = await _client.GetCompetenciesAsync();
             var levels = await _client.GetLevelsAsync();
             foreach (var competency in competencies)
             {
-                var actions = await _client.GetCompetencyActionsAsync(competency.Id);
-                var transformedActions = _mapper.Map<IEnumerable<UpdateAction>>(actions);
-                var inputActions = _mapper.Map<IEnumerable<UpdateAction>>(AllRows);
+                var compActions = await _client.GetCompetencyActionsAsync(competency.Id);
+                foreach(var action in compActions.Actions)
+                {
+                    var translationKey = AllRows.FirstOrDefault(_ => _.ActionSourceDescription == action.Name);
+                    if (translationKey == null) continue;
+                    foreach(var translation in translationKey.Translations)
+                    {
+                        var oldTranslation = action.Translations.FirstOrDefault(_ => _.Language == translation.Language);
+                        if (oldTranslation == null)
+                        {
+                            action.Translations.Add(new Translation
+                            {
+                                Language = translation.Language,
+                                Name = translation.Name
+                            });
+                        }
+                        else
+                        {
+                            oldTranslation.Name = translation.Name;
+                        }
+                    }
+                }
+                var transformedActions = _mapper.Map<UpdateAction>(compActions);
+                await _client.UpdateActionAsync(transformedActions, competency.Id);
             }
+            IsLoading = false;
         }
 
         public ICommand UploadDataCommand

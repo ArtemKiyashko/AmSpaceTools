@@ -19,13 +19,6 @@
                 <x:Type TypeName="models:ColumnActionType"/>
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
-        <ObjectDataProvider x:Key="TranslationFromEnum"
-                            MethodName="GetValues" 
-                            ObjectType="{x:Type sys:Enum}">
-            <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="models:TranslationLanguage"/>
-            </ObjectDataProvider.MethodParameters>
-        </ObjectDataProvider>
     </UserControl.Resources>
     <StackPanel>
         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Hidden">
@@ -65,7 +58,7 @@
                                 Width="Auto"
                                 Grid.Column="1"
                                 Margin="15 0 0 0"
-                                ItemsSource="{Binding Source={StaticResource TranslationFromEnum}}"
+                                ItemsSource="{Binding Langs}"
                                 SelectedItem="{Binding Language}"
                                 Visibility="{Binding IsLanguageVisible, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"
                                 Grid.Row="0">
@@ -87,10 +80,23 @@
         </ScrollViewer>
         <ProgressBar IsIndeterminate="True" Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}" />
         <Button Command="{Binding OpenFileCommand}">
-            <TextBlock Text="Open source file"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Open translations "/>
+                <materialDesign:PackIcon
+                    Kind="File"
+                    Height="24"
+                    Width="24" />
+            </StackPanel>
         </Button>
-        <Button Command="{Binding UploadDataCommand}">
-            <TextBlock Text="Upload to AmSpace"/>
+        <Button Command="{Binding UploadDataCommand}"
+                Visibility="{Binding IsUploadVisible, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Upload "/>
+                <materialDesign:PackIcon
+                    Kind="Cloud"
+                    Height="24"
+                    Width="24" />
+            </StackPanel>
         </Button>
     </StackPanel>
 </UserControl>

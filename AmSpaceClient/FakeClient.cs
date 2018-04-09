@@ -36,7 +36,7 @@ namespace AmSpaceClient
             return Task.FromResult(result);
         }
 
-        public Task<IEnumerable<CompetencyAction>> GetCompetencyActionsAsync(long competencyId)
+        public Task<CompetencyAction> GetCompetencyActionsAsync(long competencyId)
         {
             IEnumerable<CompetencyAction> result = new List<CompetencyAction>
             {
@@ -109,25 +109,31 @@ namespace AmSpaceClient
                         new IdpAction
                         {
                             Id = 3,
-                            Name = "make deciscion dude",
+                            Name = "Analysis the problem in terms of: a) how things are (expected standards vs current situation) b) how I want things to be – what do you expected?",
                             ActionType = new ActionType
                             {
-                                Value = 10,
-                                DisplayName = "10%"
+                                Value = 70,
+                                DisplayName = "70%"
                             },
                             Translations = new List<Translation>
                             {
                                 new Translation
                                 {
                                     Id = 5,
-                                    Name = "make deciscion dude",
-                                    Language = "en-us"
+                                    Name = "Analysis the problem in terms of: a) how things are (expected standards vs current situation) b) how I want things to be – what do you expected?",
+                                    Language = "en"
                                 },
                                 new Translation
                                 {
-                                    Id = 6,
-                                    Name = "something in Polish",
-                                    Language = "pl-pl"
+                                    Id = 51,
+                                    Name = "2Przeanalizuj problem uwzględniając następujące aspekty: a) jak wygląda sytuacja (rzeczywistość kontra oczekiwany standard) b) jak chciałbyś, żeby wyglądała – czego oczekujesz?",
+                                    Language = "pl"
+                                },
+                                new Translation
+                                {
+                                    Id = 52,
+                                    Name = "Анализирайте проблема, като вземете предвид следните аспекти: а) каква е ситуацията (реалност спрямо очаквания стандарт) б) как бихте искали да изглежда ситуацията - какво очаквате?",
+                                    Language = "bg"
                                 }
                             }
                         },
@@ -218,7 +224,7 @@ namespace AmSpaceClient
                     }
                 }
             };
-            return Task.FromResult(result);
+            return Task.FromResult(result.FirstOrDefault(_ => _.Id == competencyId));
         }
 
         public Task<IEnumerable<Level>> GetLevelsAsync()
