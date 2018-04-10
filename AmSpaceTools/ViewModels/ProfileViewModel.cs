@@ -1,4 +1,5 @@
 ﻿using AmSpaceClient;
+using AmSpaceModels;
 using AmSpaceTools.Infrastructure;
 using System;
 using System.Collections.Generic;
@@ -6,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 
 namespace AmSpaceTools.ViewModels
 {
@@ -16,14 +18,17 @@ namespace AmSpaceTools.ViewModels
         private string _profileImageLink;
         private ICommand _logoutCommand;
         private IAmSpaceClient _client;
+        private BitmapSource _avatar;
+        private Profile _profile;
 
         public ProfileViewModel(IAmSpaceClient client)
         {
             _client = client;
-            var model = _client.ProfileRequestAsync().Result;
-            Name = $"{model.FirstName} {model.LastName}";
-            JobTitle = model.ContractData.FirstOrDefault().Position.Name;
-            ProfileImageLink = model.Avatar;
+            _profile = _client.ProfileRequestAsync().Result;
+            _profileImageLink = _profile.Avatar;
+            Name = $"{_profile.FirstName} {_profile.LastName}";
+            JobTitle = _profile.ContractData.FirstOrDefault().Position.Name;
+            SetUpAvatar();
             LogoutCommand = new RelayCommand(LogOut);
         }
 
@@ -32,6 +37,23 @@ namespace AmSpaceTools.ViewModels
             await _client.LogoutRequestAsync();
             MainViewModel.IsLoggedIn = false;
             HideMenu();
+        }
+
+        protected async void SetUpAvatar()
+        {
+            Avatar = await _client.GetAvatarAsync(_profileImageLink);
+        }
+        public BitmapSource Avatar
+        {
+            get
+            {
+                return _avatar;
+            }
+            set
+            {
+                _avatar = value;
+                OnPropertyChanged();
+            }
         }
 
         public string Name
@@ -57,19 +79,6 @@ namespace AmSpaceTools.ViewModels
             {
                 _jobTitle = value;
                 OnPropertyChanged(nameof(JobTitle));
-            }
-        }
-
-        public string ProfileImageLink
-        {
-            get
-            {
-                return _profileImageLink;
-            }
-            set
-            {
-                _profileImageLink = value;
-                OnPropertyChanged(nameof(ProfileImageLink));
             }
         }
 

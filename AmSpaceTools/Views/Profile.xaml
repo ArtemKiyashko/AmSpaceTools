@@ -17,7 +17,7 @@
             Content="{Binding Name}"
             Grid.Column="0">
             <materialDesign:Chip.Icon>
-                <Image Source="{Binding ProfileImageLink}" />
+                <Image Source="{Binding Avatar}" />
             </materialDesign:Chip.Icon>
         </materialDesign:Chip>
         <materialDesign:PopupBox DockPanel.Dock="Right" PlacementMode="BottomAndAlignRightEdges" StaysOpen="False" Grid.Column="1">

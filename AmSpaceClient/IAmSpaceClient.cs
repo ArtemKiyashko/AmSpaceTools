@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 
 namespace AmSpaceClient
 {
@@ -16,6 +17,7 @@ namespace AmSpaceClient
         Task<IEnumerable<Level>> GetLevelsAsync();
         Task<CompetencyAction> GetCompetencyActionsAsync(long competencyId);
         Task UpdateActionAsync(UpdateAction model, long competencyId);
-        Task LogoutRequestAsync(); 
+        Task LogoutRequestAsync();
+        Task<BitmapSource> GetAvatarAsync(string link);
     }
 }

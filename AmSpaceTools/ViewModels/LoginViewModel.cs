@@ -59,6 +59,7 @@ namespace AmSpaceTools.ViewModels
             {
                 Password = passwordContainer.Password;
             }
+            if (string.IsNullOrEmpty(Name)) return;
             LoginRequest();
         }
 

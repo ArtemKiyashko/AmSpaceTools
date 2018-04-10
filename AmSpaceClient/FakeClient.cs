@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 using AmSpaceModels;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace AmSpaceClient
 {
@@ -271,7 +274,8 @@ namespace AmSpaceClient
             {
                 FirstName = "MyName",
                 LastName = "MySurname",
-                ContractData = fakeContractData
+                ContractData = fakeContractData,
+                Avatar = "https://pp.userapi.com/c637631/v637631947/5048d/vRj7_OW0f9U.jpg"
             };
             return Task.FromResult(result);
         }
@@ -279,6 +283,14 @@ namespace AmSpaceClient
         public Task UpdateActionAsync(UpdateAction model, long competencyId)
         {
             return Task.CompletedTask;
+        }
+
+        public async Task<BitmapSource> GetAvatarAsync(string link)
+        {
+            var client = new HttpClient();
+            var result = await client.GetAsync(link);
+            var content = await result.Content.ReadAsByteArrayAsync();
+            return (BitmapSource)new ImageSourceConverter().ConvertFrom(content);
         }
     }
 }

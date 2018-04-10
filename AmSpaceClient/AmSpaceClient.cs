@@ -4,12 +4,18 @@ using System.Linq;
 using System.Security;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 using AmSpaceModels;
 
 namespace AmSpaceClient
 {
     public class AmSpaceClient : IAmSpaceClient
     {
+        public Task<BitmapSource> GetAvatarAsync(string link)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<IEnumerable<Competency>> GetCompetenciesAsync()
         {
             throw new NotImplementedException();
