@@ -47,12 +47,6 @@ namespace AmSpaceTools.Decorators
             }
         }
 
-        public IEnumerable<ColumnDefinitionError> ValidateColumnDefinitions(IEnumerable<IdpExcelColumn> columnDefinitions)
-        {
-            //TODO
-            return _decoratee.ValidateColumnDefinitions(columnDefinitions);
-        }
-
         public IEnumerable<IdpExcelRow> GetAllRows(string fileName, IEnumerable<IdpExcelColumn> columnDefinitions, bool ignoreFirstRow = true)
         {
             _logger.Info($"Reading all rows from {fileName}");

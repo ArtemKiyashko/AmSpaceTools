@@ -8,8 +8,15 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.Orange.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Yellow.xaml" />
+                <ResourceDictionary>
+                    <!-- include your primary palette -->
+                    <ResourceDictionary.MergedDictionaries>
+                        <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.Orange.xaml" />
+                    </ResourceDictionary.MergedDictionaries>
+                    <SolidColorBrush x:Key="PrimaryHueMidBrush" Color="#FE9106"/> <!--AmRest orange-->
+                    <SolidColorBrush x:Key="PrimaryError" Color="#AB0743"/> <!--AmRest red-->
+                </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

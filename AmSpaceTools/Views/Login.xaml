@@ -47,6 +47,7 @@
             Style="{StaticResource MaterialDesignFloatingHintPasswordBox}" />
         <Button
           x:Name="LoginButton"
+            ToolTip="Login using Your AmSpace credentials"
           IsDefault="True"
           Grid.Row="4"
           Grid.Column="0"

@@ -11,17 +11,27 @@ namespace AmSpaceModels
         private ColumnActionType _columnType;
 
         public string ColumnAddress { get; set; }
-        public ColumnActionType ColumnType { get => _columnType;
+        public ColumnActionType ColumnType
+        {
+            get => _columnType;
             set
             {
                 _columnType = value;
+                OnPropertyChanged();
                 OnPropertyChanged(nameof(IsLanguageVisible));
             }
         }
         public IEnumerable<string> ColumnData { get; set; }
         public int ColumnIndex { get; set; }
         public int WorkSheet { get; set; }
-        public string Language { get; set; }
+        public string Language
+        { get => _language;
+            set
+            {
+                _language = value;
+                OnPropertyChanged();
+            }
+        }
 
         public bool IsLanguageVisible
         {
@@ -32,6 +42,7 @@ namespace AmSpaceModels
         }
 
         private IEnumerable<string> _langs;
+        private string _language;
 
         public IEnumerable<string> Langs
         {

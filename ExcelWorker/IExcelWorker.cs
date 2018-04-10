@@ -15,7 +15,6 @@ namespace ExcelWorker
     public interface IExcelWorker
     {
         IEnumerable<IdpExcelColumn> GetColumnDataPreview(string fileName, int rowLimit);
-        IEnumerable<ColumnDefinitionError> ValidateColumnDefinitions(IEnumerable<IdpExcelColumn> columnDefinitions);
         IEnumerable<IdpExcelRow> GetAllRows(string fileName, IEnumerable<IdpExcelColumn> columnDefinitions, bool ignoreFirstRow = true);
     }
 }

@@ -83,21 +83,5 @@ namespace ExcelWorker
                 excel.Save();
             }
         }
-
-        public IEnumerable<ColumnDefinitionError> ValidateColumnDefinitions(IEnumerable<IdpExcelColumn> columnDefinitions)
-        {
-            var result = new List<ColumnDefinitionError>();
-            if (!columnDefinitions.Any(_ => _.ColumnType == ColumnActionType.CompetencyName))
-                result.Add(new ColumnDefinitionError(ColumnActionType.CompetencyName));
-            if (!columnDefinitions.Any(_ => _.ColumnType == ColumnActionType.ActionPercentage))
-                result.Add(new ColumnDefinitionError(ColumnActionType.ActionPercentage));
-            if (!columnDefinitions.Any(_ => _.ColumnType == ColumnActionType.CompetencyLevel))
-                result.Add(new ColumnDefinitionError(ColumnActionType.CompetencyLevel));
-            if (!columnDefinitions.Any(_ => _.ColumnType == ColumnActionType.SourceText))
-                result.Add(new ColumnDefinitionError(ColumnActionType.SourceText));
-            if (!columnDefinitions.Any(_ => _.ColumnType == ColumnActionType.Translation))
-                result.Add(new ColumnDefinitionError(ColumnActionType.Translation));
-            return result;
-        }
     }
 }

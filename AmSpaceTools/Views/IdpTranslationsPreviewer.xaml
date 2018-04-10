@@ -21,8 +21,80 @@
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
     </UserControl.Resources>
-    <StackPanel>
-        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Hidden">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <StackPanel
+            Grid.Column="0"
+            Grid.Row="0">
+            <TextBlock
+                Style="{StaticResource MaterialDesignHeadlineTextBlock}"
+                Margin="0 5 0 10">
+                IDP Translation uploader
+            </TextBlock>
+            <ItemsControl ItemsSource="{Binding Errors}"
+                      Margin="0 0 12 0">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type infrastructure:ColumnDefinitionError}">
+                        <TextBlock Text="{Binding ErrorMsg}" Grid.Column="0"
+                                   Style="{StaticResource MaterialDesignBody1TextBlock}"
+                                   Foreground="{DynamicResource PrimaryError}"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+        <Grid
+            Grid.Column="1"
+            Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Button Command="{Binding OpenFileCommand}"
+                    Grid.Column="0"
+                    Grid.Row="0"
+                    Margin="0 5 10 10"
+                    Style="{StaticResource MaterialDesignFloatingActionButton}"
+                    ToolTip="Open translations">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon
+                        Kind="File"
+                        Height="24"
+                        Width="24" />
+                </StackPanel>
+            </Button>
+            <Button Command="{Binding UploadDataCommand}"
+                    IsEnabled="{Binding IsUploadVisible}"
+                    Grid.Column="1"
+                    Grid.Row="0"
+                    Margin="0 5 5 10"
+                    Style="{StaticResource MaterialDesignFloatingActionButton}"
+                    ToolTip="Upload to AmSpace">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon
+                        Kind="CloudSync"
+                        Height="24"
+                        Width="24" />
+                </StackPanel>
+            </Button>
+        </Grid>
+        <ScrollViewer 
+            HorizontalScrollBarVisibility="Auto" 
+            VerticalScrollBarVisibility="Auto"
+            Grid.Column="0"
+            Grid.Row="1"
+            Grid.ColumnSpan="2">
             <ItemsControl 
                     x:Name="itemsControl"
                     ItemsSource="{Binding ExcelColumnsPreview}">
@@ -79,25 +151,9 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </ScrollViewer>
-        <ProgressBar IsIndeterminate="True" Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}" />
-        <Button Command="{Binding OpenFileCommand}">
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Open translations "/>
-                <materialDesign:PackIcon
-                    Kind="File"
-                    Height="24"
-                    Width="24" />
-            </StackPanel>
-        </Button>
-        <Button Command="{Binding UploadDataCommand}"
-                Visibility="{Binding IsUploadVisible, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Upload "/>
-                <materialDesign:PackIcon
-                    Kind="Cloud"
-                    Height="24"
-                    Width="24" />
-            </StackPanel>
-        </Button>
-    </StackPanel>
+        <ProgressBar IsIndeterminate="True" Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"
+                     Grid.Column="0"
+                     Grid.Row="1"
+                     Grid.ColumnSpan="2"/>
+    </Grid>
 </UserControl>

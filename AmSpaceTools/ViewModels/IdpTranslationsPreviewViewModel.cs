@@ -7,6 +7,7 @@ using ExcelWorker;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,12 +25,38 @@ namespace AmSpaceTools.ViewModels
         private string _currentFilePath;
         private IMapper _mapper;
         private IAmSpaceClient _client;
+        private ObservableCollection<ColumnDefinitionError> _errors;
+
+        public ObservableCollection<ColumnDefinitionError> Errors { get => _errors; set => _errors = value; }
 
         public bool IsUploadVisible
         {
             get
             {
-                return !string.IsNullOrEmpty(CurrentFilePath);
+                if (string.IsNullOrEmpty(CurrentFilePath)) return false;
+                Errors.Clear();
+                if (!ExcelColumnsPreview.Any(_ => _.ColumnType == ColumnActionType.SourceText))
+                {
+                    Errors.Add(new ColumnDefinitionError(ColumnActionType.SourceText));
+                    return false;
+                }
+                if (!ExcelColumnsPreview.Any(_ => _.ColumnType == ColumnActionType.Translation))
+                {
+                    Errors.Add(new ColumnDefinitionError(ColumnActionType.Translation));
+                    return false;
+                }
+                else
+                {
+                    foreach(var column in ExcelColumnsPreview.Where(_ => _.ColumnType == ColumnActionType.Translation))
+                    {
+                        if (string.IsNullOrEmpty(column.Language))
+                        {
+                            Errors.Add(new ColumnDefinitionError(ColumnActionType.Translation));
+                            return false;
+                        }
+                    }
+                }
+                return true;
             }
         }
 
@@ -75,6 +102,7 @@ namespace AmSpaceTools.ViewModels
             _client = client;
             OpenFileCommand = new RelayCommand(OpenFile);
             UploadDataCommand = new RelayCommand(UploadData);
+            Errors = new ObservableCollection<ColumnDefinitionError>();
         }
 
         private async void UploadData(object obj)
@@ -85,11 +113,11 @@ namespace AmSpaceTools.ViewModels
             foreach (var competency in competencies)
             {
                 var compActions = await _client.GetCompetencyActionsAsync(competency.Id);
-                foreach(var action in compActions.Actions)
+                foreach (var action in compActions.Actions)
                 {
                     var translationKey = AllRows.FirstOrDefault(_ => _.ActionSourceDescription == action.Name);
                     if (translationKey == null) continue;
-                    foreach(var translation in translationKey.Translations)
+                    foreach (var translation in translationKey.Translations)
                     {
                         var oldTranslation = action.Translations.FirstOrDefault(_ => _.Language == translation.Language);
                         if (oldTranslation == null)
@@ -136,9 +164,16 @@ namespace AmSpaceTools.ViewModels
             if (dialog.ShowDialog() == true)
             {
                 CurrentFilePath = dialog.FileName;
-                ExcelColumnsPreview = _excelWorker.GetColumnDataPreview(CurrentFilePath, 6);
+                ExcelColumnsPreview = _excelWorker.GetColumnDataPreview(CurrentFilePath, 10);
+                foreach(var excelColumn in ExcelColumnsPreview)
+                    excelColumn.PropertyChanged += ExcelColumn_PropertyChanged;
             }
             IsLoading = false;
+        }
+
+        private void ExcelColumn_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            OnPropertyChanged(nameof(IsUploadVisible));
         }
     }
 }
