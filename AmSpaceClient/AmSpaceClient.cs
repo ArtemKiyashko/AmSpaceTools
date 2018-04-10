@@ -30,6 +30,11 @@ namespace AmSpaceClient
             throw new NotImplementedException();
         }
 
+        public Task LogoutRequestAsync()
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<Profile> ProfileRequestAsync()
         {
             throw new NotImplementedException();

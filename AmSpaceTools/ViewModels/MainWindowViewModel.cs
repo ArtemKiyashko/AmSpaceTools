@@ -33,5 +33,17 @@ namespace AmSpaceTools.ViewModels
             };
             SelectedMenuItem = MenuItems[0];
         }
+
+        private bool _isLoggedIn;
+
+        public bool IsLoggedIn
+        {
+            get => _isLoggedIn;
+            set
+            {
+                _isLoggedIn = value;
+                OnPropertyChanged();
+            }
+        }
     }
 }

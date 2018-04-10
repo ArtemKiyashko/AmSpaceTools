@@ -20,9 +20,7 @@
         <DataTemplate DataType="{x:Type vm:ProfileViewModel}">
             <views:Profile/>
         </DataTemplate>
-        <!--<DataTemplate DataType="{x:Type vm:ProfileViewModel}">
-            <views:Profile/>
-        </DataTemplate>-->
+        <infrastructure:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </Window.Resources>
     <materialDesign:DialogHost Identifier="RootDialog">
         <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
@@ -57,8 +55,13 @@
                     <DockPanel >
                         <ToggleButton DockPanel.Dock="Left"  Style="{StaticResource MaterialDesignHamburgerToggleButton}" IsChecked="False"
                                         x:Name="MenuToggleButton"/>
-                        <TextBlock HorizontalAlignment="Center" Margin="30, 0, 0, 0" VerticalAlignment="Center" FontSize="22" Width="Auto">AmSpace Tools 4000</TextBlock>
-                        <ContentControl DockPanel.Dock="Right"  x:Name="ProfileView" Content="{Binding ProfileViewModel}" HorizontalAlignment="Right"/>
+                        <TextBlock HorizontalAlignment="Center" Margin="30, 0, 0, 0" VerticalAlignment="Center" FontSize="22" Width="Auto">AmSpace Tools</TextBlock>
+                        <ContentControl 
+                            DockPanel.Dock="Right"  
+                            x:Name="ProfileView" 
+                            Visibility="{Binding IsLoggedIn, Converter={StaticResource BoolToVisibilityConverter}}" 
+                            Content="{Binding ProfileViewModel}" 
+                            HorizontalAlignment="Right"/>
                     </DockPanel>
                 </materialDesign:ColorZone>
                 <Grid>

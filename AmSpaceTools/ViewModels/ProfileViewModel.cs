@@ -1,9 +1,11 @@
 ﻿using AmSpaceClient;
+using AmSpaceTools.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace AmSpaceTools.ViewModels
 {
@@ -12,13 +14,24 @@ namespace AmSpaceTools.ViewModels
         private string _name;
         private string _jobTitle;
         private string _profileImageLink;
+        private ICommand _logoutCommand;
+        private IAmSpaceClient _client;
 
-        public ProfileViewModel(IAmSpaceClient amSpaceClient)
+        public ProfileViewModel(IAmSpaceClient client)
         {
-            var model = amSpaceClient.ProfileRequestAsync().Result;
+            _client = client;
+            var model = _client.ProfileRequestAsync().Result;
             Name = $"{model.FirstName} {model.LastName}";
             JobTitle = model.ContractData.FirstOrDefault().Position.Name;
             ProfileImageLink = model.Avatar;
+            LogoutCommand = new RelayCommand(LogOut);
+        }
+
+        private async void LogOut(object obj)
+        {
+            await _client.LogoutRequestAsync();
+            MainViewModel.IsLoggedIn = false;
+            HideMenu();
         }
 
         public string Name
@@ -59,5 +72,7 @@ namespace AmSpaceTools.ViewModels
                 OnPropertyChanged(nameof(ProfileImageLink));
             }
         }
+
+        public ICommand LogoutCommand{ get => _logoutCommand; set => _logoutCommand = value; }
     }
 }

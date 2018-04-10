@@ -82,5 +82,27 @@ namespace AmSpaceTools.ViewModels
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
         }
+
+
+        /// <summary>
+        /// Updates app's views after Login according to specified startup View and profile model
+        /// </summary>
+        /// <param name="nextView"></param>
+        protected void ShowMenu(BaseViewModel startupViewModel)
+        {
+            MainViewModel.SelectedViewModel = startupViewModel;
+            MainViewModel.MenuItems.Clear();
+            MainViewModel.MenuItems.Add(new MenuItem("IDP Translation", startupViewModel));
+            MainViewModel.SelectedMenuItem = MainViewModel.MenuItems.FirstOrDefault(item => item.Content == startupViewModel);
+        }
+
+        protected void HideMenu()
+        {
+            var loginVm = Services.Container.GetInstance<LoginViewModel>();
+            MainViewModel.SelectedViewModel = loginVm;
+            MainViewModel.MenuItems.Clear();
+            MainViewModel.MenuItems.Add(new MenuItem("Login", loginVm));
+            MainViewModel.SelectedMenuItem = MainViewModel.MenuItems.FirstOrDefault(item => item.Content == loginVm);
+        }
     }
 }

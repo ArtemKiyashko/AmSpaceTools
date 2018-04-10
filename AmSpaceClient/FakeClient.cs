@@ -252,6 +252,11 @@ namespace AmSpaceClient
 
         public Task<bool> LoginRequestAsync(string userName, SecureString password) => Task.FromResult(true);
 
+        public Task LogoutRequestAsync()
+        {
+            return Task.CompletedTask;
+        }
+
         public Task<Profile> ProfileRequestAsync()
         {
             ContractDatum fakeContract = new ContractDatum{

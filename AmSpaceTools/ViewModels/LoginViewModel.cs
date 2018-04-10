@@ -65,24 +65,12 @@ namespace AmSpaceTools.ViewModels
         private async void LoginRequest()
         {
             IsLoading = true;
-            var result = await _client.LoginRequestAsync(Name, Password);
-            if (!result) throw new Exception();
+            MainViewModel.IsLoggedIn = await _client.LoginRequestAsync(Name, Password);
+            if (!MainViewModel.IsLoggedIn) throw new Exception();
             MainViewModel.ProfileViewModel = Services.Container.GetInstance<ProfileViewModel>();
             var ipdTranslationViewModel = Services.Container.GetInstance<IdpTranslationsPreviewViewModel>();
-            UpdateViews(ipdTranslationViewModel);
+            ShowMenu(ipdTranslationViewModel);
             IsLoading = false;
-        }
-
-        /// <summary>
-        /// Updates app's views after Login according to specified startup View and profile model
-        /// </summary>
-        /// <param name="nextView"></param>
-        private void UpdateViews(BaseViewModel startupViewModel)
-        {
-            MainViewModel.SelectedViewModel = startupViewModel;
-            MainViewModel.MenuItems.Add(new MenuItem("IDP Translation", startupViewModel));
-            MainViewModel.SelectedMenuItem = MainViewModel.MenuItems.FirstOrDefault(item => item.Content == startupViewModel);
-            MainViewModel.MenuItems.Remove(MainViewModel.MenuItems.FirstOrDefault(item => item.Content == this));
         }
     }
 }
