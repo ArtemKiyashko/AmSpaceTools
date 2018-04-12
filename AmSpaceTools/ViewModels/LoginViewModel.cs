@@ -5,10 +5,12 @@ using AmSpaceTools.Views;
 using StructureMap.Pipeline;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Security;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace AmSpaceTools.ViewModels
