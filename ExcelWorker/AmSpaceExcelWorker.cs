@@ -47,6 +47,12 @@ namespace ExcelWorker
                     var lastColumn = ws.Dimension.End.Column;
                     for (var i = ignoreFirstRow ? 2 : 1; i < lastRow + 1; i++)
                     {
+                        //if first cell empty, continue from next row
+                        if (ws.Cells[i, 1].Value == null) continue;
+
+                        //if whole row empty - stop iteration on ws
+                        if (ws.Cells[i, 1, i, lastColumn].All(_ => _.Value == null)) break;
+
                         var c = new IdpExcelRow();
                         c.CompetencyName = ws.GetValue<string>(i, columnDefinitions.First(_ => _.ColumnType == ColumnActionType.CompetencyName).ColumnIndex);
                         c.CompetencyLevel = ws.GetValue<int>(i, columnDefinitions.First(_ => _.ColumnType == ColumnActionType.CompetencyLevel).ColumnIndex);
@@ -69,7 +75,7 @@ namespace ExcelWorker
 
         public void SaveData<T>(string fileName, IEnumerable<T> data, string sheetName)
         {
-            using (var file = new FileStream(fileName, FileMode.Append, FileAccess.ReadWrite))
+            using (var file = new FileStream(fileName, FileMode.Create, FileAccess.ReadWrite))
             using (var excel = new ExcelPackage(file))
             {
                 var ws = string.IsNullOrEmpty(sheetName) ?

@@ -11,8 +11,6 @@ namespace AmSpaceModels
         public string CompetencyName { get; set; }
         public int CompetencyLevel { get; set; }
         public string ActionSourceDescription { get; set; }
-        public string ActionTargetDescription { get; set; }
-        public string ActionTargetLanguage { get; set; }
         public int ActionPercentage { get; set; }
         public List<Translation> Translations { get; set; }
     }

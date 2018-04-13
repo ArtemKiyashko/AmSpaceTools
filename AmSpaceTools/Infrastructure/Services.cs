@@ -23,7 +23,7 @@ namespace AmSpaceTools.Infrastructure
             get
             {
                 return new MapperConfiguration(cfg => {
-                    cfg.CreateMap<IEnumerable<CompetencyActionViewModel>, IEnumerable<CompetencyActionDto>>().ConvertUsing(new CompetencyActionConverter());
+                    cfg.CreateMap<IEnumerable<IdpExcelRow>, IEnumerable<CompetencyActionDto>>().ConvertUsing(new CompetencyActionConverter());
                     cfg.CreateMap<IEnumerable<CompetencyAction>, IEnumerable<UpdateAction>>().ConvertUsing(new CompetencyActionsToUpdateConverter());
                     cfg.CreateMap<IEnumerable<IdpExcelRow>, IEnumerable<UpdateAction>>().ConvertUsing(new IdpExcelRowToUpdateConverter());
                     cfg.CreateMap<CompetencyAction, UpdateAction>().ConvertUsing(new ActionToUpdateConverter());

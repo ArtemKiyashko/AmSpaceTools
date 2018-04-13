@@ -8,6 +8,7 @@ using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -135,10 +136,12 @@ namespace AmSpaceTools.ViewModels
         {
             IsLoading = true;
             var competencies = await _client.GetCompetenciesAsync();
-            var levels = await _client.GetLevelsAsync();
+            var missingActions = new HashSet<IdpExcelRow>();
+            var matchingActions = new HashSet<IdpExcelRow>();
             foreach (var competency in competencies)
             {
                 var compActions = await _client.GetCompetencyActionsAsync(competency.Id);
+                DetermineMissingMatchingActions(missingActions, matchingActions, compActions);
                 foreach (var action in compActions.Actions)
                 {
                     var translationKey = AllRows.FirstOrDefault(_ => _.ActionSourceDescription == action.Name);
@@ -149,7 +152,46 @@ namespace AmSpaceTools.ViewModels
                 var transformedActions = _mapper.Map<UpdateAction>(compActions);
                 await _client.UpdateActionAsync(transformedActions, competency.Id);
             }
+            SaveUploadResults(missingActions, matchingActions);
             IsLoading = false;
+        }
+
+        private void DetermineMissingMatchingActions(HashSet<IdpExcelRow> missingActions, HashSet<IdpExcelRow> matchingActions, CompetencyAction compActions)
+        {
+            var foundActions = from ca in compActions.Actions
+                               join rows in AllRows on ca.Name equals rows.ActionSourceDescription
+                               select new IdpExcelRow
+                               {
+                                   CompetencyName = rows.CompetencyName,
+                                   CompetencyLevel = rows.CompetencyLevel,
+                                   ActionPercentage = rows.ActionPercentage,
+                                   ActionSourceDescription = rows.ActionSourceDescription
+                               };
+            matchingActions.UnionWith(foundActions);
+            missingActions.UnionWith(AllRows.Except(foundActions));
+        }
+
+        protected void SaveUploadResults(IEnumerable<IdpExcelRow> missingActions, IEnumerable<IdpExcelRow> matchingActions)
+        {
+            var fileName = Path.Combine("Reports",
+                $"{DateTime.Now.Year}_" +
+                $"{DateTime.Now.Month}_" +
+                $"{DateTime.Now.Day}_" +
+                $"{DateTime.Now.Hour}-" +
+                $"{DateTime.Now.Minute}-" +
+                $"{DateTime.Now.Second}" +
+                $"_Missing.xlsx");
+            _excelWorker.SaveData(fileName, missingActions, "Missing");
+
+            fileName = Path.Combine("Reports",
+                $"{DateTime.Now.Year}_" +
+                $"{DateTime.Now.Month}_" +
+                $"{DateTime.Now.Day}_" +
+                $"{DateTime.Now.Hour}-" +
+                $"{DateTime.Now.Minute}-" +
+                $"{DateTime.Now.Second}" +
+                $"_Matching.xlsx");
+            _excelWorker.SaveData(fileName, matchingActions, "Matching");
         }
 
         public ICommand UploadDataCommand
