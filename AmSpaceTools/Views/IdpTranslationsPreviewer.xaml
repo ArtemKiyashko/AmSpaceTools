@@ -89,6 +89,15 @@
                 </StackPanel>
             </Button>
         </Grid>
+        <Image
+            Source="/Resources/idp-background_29492334.png"
+            Stretch="Uniform"
+            Grid.Column="0"
+            Grid.Row="1"
+            Grid.ColumnSpan="2"
+            Opacity="0.6"
+            Visibility="{Binding PreviewIsNotLoaded, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"
+            />
         <ScrollViewer 
             HorizontalScrollBarVisibility="Auto" 
             VerticalScrollBarVisibility="Auto"

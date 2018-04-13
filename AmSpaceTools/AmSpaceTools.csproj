@@ -167,14 +167,15 @@
       <Name>ExcelWorker</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="favicon.ico" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="favicon_black.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\idp-background_29492334.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

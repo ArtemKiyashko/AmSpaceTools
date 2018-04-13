@@ -43,8 +43,8 @@ namespace AmSpaceTools.Infrastructure
                 _.For<IAmSpaceClient>().Use<AmSpaceClient.FakeClient>().Singleton();
                 _.For<MainWindowViewModel>().Use<MainWindowViewModel>().Singleton();
                 _.For<ProfileViewModel>().Use<ProfileViewModel>().Singleton();
-                _.For<IExcelWorker<CompetencyActionDto>>().Use<AmSpaceExcelWorker<CompetencyActionDto>>().Transient();
-                _.For<IExcelWorker<CompetencyActionDto>>().DecorateAllWith<ExcelWorkerDecorator<CompetencyActionDto>>();
+                _.For<IExcelWorker>().Use<AmSpaceExcelWorker>().Transient();
+                _.For<IExcelWorker>().DecorateAllWith<ExcelWorkerDecorator>();
                 _.For<ILog>().Use(a => LogManager.GetLogger(typeof(App)));
                 _.For<IMapper>().Use(a => new Mapper(_mapperConfiguration)).Singleton();
                 _.Scan(scanner => {

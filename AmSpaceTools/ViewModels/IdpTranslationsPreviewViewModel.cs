@@ -18,7 +18,7 @@ namespace AmSpaceTools.ViewModels
     public class IdpTranslationsPreviewViewModel : BaseViewModel
     {
         private IEnumerable<IdpExcelColumn> _excelColumnsPreview;
-        private IExcelWorker<CompetencyActionDto> _excelWorker;
+        private IExcelWorker _excelWorker;
         private ICommand _openFileCommand;
         private IEnumerable<IdpExcelRow> _allRows;
         private ICommand _uploadDataCommand;
@@ -92,10 +92,19 @@ namespace AmSpaceTools.ViewModels
             {
                 _currentFilePath = value;
                 OnPropertyChanged(nameof(IsUploadVisible));
+                OnPropertyChanged(nameof(PreviewIsNotLoaded));
             }
         }
 
-        public IdpTranslationsPreviewViewModel(IExcelWorker<CompetencyActionDto> excelWorker, IMapper mapper, IAmSpaceClient client)
+        public bool PreviewIsNotLoaded
+        {
+            get
+            {
+                return string.IsNullOrEmpty(CurrentFilePath);
+            }
+        }
+
+        public IdpTranslationsPreviewViewModel(IExcelWorker excelWorker, IMapper mapper, IAmSpaceClient client)
         {
             _excelWorker = excelWorker;
             _mapper = mapper;
@@ -103,6 +112,23 @@ namespace AmSpaceTools.ViewModels
             OpenFileCommand = new RelayCommand(OpenFile);
             UploadDataCommand = new RelayCommand(UploadData);
             Errors = new ObservableCollection<ColumnDefinitionError>();
+        }
+
+        private void UpsertTranslation(Translation newTranslation, IList<Translation> currentTranslations)
+        {
+            var oldTranslation = currentTranslations.FirstOrDefault(_ => _.Language == newTranslation.Language);
+            if (oldTranslation == null)
+            {
+                currentTranslations.Add(new Translation
+                {
+                    Language = newTranslation.Language,
+                    Name = newTranslation.Name
+                });
+            }
+            else
+            {
+                oldTranslation.Name = newTranslation.Name;
+            }
         }
 
         private async void UploadData(object obj)
@@ -118,21 +144,7 @@ namespace AmSpaceTools.ViewModels
                     var translationKey = AllRows.FirstOrDefault(_ => _.ActionSourceDescription == action.Name);
                     if (translationKey == null) continue;
                     foreach (var translation in translationKey.Translations)
-                    {
-                        var oldTranslation = action.Translations.FirstOrDefault(_ => _.Language == translation.Language);
-                        if (oldTranslation == null)
-                        {
-                            action.Translations.Add(new Translation
-                            {
-                                Language = translation.Language,
-                                Name = translation.Name
-                            });
-                        }
-                        else
-                        {
-                            oldTranslation.Name = translation.Name;
-                        }
-                    }
+                        UpsertTranslation(translation, action.Translations);
                 }
                 var transformedActions = _mapper.Map<UpdateAction>(compActions);
                 await _client.UpdateActionAsync(transformedActions, competency.Id);

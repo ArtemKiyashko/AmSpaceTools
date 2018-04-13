@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace AmSpaceTools.Decorators
 {
-    public class ExcelWorkerDecorator<T> : IExcelWorker<T>
+    public class ExcelWorkerDecorator : IExcelWorker
     {
-        private IExcelWorker<T> _decoratee;
+        private IExcelWorker _decoratee;
         private ILog _logger;
 
-        public ExcelWorkerDecorator(IExcelWorker<T> decoratee, ILog logger)
+        public ExcelWorkerDecorator(IExcelWorker decoratee, ILog logger)
         {
             _decoratee = decoratee;
             _logger = logger;
@@ -33,7 +33,7 @@ namespace AmSpaceTools.Decorators
             }
         }
 
-        public void SaveData(string fileName, IEnumerable<T> data, string sheetName)
+        public void SaveData<T>(string fileName, IEnumerable<T> data, string sheetName)
         {
             _logger.Info($"Saving {fileName}");
             try
