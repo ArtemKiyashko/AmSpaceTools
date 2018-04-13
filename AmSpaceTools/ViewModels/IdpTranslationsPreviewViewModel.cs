@@ -115,23 +115,6 @@ namespace AmSpaceTools.ViewModels
             Errors = new ObservableCollection<ColumnDefinitionError>();
         }
 
-        private void UpsertTranslation(Translation newTranslation, IList<Translation> currentTranslations)
-        {
-            var oldTranslation = currentTranslations.FirstOrDefault(_ => _.Language == newTranslation.Language);
-            if (oldTranslation == null)
-            {
-                currentTranslations.Add(new Translation
-                {
-                    Language = newTranslation.Language,
-                    Name = newTranslation.Name
-                });
-            }
-            else
-            {
-                oldTranslation.Name = newTranslation.Name;
-            }
-        }
-
         private async void UploadData(object obj)
         {
             IsLoading = true;
@@ -147,7 +130,7 @@ namespace AmSpaceTools.ViewModels
                     var translationKey = AllRows.FirstOrDefault(_ => _.ActionSourceDescription == action.Name);
                     if (translationKey == null) continue;
                     foreach (var translation in translationKey.Translations)
-                        UpsertTranslation(translation, action.Translations);
+                        action.Translations.UpsertTranslation(translation);
                 }
                 var transformedActions = _mapper.Map<UpdateAction>(compActions);
                 await _client.UpdateActionAsync(transformedActions, competency.Id);

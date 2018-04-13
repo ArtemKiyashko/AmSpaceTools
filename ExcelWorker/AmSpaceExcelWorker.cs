@@ -73,7 +73,7 @@ namespace ExcelWorker
             }
         }
 
-        public void SaveData<T>(string fileName, IEnumerable<T> data, string sheetName)
+        public void SaveData<T>(string fileName, IEnumerable<T> data, string sheetName) where T : class
         {
             using (var file = new FileStream(fileName, FileMode.Create, FileAccess.ReadWrite))
             using (var excel = new ExcelPackage(file))
@@ -81,7 +81,7 @@ namespace ExcelWorker
                 var ws = string.IsNullOrEmpty(sheetName) ?
                     excel.Workbook.Worksheets[1] :
                     excel.Workbook.Worksheets.Add(sheetName);
-                ws.Cells["A1"].LoadFromCollection(data, true);
+                ws.Cells["A1"].LoadFromCollectionFiltered(data, true);
                 var header = ws.Cells[ws.Dimension.Start.Row, ws.Dimension.Start.Column, ws.Dimension.Start.Row, ws.Dimension.End.Column];
                 header.AutoFilter = true;
                 header.AutoFitColumns();

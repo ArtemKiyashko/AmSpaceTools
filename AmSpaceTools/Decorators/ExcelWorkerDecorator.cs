@@ -33,7 +33,7 @@ namespace AmSpaceTools.Decorators
             }
         }
 
-        public void SaveData<T>(string fileName, IEnumerable<T> data, string sheetName)
+        public void SaveData<T>(string fileName, IEnumerable<T> data, string sheetName) where T : class
         {
             _logger.Info($"Saving {fileName}");
             try

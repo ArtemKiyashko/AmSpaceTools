@@ -12,6 +12,8 @@ namespace AmSpaceModels
         public int CompetencyLevel { get; set; }
         public string ActionSourceDescription { get; set; }
         public int ActionPercentage { get; set; }
+
+        [EpplusIgnore]
         public List<Translation> Translations { get; set; }
     }
 }

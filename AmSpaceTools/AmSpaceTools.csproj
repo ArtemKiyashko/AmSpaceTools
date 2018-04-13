@@ -78,6 +78,7 @@
     <Compile Include="Infrastructure\CsvLogAppender.cs" />
     <Compile Include="Infrastructure\IHavePassword.cs" />
     <Compile Include="Infrastructure\BoolToVisibilityConverter.cs" />
+    <Compile Include="Infrastructure\ListExtensions.cs" />
     <Compile Include="Infrastructure\MenuItem.cs" />
     <Compile Include="Infrastructure\NotEmptyValidationRule.cs" />
     <Compile Include="Infrastructure\RelayCommand.cs" />
