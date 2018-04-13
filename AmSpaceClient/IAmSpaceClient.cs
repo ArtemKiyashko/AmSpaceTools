@@ -11,7 +11,7 @@ namespace AmSpaceClient
 {
     public interface IAmSpaceClient
     {
-        Task<bool> LoginRequestAsync(string userName, SecureString password);
+        Task<bool> LoginRequestAsync(string userName, SecureString password, Uri baseAddress = null);
         Task<Profile> ProfileRequestAsync();
         Task<IEnumerable<Competency>> GetCompetenciesAsync();
         Task<IEnumerable<Level>> GetLevelsAsync();

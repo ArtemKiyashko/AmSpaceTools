@@ -253,7 +253,7 @@ namespace AmSpaceClient
             return Task.FromResult(result);
         }
 
-        public Task<bool> LoginRequestAsync(string userName, SecureString password) => Task.FromResult(true);
+        public Task<bool> LoginRequestAsync(string userName, SecureString password, Uri baseAdress = null) => Task.FromResult(true);
 
         public Task LogoutRequestAsync()
         {

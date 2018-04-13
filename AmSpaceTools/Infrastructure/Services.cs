@@ -40,7 +40,7 @@ namespace AmSpaceTools.Infrastructure
         static Services()
         {
             _container = new Container(_ => {
-                _.For<IAmSpaceClient>().Use<AmSpaceClient.FakeClient>().Singleton();
+                _.For<IAmSpaceClient>().Use<AmSpaceClient.AmSpaceClient>().Singleton();
                 _.For<MainWindowViewModel>().Use<MainWindowViewModel>().Singleton();
                 _.For<ProfileViewModel>().Use<ProfileViewModel>().Singleton();
                 _.For<IExcelWorker<CompetencyActionDto>>().Use<AmSpaceExcelWorker<CompetencyActionDto>>().Transient();

@@ -22,19 +22,31 @@ namespace AmSpaceClient
         private LoginResult _loginResult;
         private readonly string _clientId;
         private readonly string _grantPermissionType;
-        private readonly Uri _baseAddress;
-        private ApiEndpoits _apiEndpoits;
+        private Uri _baseAddress;
+        private ApiEndpoints _apiEndpoits;
 
         public HttpClient AmSpaceHttpClient { get; private set; }
-
-        public AmSpaceClient(string enviroment)
+        public Uri BaseAddress
         {
-            string baseEndPoint = ConfigurationSettings.AppSettings[enviroment].ToString();
+            get
+            {
+                return _baseAddress;
+            }
+            private set
+            {
+                _baseAddress = value;
+                AmSpaceHttpClient.BaseAddress = value;
+            }
+        }
+
+        public AmSpaceClient()
+        {
             _clientId = ConfigurationSettings.AppSettings["ClientId"].ToString();
             _grantPermissionType = ConfigurationSettings.AppSettings["GrantPermissionType"].ToString();
             _cookieContainer = new CookieContainer();
+            _apiEndpoits = new ApiEndpoints();
+            string baseEndPoint = ConfigurationSettings.AppSettings["EnvironmentTest"].ToString();
             _baseAddress = new Uri(baseEndPoint);
-            _apiEndpoits = new ApiEndpoits();
 
             var handler = new HttpClientHandler()
             {
@@ -45,8 +57,8 @@ namespace AmSpaceClient
             AmSpaceHttpClient.BaseAddress = _baseAddress;
             _isAthorized = false;
         }
-
-        public async Task<bool> LoginRequestAsync(string userName, SecureString password)
+        
+        public async Task<bool> LoginRequestAsync(string userName, SecureString password, Uri baseAddress = null)
         {
             if (_isAthorized) return true;
             var values = new Dictionary<string, string>
@@ -57,6 +69,7 @@ namespace AmSpaceClient
                     { "client_id", _clientId }
                 };
             var content = new FormUrlEncodedContent(values);
+            if (baseAddress != null) BaseAddress = baseAddress;
             var result = await AmSpaceHttpClient.PostAsync(_apiEndpoits.TokenEndpoint, content);
             if (result.StatusCode != HttpStatusCode.OK) return false;
             var resultContent = await result.Content.ReadAsStringAsync();

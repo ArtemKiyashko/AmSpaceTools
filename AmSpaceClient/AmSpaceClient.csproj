@@ -30,6 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -42,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AmSpaceClient.cs" />
+    <Compile Include="ApiEndpoints.cs" />
     <Compile Include="FakeClient.cs" />
     <Compile Include="IAmSpaceClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -52,6 +56,9 @@
       <Project>{5c08369f-dd2d-4a5b-936d-6815b607dfb7}</Project>
       <Name>AmSpaceModels</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
