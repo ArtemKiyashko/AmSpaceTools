@@ -45,11 +45,24 @@
             x:Name="PasswordTextBox"
             materialDesign:HintAssist.Hint="Password"
             Style="{StaticResource MaterialDesignFloatingHintPasswordBox}" />
+        <ComboBox
+            Grid.Row="4"
+            Grid.Column="0"
+            DisplayMemberPath="Name"
+            materialDesign:HintAssist.Hint="Select environment"
+            ItemsSource="{Binding Environments}"
+            SelectedItem="{Binding SelectedEnvironment}">
+            <ComboBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel />
+                </ItemsPanelTemplate>
+            </ComboBox.ItemsPanel>
+        </ComboBox>
         <Button
           x:Name="LoginButton"
             ToolTip="Login using Your AmSpace credentials"
           IsDefault="True"
-          Grid.Row="4"
+          Grid.Row="6"
           Grid.Column="0"
           Command="{Binding LoginCommand}"
           CommandParameter="{Binding ElementName=root}"

@@ -49,6 +49,10 @@
     <Reference Include="MaterialDesignThemes.Wpf, Version=2.4.0.1044, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MaterialDesignThemes.2.4.0.1044\lib\net45\MaterialDesignThemes.Wpf.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\AmSpaceClient\bin\Debug\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="StructureMap, Version=4.6.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\StructureMap.4.6.1\lib\net45\StructureMap.dll</HintPath>
     </Reference>
@@ -74,8 +78,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Decorators\ExcelWorkerDecorator.cs" />
+    <Compile Include="Infrastructure\AmSpaceEnvironmentsProvider.cs" />
     <Compile Include="Infrastructure\ColumnDefinitionError.cs" />
     <Compile Include="Infrastructure\CsvLogAppender.cs" />
+    <Compile Include="Infrastructure\IAmSpaceEnvironmentsProvider.cs" />
     <Compile Include="Infrastructure\IHavePassword.cs" />
     <Compile Include="Infrastructure\BoolToVisibilityConverter.cs" />
     <Compile Include="Infrastructure\MenuItem.cs" />
@@ -144,6 +150,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="Environments.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
