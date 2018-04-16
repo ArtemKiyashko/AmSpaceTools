@@ -25,16 +25,16 @@ namespace AmSpaceModels
         public string Email { get; set; }
 
         [JsonProperty("is_superadmin")]
-        public bool IsSuperadmin { get; set; }
+        public bool? IsSuperadmin { get; set; }
 
         [JsonProperty("is_supervisor")]
-        public bool IsSupervisor { get; set; }
+        public bool? IsSupervisor { get; set; }
 
         [JsonProperty("is_instructor")]
-        public bool IsInstructor { get; set; }
+        public bool? IsInstructor { get; set; }
 
         [JsonProperty("is_admin")]
-        public bool IsAdmin { get; set; }
+        public bool? IsAdmin { get; set; }
 
         [JsonProperty("avatar")]
         public string Avatar { get; set; }
@@ -49,7 +49,7 @@ namespace AmSpaceModels
         public string Nationality { get; set; }
 
         [JsonProperty("sex")]
-        public long Sex { get; set; }
+        public long? Sex { get; set; }
 
         [JsonProperty("motto")]
         public string Motto { get; set; }
@@ -94,7 +94,7 @@ namespace AmSpaceModels
         public object[] LanguageInformation { get; set; }
 
         [JsonProperty("count_recognitions")]
-        public long CountRecognitions { get; set; }
+        public long? CountRecognitions { get; set; }
 
         [JsonProperty("mobility")]
         public Mobility Mobility { get; set; }
@@ -103,40 +103,40 @@ namespace AmSpaceModels
         public object[] UserRecognitions { get; set; }
 
         [JsonProperty("is_subordinate")]
-        public bool IsSubordinate { get; set; }
+        public bool? IsSubordinate { get; set; }
 
         [JsonProperty("selected_contract")]
         public SelectedContract[] SelectedContract { get; set; }
 
         [JsonProperty("is_active")]
-        public bool IsActive { get; set; }
+        public bool? IsActive { get; set; }
 
         [JsonProperty("is_country_admin")]
-        public bool IsCountryAdmin { get; set; }
+        public bool? IsCountryAdmin { get; set; }
 
         [JsonProperty("successor_summary")]
         public SuccessorSummary SuccessorSummary { get; set; }
 
         [JsonProperty("is_email_hidden")]
-        public bool IsEmailHidden { get; set; }
+        public bool? IsEmailHidden { get; set; }
 
         [JsonProperty("is_phone_number_hidden")]
-        public bool IsPhoneNumberHidden { get; set; }
+        public bool? IsPhoneNumberHidden { get; set; }
 
         [JsonProperty("is_date_of_birth_hidden")]
-        public bool IsDateOfBirthHidden { get; set; }
+        public bool? IsDateOfBirthHidden { get; set; }
 
         [JsonProperty("scopes")]
         public Scopes Scopes { get; set; }
 
         [JsonProperty("can_develop")]
-        public bool CanDevelop { get; set; }
+        public bool? CanDevelop { get; set; }
     }
 
     public partial class ContractDatum
     {
         [JsonProperty("id")]
-        public long Id { get; set; }
+        public long? Id { get; set; }
 
         [JsonProperty("manager")]
         public ContractDatumManager Manager { get; set; }
@@ -160,37 +160,37 @@ namespace AmSpaceModels
     public partial class Domain
     {
         [JsonProperty("id")]
-        public long Id { get; set; }
+        public long? Id { get; set; }
 
         [JsonProperty("name")]
         public string Name { get; set; }
 
         [JsonProperty("active")]
-        public bool Active { get; set; }
+        public bool? Active { get; set; }
 
         [JsonProperty("mpk")]
-        public long Mpk { get; set; }
+        public long? Mpk { get; set; }
 
         [JsonProperty("search")]
         public string Search { get; set; }
 
         [JsonProperty("parent")]
-        public long Parent { get; set; }
+        public long? Parent { get; set; }
     }
 
     public partial class ProfileLevel
     {
         [JsonProperty("id")]
-        public long Id { get; set; }
+        public long? Id { get; set; }
 
         [JsonProperty("level")]
-        public long LevelLevel { get; set; }
+        public long? LevelLevel { get; set; }
     }
 
     public partial class ContractDatumManager
     {
         [JsonProperty("id")]
-        public long Id { get; set; }
+        public long? Id { get; set; }
 
         [JsonProperty("first_name")]
         public string FirstName { get; set; }
@@ -211,16 +211,16 @@ namespace AmSpaceModels
         public string Nationality { get; set; }
 
         [JsonProperty("sex")]
-        public long Sex { get; set; }
+        public long? Sex { get; set; }
 
         [JsonProperty("country_code")]
         public string CountryCode { get; set; }
 
         [JsonProperty("employee_id")]
-        public long EmployeeId { get; set; }
+        public long? EmployeeId { get; set; }
 
         [JsonProperty("status")]
-        public long Status { get; set; }
+        public long? Status { get; set; }
 
         [JsonProperty("start_date")]
         public System.DateTimeOffset StartDate { get; set; }
@@ -238,19 +238,19 @@ namespace AmSpaceModels
         public System.DateTimeOffset UpdatedAt { get; set; }
 
         [JsonProperty("domain")]
-        public long Domain { get; set; }
+        public long? Domain { get; set; }
 
         [JsonProperty("user")]
-        public long User { get; set; }
+        public long? User { get; set; }
 
         [JsonProperty("level")]
-        public long Level { get; set; }
+        public long? Level { get; set; }
 
         [JsonProperty("position")]
-        public long Position { get; set; }
+        public long? Position { get; set; }
 
         [JsonProperty("manager")]
-        public long Manager { get; set; }
+        public long? Manager { get; set; }
 
         [JsonProperty("additional_approver")]
         public object AdditionalApprover { get; set; }
@@ -265,31 +265,31 @@ namespace AmSpaceModels
     public partial class Position
     {
         [JsonProperty("id")]
-        public long Id { get; set; }
+        public long? Id { get; set; }
 
         [JsonProperty("name")]
         public string Name { get; set; }
 
         [JsonProperty("position_id")]
-        public long PositionId { get; set; }
+        public long? PositionId { get; set; }
 
         [JsonProperty("is_active")]
-        public bool IsActive { get; set; }
+        public bool? IsActive { get; set; }
     }
 
     public partial class CountCertificates
     {
         [JsonProperty("internal")]
-        public long Internal { get; set; }
+        public long? Internal { get; set; }
 
         [JsonProperty("external")]
-        public long External { get; set; }
+        public long? External { get; set; }
     }
 
     public partial class EducationalInformation
     {
         [JsonProperty("id")]
-        public long Id { get; set; }
+        public long? Id { get; set; }
 
         [JsonProperty("school_name")]
         public string SchoolName { get; set; }
@@ -322,22 +322,22 @@ namespace AmSpaceModels
     public partial class Ternal
     {
         [JsonProperty("years")]
-        public long Years { get; set; }
+        public long? Years { get; set; }
 
         [JsonProperty("months")]
-        public long Months { get; set; }
+        public long? Months { get; set; }
     }
 
     public partial class Mobility
     {
         [JsonProperty("id")]
-        public long Id { get; set; }
+        public long? Id { get; set; }
 
         [JsonProperty("abroad_relocate")]
-        public bool AbroadRelocate { get; set; }
+        public bool? AbroadRelocate { get; set; }
 
         [JsonProperty("abroad_how_long")]
-        public long AbroadHowLong { get; set; }
+        public long? AbroadHowLong { get; set; }
 
         [JsonProperty("department")]
         public long[] Department { get; set; }
@@ -349,49 +349,49 @@ namespace AmSpaceModels
         public string AbroadPreferredCity { get; set; }
 
         [JsonProperty("country_relocate")]
-        public bool CountryRelocate { get; set; }
+        public bool? CountryRelocate { get; set; }
 
         [JsonProperty("country_how_long")]
-        public long CountryHowLong { get; set; }
+        public long? CountryHowLong { get; set; }
 
         [JsonProperty("country_preferred_city")]
         public string CountryPreferredCity { get; set; }
 
         [JsonProperty("change_brand")]
-        public bool ChangeBrand { get; set; }
+        public bool? ChangeBrand { get; set; }
 
         [JsonProperty("change_department")]
-        public bool ChangeDepartment { get; set; }
+        public bool? ChangeDepartment { get; set; }
     }
 
     public partial class Scopes
     {
         [JsonProperty("can_manage_learning")]
-        public bool CanManageLearning { get; set; }
+        public bool? CanManageLearning { get; set; }
 
         [JsonProperty("can_manage_performance")]
-        public bool CanManagePerformance { get; set; }
+        public bool? CanManagePerformance { get; set; }
 
         [JsonProperty("can_manage_helpdesk")]
-        public bool CanManageHelpdesk { get; set; }
+        public bool? CanManageHelpdesk { get; set; }
 
         [JsonProperty("can_manage_personal_development")]
-        public bool CanManagePersonalDevelopment { get; set; }
+        public bool? CanManagePersonalDevelopment { get; set; }
 
         [JsonProperty("can_manage_surveys")]
-        public bool CanManageSurveys { get; set; }
+        public bool? CanManageSurveys { get; set; }
 
         [JsonProperty("can_manage_succession")]
-        public bool CanManageSuccession { get; set; }
+        public bool? CanManageSuccession { get; set; }
 
         [JsonProperty("can_manage_reports")]
-        public bool CanManageReports { get; set; }
+        public bool? CanManageReports { get; set; }
 
         [JsonProperty("can_manage_statistics")]
-        public bool CanManageStatistics { get; set; }
+        public bool? CanManageStatistics { get; set; }
 
         [JsonProperty("can_manage_notifications")]
-        public bool CanManageNotifications { get; set; }
+        public bool? CanManageNotifications { get; set; }
     }
 
     public partial class SelectedContract
@@ -415,10 +415,10 @@ namespace AmSpaceModels
     public partial class SelectedContractManager
     {
         [JsonProperty("id")]
-        public long Id { get; set; }
+        public long? Id { get; set; }
 
         [JsonProperty("user_id")]
-        public long UserId { get; set; }
+        public long? UserId { get; set; }
 
         [JsonProperty("name")]
         public string Name { get; set; }
@@ -427,9 +427,9 @@ namespace AmSpaceModels
     public partial class SuccessorSummary
     {
         [JsonProperty("successors")]
-        public long Successors { get; set; }
+        public long? Successors { get; set; }
 
         [JsonProperty("chosen_for_succession")]
-        public long ChosenForSuccession { get; set; }
+        public long? ChosenForSuccession { get; set; }
     }
 }

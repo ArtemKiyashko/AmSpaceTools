@@ -82,8 +82,7 @@ namespace AmSpaceClient
 
         public async Task<BitmapSource> GetAvatarAsync(string link)
         {
-            var client = new HttpClient();
-            var result = await client.GetAsync(link);
+            var result = await AmSpaceHttpClient.GetAsync(link);
             var content = await result.Content.ReadAsByteArrayAsync();
             return (BitmapSource)new ImageSourceConverter().ConvertFrom(content);
         }
@@ -333,25 +332,12 @@ namespace AmSpaceClient
             return Task.CompletedTask;
         }
 
-        public Task<Profile> ProfileRequestAsync()
+        public async Task<Profile> ProfileRequestAsync()
         {
-            ContractDatum fakeContract = new ContractDatum
-            {
-                Position = new Position
-                {
-                    Name = "Fake Department"
-                }
-            };
-            ContractDatum[] fakeContractData = { fakeContract };
-
-            var result = new Profile
-            {
-                FirstName = "MyName",
-                LastName = "MySurname",
-                ContractData = fakeContractData,
-                Avatar = "https://pp.userapi.com/c637631/v637631947/5048d/vRj7_OW0f9U.jpg"
-            };
-            return Task.FromResult(result);
+            var result = AmSpaceHttpClient.GetAsync(_apiEndpoits.ProfileEndpoint, HttpCompletionOption.ResponseContentRead);
+            var stringResult = await result.Result.Content.ReadAsStringAsync();
+            var profile = JsonConvert.DeserializeObject<Profile>(stringResult);
+            return profile;
         }
 
         public Task UpdateActionAsync(UpdateAction model, long competencyId)
