@@ -1,0 +1,13 @@
+﻿[
+  {
+    "Name": "Test",
+    "ClientId": "o6V5rMReyX5t4AIfbMpZkYrY3G3wvGrKqnpprnbq",
+    "BaseAddress": "https://amspacetest.amrest.eu"
+  },
+  {
+    "Name": "Production",
+    "ClientId": "o6V5rMReyX5t4AIfbMpZkYrY3G3wvGrKqnpprnbq",
+    "BaseAddress": "https://amspace.amrest.eu"
+  }
+]
+

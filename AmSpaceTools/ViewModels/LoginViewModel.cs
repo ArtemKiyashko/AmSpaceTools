@@ -21,6 +21,8 @@ namespace AmSpaceTools.ViewModels
         private SecureString _password;
         private string _name;
         private IAmSpaceClient _client;
+        private IEnumerable<AmSpaceEnvironment> _environments;
+        private AmSpaceEnvironment _selectedEnvironment;
 
         public ICommand LoginCommand
         {
@@ -34,7 +36,19 @@ namespace AmSpaceTools.ViewModels
             }
         }
 
-        
+        public AmSpaceEnvironment SelectedEnvironment
+        {
+            get
+            {
+                if (_selectedEnvironment == null)
+                    _selectedEnvironment = Environments.FirstOrDefault();
+                return _selectedEnvironment;
+            }
+            set
+            {
+                _selectedEnvironment = value;
+            }
+        }
 
         public string Name
         {
@@ -47,9 +61,12 @@ namespace AmSpaceTools.ViewModels
             set { _password = value; }
         }
 
-        public LoginViewModel(IAmSpaceClient client)
+        public IEnumerable<AmSpaceEnvironment> Environments { get => _environments; set => _environments = value; }
+
+        public LoginViewModel(IAmSpaceClient client, IAmSpaceEnvironmentsProvider environmenProvider)
         {
             _client = client;
+            _environments = environmenProvider.Environments;
             LoginCommand = new RelayCommand(Login);
             IsLoading = false;
         }
@@ -61,14 +78,14 @@ namespace AmSpaceTools.ViewModels
             {
                 Password = passwordContainer.Password;
             }
-            if (string.IsNullOrEmpty(Name)) return;
+            if (string.IsNullOrEmpty(Name) || SelectedEnvironment == null) return;
             LoginRequest();
         }
 
         private async void LoginRequest()
         {
             IsLoading = true;
-            MainViewModel.IsLoggedIn = await _client.LoginRequestAsync(Name, Password);
+            MainViewModel.IsLoggedIn = await _client.LoginRequestAsync(Name, Password, new Uri(SelectedEnvironment.BaseAddress));
             if (!MainViewModel.IsLoggedIn) throw new Exception();
             MainViewModel.ProfileViewModel = Services.Container.GetInstance<ProfileViewModel>();
             var ipdTranslationViewModel = Services.Container.GetInstance<IdpTranslationsPreviewViewModel>();

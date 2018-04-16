@@ -47,6 +47,7 @@ namespace AmSpaceTools.Infrastructure
                 _.For<IExcelWorker<CompetencyActionDto>>().DecorateAllWith<ExcelWorkerDecorator<CompetencyActionDto>>();
                 _.For<ILog>().Use(a => LogManager.GetLogger(typeof(App)));
                 _.For<IMapper>().Use(a => new Mapper(_mapperConfiguration)).Singleton();
+                _.For<IAmSpaceEnvironmentsProvider>().Use<AmSpaceEnvironmentsProvider>().Singleton();
                 _.Scan(scanner => {
                     scanner.TheCallingAssembly();
                     scanner.WithDefaultConventions();
