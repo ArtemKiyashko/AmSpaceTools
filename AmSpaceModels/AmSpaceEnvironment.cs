@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace AmSpaceModels
 {
-    public class AmSpaceEnvironment
+    public class AmSpaceEnvironment : IAmSpaceEnvironment
     {
         public string Name { get; set; }
         public string ClientId { get; set; }
         public string BaseAddress { get; set; }
+        public string GrantPermissionType { get; set; }
     }
 }

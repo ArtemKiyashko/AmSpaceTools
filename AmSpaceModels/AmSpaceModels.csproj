@@ -49,6 +49,7 @@
     <Compile Include="Competency.cs" />
     <Compile Include="CompetencyAction.cs" />
     <Compile Include="CompetencyActionDto.cs" />
+    <Compile Include="IAmSpaceEnvironment.cs" />
     <Compile Include="IdpExcelColumn.cs" />
     <Compile Include="IdpAction.cs" />
     <Compile Include="IdpExcelRow.cs" />

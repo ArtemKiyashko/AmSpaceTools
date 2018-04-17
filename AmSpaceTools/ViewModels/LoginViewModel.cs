@@ -85,7 +85,7 @@ namespace AmSpaceTools.ViewModels
         private async void LoginRequest()
         {
             IsLoading = true;
-            MainViewModel.IsLoggedIn = await _client.LoginRequestAsync(Name, Password, new Uri(SelectedEnvironment.BaseAddress));
+            MainViewModel.IsLoggedIn = await _client.LoginRequestAsync(Name, Password, SelectedEnvironment);
             if (!MainViewModel.IsLoggedIn) throw new Exception();
             MainViewModel.ProfileViewModel = Services.Container.GetInstance<ProfileViewModel>();
             var ipdTranslationViewModel = Services.Container.GetInstance<IdpTranslationsPreviewViewModel>();
