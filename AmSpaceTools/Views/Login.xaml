@@ -48,7 +48,7 @@
         <ComboBox
             Grid.Row="4"
             Grid.Column="0"
-            DisplayMemberPath="Name"
+            Style="{StaticResource MaterialDesignFloatingHintComboBox}"
             materialDesign:HintAssist.Hint="Select environment"
             ItemsSource="{Binding Environments}"
             SelectedItem="{Binding SelectedEnvironment}">
@@ -57,6 +57,14 @@
                     <VirtualizingStackPanel />
                 </ItemsPanelTemplate>
             </ComboBox.ItemsPanel>
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel>
+                        <TextBlock Text="{Binding Name}"/>
+                        <TextBlock Text="{Binding BaseAddress}" Style="{StaticResource MaterialDesignCaptionTextBlock}"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
         </ComboBox>
         <Button
           x:Name="LoginButton"
