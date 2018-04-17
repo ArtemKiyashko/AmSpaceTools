@@ -24,7 +24,6 @@ namespace AmSpaceClient
         private string _grantPermissionType;
         private Uri _baseAddress;
         private ApiEndpoints _apiEndpoits;
-
         public HttpClient AmSpaceHttpClient { get; private set; }
         public string ClientId
         {
@@ -37,7 +36,6 @@ namespace AmSpaceClient
                 _clientId = value;
             }
         }
-
         public Uri BaseAddress
         {
             get
@@ -51,14 +49,38 @@ namespace AmSpaceClient
             }
         }
 
+        public LoginResult LoginResult
+        {
+            get
+            {
+                return _loginResult;
+            }
+            private set
+            {
+                _loginResult = value;
+            }
+        }
+
+        public CookieContainer CookieContainer
+        {
+            get
+            {
+                return _cookieContainer;
+            }
+            private set
+            {
+                _cookieContainer = value;
+            }
+        }
+
         public AmSpaceClient()
         {
-            _cookieContainer = new CookieContainer();
+            CookieContainer = new CookieContainer();
             _apiEndpoits = new ApiEndpoints();
 
             var handler = new HttpClientHandler()
             {
-                CookieContainer = _cookieContainer
+                CookieContainer = CookieContainer
             }; 
 
             AmSpaceHttpClient = new HttpClient(handler);
@@ -83,7 +105,7 @@ namespace AmSpaceClient
             var result = await AmSpaceHttpClient.PostAsync(_apiEndpoits.TokenEndpoint, content);
             if (result.StatusCode != HttpStatusCode.OK) return false;
             var resultContent = await result.Content.ReadAsStringAsync();
-            _loginResult = JsonConvert.DeserializeObject<LoginResult>(resultContent);
+            LoginResult = JsonConvert.DeserializeObject<LoginResult>(resultContent);
             AddAuthHeaders();
             AddAuthCookies();
             _isAthorized = true;
@@ -93,6 +115,8 @@ namespace AmSpaceClient
         public async Task<BitmapSource> GetAvatarAsync(string link)
         {
             var result = await AmSpaceHttpClient.GetAsync(link);
+            if (!result.IsSuccessStatusCode)
+                result = await AmSpaceHttpClient.GetAsync("/static/avatar.png");
             var content = await result.Content.ReadAsByteArrayAsync();
             return (BitmapSource)new ImageSourceConverter().ConvertFrom(content);
         }
@@ -357,12 +381,12 @@ namespace AmSpaceClient
 
         private void AddAuthHeaders()
         {
-            AmSpaceHttpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {_loginResult.AccessToken}");
+            AmSpaceHttpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {LoginResult.AccessToken}");
         }
 
         private void AddAuthCookies()
         {
-            _cookieContainer.Add(_baseAddress, new Cookie("accessToken", _loginResult.AccessToken));
+            CookieContainer.Add(_baseAddress, new Cookie("accessToken", LoginResult.AccessToken));
         }
     }
 }
