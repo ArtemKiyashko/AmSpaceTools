@@ -34,9 +34,12 @@ namespace AmSpaceTools.ViewModels
 
         private async void LogOut(object obj)
         {
-            await _client.LogoutRequestAsync();
+            IsLoading = true;
+            var result = await _client.LogoutRequestAsync();
+            if (!result) throw new Exception();
             MainViewModel.IsLoggedIn = false;
             HideMenu();
+            IsLoading = false;
         }
 
         protected async void SetUpAvatar()

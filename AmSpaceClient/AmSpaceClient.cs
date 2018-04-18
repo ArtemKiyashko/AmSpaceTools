@@ -24,18 +24,12 @@ namespace AmSpaceClient
         private string _grantPermissionType;
         private Uri _baseAddress;
         private ApiEndpoints _apiEndpoits;
-        public HttpClient AmSpaceHttpClient { get; private set; }
-        public string ClientId
-        {
-            get
-            {
-                return _clientId;
-            }
-            private set
-            {
-                _clientId = value;
-            }
-        }
+
+        public CookieContainer CookieContainer { get => _cookieContainer; private set => _cookieContainer = value; }
+        public bool IsAthorized { get => _isAthorized; private set => _isAthorized = value; }
+        public LoginResult LoginResult { get => _loginResult; private set => _loginResult = value; }
+        public string ClientId { get => _clientId; private set => _clientId = value; }
+        public string GrantPermissionType { get => _grantPermissionType; private set => _grantPermissionType = value; }
         public Uri BaseAddress
         {
             get
@@ -48,35 +42,14 @@ namespace AmSpaceClient
                 AmSpaceHttpClient.BaseAddress = value;
             }
         }
-
-        public LoginResult LoginResult
-        {
-            get
-            {
-                return _loginResult;
-            }
-            private set
-            {
-                _loginResult = value;
-            }
-        }
-
-        public CookieContainer CookieContainer
-        {
-            get
-            {
-                return _cookieContainer;
-            }
-            private set
-            {
-                _cookieContainer = value;
-            }
-        }
+        public ApiEndpoints Endpoints { get => _apiEndpoits; private set => _apiEndpoits = value; }
+        public HttpClient AmSpaceHttpClient { get; private set; }
+        
 
         public AmSpaceClient()
         {
             CookieContainer = new CookieContainer();
-            _apiEndpoits = new ApiEndpoints();
+            Endpoints = new ApiEndpoints();
 
             var handler = new HttpClientHandler()
             {
@@ -84,36 +57,36 @@ namespace AmSpaceClient
             }; 
 
             AmSpaceHttpClient = new HttpClient(handler);
-            AmSpaceHttpClient.BaseAddress = _baseAddress;
-            _isAthorized = false;
+            IsAthorized = false;
         }
         
         public async Task<bool> LoginRequestAsync(string userName, SecureString password, IAmSpaceEnvironment environment)
         {
-            if (_isAthorized) return true;
+            if (IsAthorized) return true;
             BaseAddress = new Uri(environment.BaseAddress);
             ClientId = environment.ClientId;
-            _grantPermissionType = environment.GrantPermissionType;
+            GrantPermissionType = environment.GrantPermissionType;
             var values = new Dictionary<string, string>
                 {
                     { "username", userName },
                     { "password", password.ToInsecureString() },
-                    { "grant_type", _grantPermissionType },
-                    { "client_id", _clientId }
+                    { "grant_type", GrantPermissionType },
+                    { "client_id", ClientId }
                 };
             var content = new FormUrlEncodedContent(values);
-            var result = await AmSpaceHttpClient.PostAsync(_apiEndpoits.TokenEndpoint, content);
+            var result = await AmSpaceHttpClient.PostAsync(Endpoints.TokenEndpoint, content);
             if (result.StatusCode != HttpStatusCode.OK) return false;
             var resultContent = await result.Content.ReadAsStringAsync();
             LoginResult = JsonConvert.DeserializeObject<LoginResult>(resultContent);
             AddAuthHeaders();
             AddAuthCookies();
-            _isAthorized = true;
+            IsAthorized = true;
             return true;
         }
 
         public async Task<BitmapSource> GetAvatarAsync(string link)
         {
+            if (!IsAthorized) throw new UnauthorizedAccessException();
             var result = await AmSpaceHttpClient.GetAsync(link);
             if (!result.IsSuccessStatusCode)
                 result = await AmSpaceHttpClient.GetAsync("/static/avatar.png");
@@ -338,40 +311,33 @@ namespace AmSpaceClient
             return Task.FromResult(result.FirstOrDefault(_ => _.Id == competencyId));
         }
 
-        public Task<IEnumerable<Level>> GetLevelsAsync()
+        public async Task<IEnumerable<Level>> GetLevelsAsync()
         {
-            IEnumerable<Level> result = new List<Level>
-            {
-                new Level
-                {
-                    Id = 1,
-                    Name = "1"
-                },
-                new Level
-                {
-                    Id = 2,
-                    Name = "2"
-                },
-                new Level
-                {
-                    Id = 3,
-                    Name = "3"
-                }
-            };
-            return Task.FromResult(result);
+            if (!IsAthorized) throw new UnauthorizedAccessException();
+            var result = await AmSpaceHttpClient.GetAsync(Endpoints.LevelsEndpoint);
+            var content = await result.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<IEnumerable<Level>>(content);
         }
 
-        public Task LogoutRequestAsync()
+        public async Task<bool> LogoutRequestAsync()
         {
-            return Task.CompletedTask;
+            if (!IsAthorized) return false;
+            var values = new Dictionary<string, string>()
+                {
+                    { "token", LoginResult.AccessToken },
+                    { "client_id", ClientId }
+                };
+            var content = new FormUrlEncodedContent(values);
+            var result = await AmSpaceHttpClient.PostAsync(Endpoints.LogoutEndpoint, content);
+            if (result.StatusCode != HttpStatusCode.OK) return false;
+            return true;
         }
 
         public async Task<Profile> ProfileRequestAsync()
         {
-            var result = AmSpaceHttpClient.GetAsync(_apiEndpoits.ProfileEndpoint, HttpCompletionOption.ResponseContentRead);
+            var result = AmSpaceHttpClient.GetAsync(Endpoints.ProfileEndpoint, HttpCompletionOption.ResponseContentRead);
             var stringResult = await result.Result.Content.ReadAsStringAsync();
-            var profile = JsonConvert.DeserializeObject<Profile>(stringResult);
-            return profile;
+            return JsonConvert.DeserializeObject<Profile>(stringResult);
         }
 
         public Task UpdateActionAsync(UpdateAction model, long competencyId)

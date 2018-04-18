@@ -17,7 +17,7 @@ namespace AmSpaceClient
         Task<IEnumerable<Level>> GetLevelsAsync();
         Task<CompetencyAction> GetCompetencyActionsAsync(long competencyId);
         Task UpdateActionAsync(UpdateAction model, long competencyId);
-        Task LogoutRequestAsync();
+        Task<bool> LogoutRequestAsync();
         Task<BitmapSource> GetAvatarAsync(string link);
     }
 }

@@ -12,7 +12,10 @@ namespace AmSpaceClient
         public string ProfileEndpoint { get; } = "/api/v1/profile/";
         public string CompetencyEndpoint { get; } = "/api/v1/search/idp/admin/";
         public string LevelsEndpoint { get; } = "/api/v1/organization/levels/";
-        public string CompetecyEndpoint { get; } = "/api/v1/idp/admin/public/plans/{0}/";
+        public string CompetecyActionEndpoint { get; } = "/api/v1/idp/admin/public/plans/{0}/";
         public string UpdateActionEndpoint { get; } = "/api/v1/idp/admin/public/plans/{0}/batch/";
+        public string LogoutEndpoint { get; } = "api/v1/o/revoke_token/";
+
+
     }
 }

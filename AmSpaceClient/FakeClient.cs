@@ -255,9 +255,9 @@ namespace AmSpaceClient
 
         public Task<bool> LoginRequestAsync(string userName, SecureString password, IAmSpaceEnvironment environment) => Task.FromResult(true);
 
-        public Task LogoutRequestAsync()
+        public async Task<bool> LogoutRequestAsync()
         {
-            return Task.CompletedTask;
+            return true;
         }
 
         public Task<Profile> ProfileRequestAsync()
