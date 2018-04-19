@@ -141,11 +141,11 @@ namespace AmSpaceClient
         public async Task<bool> UpdateActionAsync(UpdateAction model, long competencyId)
         {
             if (!IsAthorized) throw new UnauthorizedAccessException();
-            var endpoint = Endpoints.UpdateActionEndpoint.Replace("{0}", competencyId.ToString());
+            var endpoint = string.Format(Endpoints.UpdateActionEndpoint, competencyId.ToString());
             var stringContent = JsonConvert.SerializeObject(model);
             var httpcontent = new StringContent(stringContent);
             httpcontent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            var result = await AmSpaceHttpClient.PutAsync(Endpoints.TokenEndpoint, httpcontent);
+            var result = await AmSpaceHttpClient.PutAsync(endpoint, httpcontent);
             if (result.StatusCode != HttpStatusCode.OK) throw new Exception("something go wrong while updating Actions");
             return true;
         }

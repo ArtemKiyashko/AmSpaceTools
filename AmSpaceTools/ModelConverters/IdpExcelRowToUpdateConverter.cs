@@ -47,17 +47,17 @@ namespace AmSpaceTools.ModelConverters
                     }
                     switch (row.ActionPercentage)
                     {
-                        case 10:
-                            {
-                                target.FeedbackActions.Add(action);
-                                break;
-                            }
-                        case 20:
+                        case 0:
                             {
                                 target.TheoryActions.Add(action);
                                 break;
                             }
-                        case 70:
+                        case 1:
+                            {
+                                target.FeedbackActions.Add(action);
+                                break;
+                            }
+                        case 2:
                             {
                                 target.PracticeActions.Add(action);
                                 break;

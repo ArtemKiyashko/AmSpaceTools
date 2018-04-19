@@ -257,7 +257,7 @@ namespace AmSpaceClient
 
         public async Task<bool> LogoutRequestAsync()
         {
-            return true;
+            return await Task.FromResult(true);
         }
 
         public Task<Profile> ProfileRequestAsync()

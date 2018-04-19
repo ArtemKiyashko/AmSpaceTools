@@ -123,6 +123,7 @@ namespace AmSpaceTools.ViewModels
             var matchingActions = new HashSet<IdpExcelRow>();
             foreach (var competency in competencies)
             {
+                if (competency.ActionCount == 0) continue;
                 var compActions = await _client.GetCompetencyActionsAsync(competency.Id.Value);
                 DetermineMissingMatchingActions(missingActions, matchingActions, compActions);
                 foreach (var action in compActions.Actions)

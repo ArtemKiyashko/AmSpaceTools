@@ -20,17 +20,17 @@ namespace AmSpaceTools.ModelConverters
             {
                 switch (competencyAction.ActionType.Value)
                 {
-                    case 10:
-                        {
-                            result.FeedbackActions.Add(competencyAction);
-                            break;
-                        }
-                    case 20:
+                    case 0:
                         {
                             result.TheoryActions.Add(competencyAction);
                             break;
                         }
-                    case 70:
+                    case 1:
+                        {
+                            result.FeedbackActions.Add(competencyAction);
+                            break;
+                        }
+                    case 2:
                         {
                             result.PracticeActions.Add(competencyAction);
                             break;
