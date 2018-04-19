@@ -23,7 +23,7 @@ namespace AmSpaceTools.Infrastructure
             get
             {
                 return new MapperConfiguration(cfg => {
-                    cfg.CreateMap<IEnumerable<CompetencyActionViewModel>, IEnumerable<CompetencyActionDto>>().ConvertUsing(new CompetencyActionConverter());
+                    cfg.CreateMap<IEnumerable<IdpExcelRow>, IEnumerable<CompetencyActionDto>>().ConvertUsing(new CompetencyActionConverter());
                     cfg.CreateMap<IEnumerable<CompetencyAction>, IEnumerable<UpdateAction>>().ConvertUsing(new CompetencyActionsToUpdateConverter());
                     cfg.CreateMap<IEnumerable<IdpExcelRow>, IEnumerable<UpdateAction>>().ConvertUsing(new IdpExcelRowToUpdateConverter());
                     cfg.CreateMap<CompetencyAction, UpdateAction>().ConvertUsing(new ActionToUpdateConverter());
@@ -44,8 +44,8 @@ namespace AmSpaceTools.Infrastructure
                 _.For<IAmSpaceClient>().Use<AmSpaceClient.AmSpaceClient>().Singleton();
                 _.For<MainWindowViewModel>().Use<MainWindowViewModel>().Singleton();
                 _.For<ProfileViewModel>().Use<ProfileViewModel>().Singleton();
-                _.For<IExcelWorker<CompetencyActionDto>>().Use<AmSpaceExcelWorker<CompetencyActionDto>>().Transient();
-                _.For<IExcelWorker<CompetencyActionDto>>().DecorateAllWith<ExcelWorkerDecorator<CompetencyActionDto>>();
+                _.For<IExcelWorker>().Use<AmSpaceExcelWorker>().Transient();
+                _.For<IExcelWorker>().DecorateAllWith<ExcelWorkerDecorator>();
                 _.For<ILog>().Use(a => LogManager.GetLogger(typeof(App)));
                 _.For<IMapper>().Use(a => new Mapper(_mapperConfiguration)).Singleton();
                 _.For<IAmSpaceEnvironmentsProvider>().Use<AmSpaceEnvironmentsProvider>().Singleton();

@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AmSpaceExcelWorker.cs" />
+    <Compile Include="EpplusExtensions.cs" />
     <Compile Include="IExcelWorker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
