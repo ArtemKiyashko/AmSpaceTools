@@ -123,7 +123,7 @@ namespace AmSpaceTools.ViewModels
             var matchingActions = new HashSet<IdpExcelRow>();
             foreach (var competency in competencies)
             {
-                var compActions = await _client.GetCompetencyActionsAsync(competency.Id);
+                var compActions = await _client.GetCompetencyActionsAsync(competency.Id.Value);
                 DetermineMissingMatchingActions(missingActions, matchingActions, compActions);
                 foreach (var action in compActions.Actions)
                 {
@@ -133,7 +133,8 @@ namespace AmSpaceTools.ViewModels
                         action.Translations.UpsertTranslation(translation);
                 }
                 var transformedActions = _mapper.Map<UpdateAction>(compActions);
-                await _client.UpdateActionAsync(transformedActions, competency.Id);
+                var result = await _client.UpdateActionAsync(transformedActions, competency.Id.Value);
+                if (!result) throw new Exception("Upload not complete");
             }
             SaveUploadResults(missingActions, matchingActions);
             IsLoading = false;

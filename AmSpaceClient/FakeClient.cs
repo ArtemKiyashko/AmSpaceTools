@@ -253,11 +253,11 @@ namespace AmSpaceClient
             return Task.FromResult(result);
         }
 
-        public Task<bool> LoginRequestAsync(string userName, SecureString password) => Task.FromResult(true);
+        public Task<bool> LoginRequestAsync(string userName, SecureString password, IAmSpaceEnvironment environment) => Task.FromResult(true);
 
-        public Task LogoutRequestAsync()
+        public async Task<bool> LogoutRequestAsync()
         {
-            return Task.CompletedTask;
+            return true;
         }
 
         public Task<Profile> ProfileRequestAsync()
@@ -280,9 +280,9 @@ namespace AmSpaceClient
             return Task.FromResult(result);
         }
 
-        public Task UpdateActionAsync(UpdateAction model, long competencyId)
+        public Task<bool> UpdateActionAsync(UpdateAction model, long competencyId)
         {
-            return Task.CompletedTask;
+            return Task.FromResult(true);
         }
 
         public async Task<BitmapSource> GetAvatarAsync(string link)

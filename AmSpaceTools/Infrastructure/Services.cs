@@ -40,13 +40,15 @@ namespace AmSpaceTools.Infrastructure
         static Services()
         {
             _container = new Container(_ => {
-                _.For<IAmSpaceClient>().Use<AmSpaceClient.FakeClient>().Singleton();
+                
+                _.For<IAmSpaceClient>().Use<AmSpaceClient.AmSpaceClient>().Singleton();
                 _.For<MainWindowViewModel>().Use<MainWindowViewModel>().Singleton();
                 _.For<ProfileViewModel>().Use<ProfileViewModel>().Singleton();
                 _.For<IExcelWorker>().Use<AmSpaceExcelWorker>().Transient();
                 _.For<IExcelWorker>().DecorateAllWith<ExcelWorkerDecorator>();
                 _.For<ILog>().Use(a => LogManager.GetLogger(typeof(App)));
                 _.For<IMapper>().Use(a => new Mapper(_mapperConfiguration)).Singleton();
+                _.For<IAmSpaceEnvironmentsProvider>().Use<AmSpaceEnvironmentsProvider>().Singleton();
                 _.Scan(scanner => {
                     scanner.TheCallingAssembly();
                     scanner.WithDefaultConventions();
