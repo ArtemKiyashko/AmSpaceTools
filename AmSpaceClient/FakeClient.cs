@@ -280,9 +280,9 @@ namespace AmSpaceClient
             return Task.FromResult(result);
         }
 
-        public Task UpdateActionAsync(UpdateAction model, long competencyId)
+        public Task<bool> UpdateActionAsync(UpdateAction model, long competencyId)
         {
-            return Task.CompletedTask;
+            return Task.FromResult(true);
         }
 
         public async Task<BitmapSource> GetAvatarAsync(string link)

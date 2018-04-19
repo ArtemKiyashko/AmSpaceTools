@@ -10,7 +10,7 @@ namespace AmSpaceModels
     public partial class CompetencyPager
     {
         [JsonProperty("count")]
-        public long Count { get; set; }
+        public long? Count { get; set; }
 
         [JsonProperty("next")]
         public string Next { get; set; }
@@ -25,25 +25,25 @@ namespace AmSpaceModels
     public partial class Competency
     {
         [JsonProperty("id")]
-        public long Id { get; set; }
+        public long? Id { get; set; }
 
         [JsonProperty("name")]
         public string Name { get; set; }
 
         [JsonProperty("plan_type")]
-        public long PlanType { get; set; }
+        public long? PlanType { get; set; }
 
         [JsonProperty("is_active")]
-        public bool IsActive { get; set; }
+        public bool? IsActive { get; set; }
 
         [JsonProperty("level_id")]
-        public long LevelId { get; set; }
+        public long? LevelId { get; set; }
 
         [JsonProperty("action_count")]
-        public long ActionCount { get; set; }
+        public long? ActionCount { get; set; }
 
         [JsonProperty("goal_count")]
-        public long GoalCount { get; set; }
+        public long? GoalCount { get; set; }
 
         [JsonProperty("translations")]
         public List<Translation> Translations { get; set; }

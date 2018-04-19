@@ -112,7 +112,7 @@ namespace AmSpaceTools.ViewModels
             var levels = await _client.GetLevelsAsync();
             foreach (var competency in competencies)
             {
-                var compActions = await _client.GetCompetencyActionsAsync(competency.Id);
+                var compActions = await _client.GetCompetencyActionsAsync(competency.Id.Value);
                 foreach (var action in compActions.Actions)
                 {
                     var translationKey = AllRows.FirstOrDefault(_ => _.ActionSourceDescription == action.Name);
@@ -135,7 +135,8 @@ namespace AmSpaceTools.ViewModels
                     }
                 }
                 var transformedActions = _mapper.Map<UpdateAction>(compActions);
-                await _client.UpdateActionAsync(transformedActions, competency.Id);
+                var result = await _client.UpdateActionAsync(transformedActions, competency.Id.Value);
+                if (!result) throw new Exception("Upload not complete");
             }
             IsLoading = false;
         }

@@ -16,6 +16,6 @@ namespace AmSpaceModels
         public string Name { get; set; }
 
         [JsonProperty("group_type")]
-        public long GroupType { get; set; }
+        public long? GroupType { get; set; }
     }
 }

@@ -19,7 +19,7 @@ namespace AmSpaceModels
         public ActionType PlanType { get; set; }
 
         [JsonProperty("level")]
-        public long LevelId { get; set; }
+        public long? LevelId { get; set; }
 
         [JsonProperty("goals")]
         public List<object> Goals { get; set; }
@@ -28,13 +28,13 @@ namespace AmSpaceModels
         public List<IdpAction> Actions { get; set; }
 
         [JsonProperty("theory_actions_count")]
-        public long TheoryActionsCount { get; set; }
+        public long? TheoryActionsCount { get; set; }
 
         [JsonProperty("feedback_actions_count")]
-        public long FeedbackActionsCount { get; set; }
+        public long? FeedbackActionsCount { get; set; }
 
         [JsonProperty("practice_actions_count")]
-        public long PracticeActionsCount { get; set; }
+        public long? PracticeActionsCount { get; set; }
 
         [JsonProperty("translations")]
         public List<Translation> Translations { get; set; }

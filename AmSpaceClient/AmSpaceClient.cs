@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Security;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,19 +18,13 @@ namespace AmSpaceClient
 {
     public class AmSpaceClient : IAmSpaceClient
     {
-        private CookieContainer _cookieContainer;
-        private bool _isAthorized;
-        private LoginResult _loginResult;
-        private string _clientId;
-        private string _grantPermissionType;
         private Uri _baseAddress;
-        private ApiEndpoints _apiEndpoits;
 
-        public CookieContainer CookieContainer { get => _cookieContainer; private set => _cookieContainer = value; }
-        public bool IsAthorized { get => _isAthorized; private set => _isAthorized = value; }
-        public LoginResult LoginResult { get => _loginResult; private set => _loginResult = value; }
-        public string ClientId { get => _clientId; private set => _clientId = value; }
-        public string GrantPermissionType { get => _grantPermissionType; private set => _grantPermissionType = value; }
+        public CookieContainer CookieContainer { get; private set; }
+        public bool IsAthorized { get; private set; }
+        public LoginResult LoginResult { get; private set; }
+        public string ClientId { get; private set; }
+        public string GrantPermissionType { get; private set; }
         public Uri BaseAddress
         {
             get
@@ -42,10 +37,9 @@ namespace AmSpaceClient
                 AmSpaceHttpClient.BaseAddress = value;
             }
         }
-        public ApiEndpoints Endpoints { get => _apiEndpoits; private set => _apiEndpoits = value; }
+        public ApiEndpoints Endpoints { get; private set; }
         public HttpClient AmSpaceHttpClient { get; private set; }
         
-
         public AmSpaceClient()
         {
             CookieContainer = new CookieContainer();
@@ -94,227 +88,31 @@ namespace AmSpaceClient
             return (BitmapSource)new ImageSourceConverter().ConvertFrom(content);
         }
 
-        public Task<IEnumerable<Competency>> GetCompetenciesAsync()
+        public async Task<IEnumerable<Competency>> GetCompetenciesAsync()
         {
-            IEnumerable<Competency> result = new List<Competency>
-            {
-                new Competency
-                {
-                    Id = 1,
-                    Name = "Decision Making",
-                    LevelId = 1
-                },
-                new Competency
-                {
-                    Id = 2,
-                    Name = "Decision Making",
-                    LevelId = 2
-                },
-                new Competency
-                {
-                    Id = 3,
-                    Name = "Communication",
-                    LevelId = 3
-                }
-            };
-            return Task.FromResult(result);
+            if (!IsAthorized) throw new UnauthorizedAccessException();
+            var result = await AmSpaceHttpClient.GetAsync(Endpoints.CompetencyEndpoint);
+            if (!result.IsSuccessStatusCode) throw new Exception("something go wrong while getting Competencies");
+            var content = await result.Content.ReadAsStringAsync();
+            var resullt = JsonConvert.DeserializeObject<CompetencyPager>(content);
+            return resullt.Results;
         }
 
-        public Task<CompetencyAction> GetCompetencyActionsAsync(long competencyId)
+        public async Task<CompetencyAction> GetCompetencyActionsAsync(long competencyId)
         {
-            IEnumerable<CompetencyAction> result = new List<CompetencyAction>
-            {
-                new CompetencyAction
-                {
-                    Id = 1,
-                    Name = "Decision Making",
-                    LevelId = 1,
-                    Actions = new List<IdpAction>
-                    {
-                        new IdpAction
-                        {
-                            Id = 1,
-                            Name = "make deciscion dude",
-                            ActionType = new ActionType
-                            {
-                                Value = 10,
-                                DisplayName = "10%"
-                            },
-                            Translations = new List<Translation>
-                            {
-                                new Translation
-                                {
-                                    Id = 1,
-                                    Name = "make deciscion dude",
-                                    Language = "en-us"
-                                },
-                                new Translation
-                                {
-                                    Id = 2,
-                                    Name = "something in Polish",
-                                    Language = "pl-pl"
-                                }
-                            }
-                        },
-                        new IdpAction
-                        {
-                            Id = 2,
-                            Name = "make deciscion dude again",
-                            ActionType = new ActionType
-                            {
-                                Value = 20,
-                                DisplayName = "20%"
-                            },
-                            Translations = new List<Translation>
-                            {
-                                new Translation
-                                {
-                                    Id = 3,
-                                    Name = "make deciscion dude",
-                                    Language = "en-us"
-                                },
-                                new Translation
-                                {
-                                    Id = 4,
-                                    Name = "something in Polish",
-                                    Language = "pl-pl"
-                                }
-                            }
-                        }
-                    }
-                },
-                new CompetencyAction
-                {
-                    Id = 2,
-                    Name = "Decision Making",
-                    LevelId = 2,
-                    Actions = new List<IdpAction>
-                    {
-                        new IdpAction
-                        {
-                            Id = 3,
-                            Name = "Analysis the problem in terms of: a) how things are (expected standards vs current situation) b) how I want things to be – what do you expected?",
-                            ActionType = new ActionType
-                            {
-                                Value = 70,
-                                DisplayName = "70%"
-                            },
-                            Translations = new List<Translation>
-                            {
-                                new Translation
-                                {
-                                    Id = 5,
-                                    Name = "Analysis the problem in terms of: a) how things are (expected standards vs current situation) b) how I want things to be – what do you expected?",
-                                    Language = "en"
-                                },
-                                new Translation
-                                {
-                                    Id = 51,
-                                    Name = "2Przeanalizuj problem uwzględniając następujące aspekty: a) jak wygląda sytuacja (rzeczywistość kontra oczekiwany standard) b) jak chciałbyś, żeby wyglądała – czego oczekujesz?",
-                                    Language = "pl"
-                                },
-                                new Translation
-                                {
-                                    Id = 52,
-                                    Name = "Анализирайте проблема, като вземете предвид следните аспекти: а) каква е ситуацията (реалност спрямо очаквания стандарт) б) как бихте искали да изглежда ситуацията - какво очаквате?",
-                                    Language = "bg"
-                                }
-                            }
-                        },
-                        new IdpAction
-                        {
-                            Id = 4,
-                            Name = "make deciscion dude again",
-                            ActionType = new ActionType
-                            {
-                                Value = 20,
-                                DisplayName = "20%"
-                            },
-                            Translations = new List<Translation>
-                            {
-                                new Translation
-                                {
-                                    Id = 7,
-                                    Name = "make deciscion dude",
-                                    Language = "en-us"
-                                },
-                                new Translation
-                                {
-                                    Id = 8,
-                                    Name = "something in Polish",
-                                    Language = "pl-pl"
-                                }
-                            }
-                        }
-                    }
-                },
-                new CompetencyAction
-                {
-                    Id = 3,
-                    Name = "Communication",
-                    LevelId = 3,
-                    Actions = new List<IdpAction>
-                    {
-                        new IdpAction
-                        {
-                            Id = 5,
-                            Name = "make deciscion dude",
-                            ActionType = new ActionType
-                            {
-                                Value = 10,
-                                DisplayName = "10%"
-                            },
-                            Translations = new List<Translation>
-                            {
-                                new Translation
-                                {
-                                    Id = 9,
-                                    Name = "make deciscion dude",
-                                    Language = "en-us"
-                                },
-                                new Translation
-                                {
-                                    Id = 10,
-                                    Name = "something in Polish",
-                                    Language = "pl-pl"
-                                }
-                            }
-                        },
-                        new IdpAction
-                        {
-                            Id = 6,
-                            Name = "make deciscion dude again",
-                            ActionType = new ActionType
-                            {
-                                Value = 20,
-                                DisplayName = "20%"
-                            },
-                            Translations = new List<Translation>
-                            {
-                                new Translation
-                                {
-                                    Id = 11,
-                                    Name = "make deciscion dude",
-                                    Language = "en-us"
-                                },
-                                new Translation
-                                {
-                                    Id = 12,
-                                    Name = "something in Polish",
-                                    Language = "pl-pl"
-                                }
-                            }
-                        }
-                    }
-                }
-            };
-            return Task.FromResult(result.FirstOrDefault(_ => _.Id == competencyId));
+            if (!IsAthorized) throw new UnauthorizedAccessException();
+            var endpoint = Endpoints.CompetecyActionEndpoint.Replace("{0}", competencyId.ToString());
+            var result = await AmSpaceHttpClient.GetAsync(endpoint);
+            if (!result.IsSuccessStatusCode) throw new Exception("something go wrong while getting Compenetcy Actions");
+            var content = await result.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<CompetencyAction>(content);
         }
 
         public async Task<IEnumerable<Level>> GetLevelsAsync()
         {
             if (!IsAthorized) throw new UnauthorizedAccessException();
             var result = await AmSpaceHttpClient.GetAsync(Endpoints.LevelsEndpoint);
+            if (!result.IsSuccessStatusCode) throw new Exception("something go wrong while getting levels");
             var content = await result.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<IEnumerable<Level>>(content);
         }
@@ -340,9 +138,16 @@ namespace AmSpaceClient
             return JsonConvert.DeserializeObject<Profile>(stringResult);
         }
 
-        public Task UpdateActionAsync(UpdateAction model, long competencyId)
+        public async Task<bool> UpdateActionAsync(UpdateAction model, long competencyId)
         {
-            return Task.CompletedTask;
+            if (!IsAthorized) throw new UnauthorizedAccessException();
+            var endpoint = Endpoints.UpdateActionEndpoint.Replace("{0}", competencyId.ToString());
+            var stringContent = JsonConvert.SerializeObject(model);
+            var httpcontent = new StringContent(stringContent);
+            httpcontent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            var result = await AmSpaceHttpClient.PutAsync(Endpoints.TokenEndpoint, httpcontent);
+            if (result.StatusCode != HttpStatusCode.OK) throw new Exception("something go wrong while updating Actions");
+            return true;
         }
 
         private void AddAuthHeaders()
