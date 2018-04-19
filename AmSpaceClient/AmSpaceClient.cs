@@ -94,8 +94,17 @@ namespace AmSpaceClient
             var result = await AmSpaceHttpClient.GetAsync(Endpoints.CompetencyEndpoint);
             if (!result.IsSuccessStatusCode) throw new Exception("something go wrong while getting Competencies");
             var content = await result.Content.ReadAsStringAsync();
-            var resullt = JsonConvert.DeserializeObject<CompetencyPager>(content);
-            return resullt.Results;
+            var pager = JsonConvert.DeserializeObject<CompetencyPager>(content);
+            var allComps = new List<Competency>();
+            allComps.AddRange(pager.Results);
+            while (!string.IsNullOrEmpty(pager.Next))
+            {
+                result = await AmSpaceHttpClient.GetAsync(pager.Next);
+                content = await result.Content.ReadAsStringAsync();
+                pager = JsonConvert.DeserializeObject<CompetencyPager>(content);
+                allComps.AddRange(pager.Results);
+            }
+            return allComps;
         }
 
         public async Task<CompetencyAction> GetCompetencyActionsAsync(long competencyId)
@@ -142,7 +151,10 @@ namespace AmSpaceClient
         {
             if (!IsAthorized) throw new UnauthorizedAccessException();
             var endpoint = string.Format(Endpoints.UpdateActionEndpoint, competencyId.ToString());
-            var stringContent = JsonConvert.SerializeObject(model);
+            var stringContent = JsonConvert.SerializeObject(model, Formatting.None, new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            });
             var httpcontent = new StringContent(stringContent);
             httpcontent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             var result = await AmSpaceHttpClient.PutAsync(endpoint, httpcontent);

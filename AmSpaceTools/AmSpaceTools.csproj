@@ -82,6 +82,7 @@
     <Compile Include="Infrastructure\ColumnDefinitionError.cs" />
     <Compile Include="Infrastructure\CsvLogAppender.cs" />
     <Compile Include="Infrastructure\IAmSpaceEnvironmentsProvider.cs" />
+    <Compile Include="Infrastructure\ExcelRowEqualityComparer.cs" />
     <Compile Include="Infrastructure\IHavePassword.cs" />
     <Compile Include="Infrastructure\BoolToVisibilityConverter.cs" />
     <Compile Include="Infrastructure\ListExtensions.cs" />

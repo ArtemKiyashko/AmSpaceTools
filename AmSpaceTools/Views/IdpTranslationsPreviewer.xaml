@@ -69,7 +69,7 @@
                     ToolTip="Open translations">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon
-                        Kind="File"
+                        Kind="FileExcel"
                         Height="24"
                         Width="24" />
                 </StackPanel>

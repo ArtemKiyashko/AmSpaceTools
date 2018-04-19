@@ -119,31 +119,29 @@ namespace AmSpaceTools.ViewModels
         {
             IsLoading = true;
             var competencies = await _client.GetCompetenciesAsync();
-            var missingActions = new HashSet<IdpExcelRow>();
-            var matchingActions = new HashSet<IdpExcelRow>();
+            var allAmSpaceActions = new List<IdpAction>();
             foreach (var competency in competencies)
             {
                 if (competency.ActionCount == 0) continue;
                 var compActions = await _client.GetCompetencyActionsAsync(competency.Id.Value);
-                DetermineMissingMatchingActions(missingActions, matchingActions, compActions);
+                allAmSpaceActions.AddRange(compActions.Actions);
                 foreach (var action in compActions.Actions)
                 {
                     var translationKey = AllRows.FirstOrDefault(_ => _.ActionSourceDescription == action.Name);
                     if (translationKey == null) continue;
-                    foreach (var translation in translationKey.Translations)
+                    foreach (var translation in translationKey.Translations.Where(_ => !string.IsNullOrEmpty(_.Name)))
                         action.Translations.UpsertTranslation(translation);
                 }
                 var transformedActions = _mapper.Map<UpdateAction>(compActions);
                 var result = await _client.UpdateActionAsync(transformedActions, competency.Id.Value);
-                if (!result) throw new Exception("Upload not complete");
             }
-            SaveUploadResults(missingActions, matchingActions);
+            DetermineMissingMatchingActions(allAmSpaceActions);
             IsLoading = false;
         }
 
-        private void DetermineMissingMatchingActions(HashSet<IdpExcelRow> missingActions, HashSet<IdpExcelRow> matchingActions, CompetencyAction compActions)
+        private void DetermineMissingMatchingActions(IEnumerable<IdpAction> compActions)
         {
-            var foundActions = from ca in compActions.Actions
+            var foundActions = from ca in compActions
                                join rows in AllRows on ca.Name equals rows.ActionSourceDescription
                                select new IdpExcelRow
                                {
@@ -152,8 +150,7 @@ namespace AmSpaceTools.ViewModels
                                    ActionPercentage = rows.ActionPercentage,
                                    ActionSourceDescription = rows.ActionSourceDescription
                                };
-            matchingActions.UnionWith(foundActions);
-            missingActions.UnionWith(AllRows.Except(foundActions));
+            SaveUploadResults(AllRows.Except(foundActions, new ExcelRowEqualityComparer()), foundActions);
         }
 
         protected void SaveUploadResults(IEnumerable<IdpExcelRow> missingActions, IEnumerable<IdpExcelRow> matchingActions)
