@@ -120,6 +120,7 @@ namespace AmSpaceTools.ViewModels
             IsLoading = true;
             var competencies = await _client.GetCompetenciesAsync();
             var allAmSpaceActions = new List<IdpAction>();
+            var uniqueActions = AllRows.NormalizeTranslations();
             foreach (var competency in competencies)
             {
                 if (competency.ActionCount == 0) continue;
@@ -127,9 +128,9 @@ namespace AmSpaceTools.ViewModels
                 allAmSpaceActions.AddRange(compActions.Actions);
                 foreach (var action in compActions.Actions)
                 {
-                    var translationKey = AllRows.FirstOrDefault(_ => _.ActionSourceDescription == action.Name);
-                    if (translationKey == null) continue;
-                    foreach (var translation in translationKey.Translations.Where(_ => !string.IsNullOrEmpty(_.Name)))
+                    if (!uniqueActions.ContainsKey(action.Name)) continue;
+                    var translationKey = uniqueActions[action.Name];
+                    foreach (var translation in translationKey)
                         action.Translations.UpsertTranslation(translation);
                 }
                 var transformedActions = _mapper.Map<UpdateAction>(compActions);

@@ -25,5 +25,30 @@ namespace AmSpaceTools.Infrastructure
                 oldTranslation.Name = newTranslation.Name;
             }
         }
+
+        public static Dictionary<string, List<Translation>> NormalizeTranslations(this IEnumerable<IdpExcelRow> source)
+        {
+            var uniqueActions = source.ToLookup(x => x.ActionSourceDescription, e => e.Translations);
+            var shrinkedDictionary = new Dictionary<string, List<Translation>>();
+            foreach (var group in uniqueActions.Where(_ => !string.IsNullOrEmpty(_.Key)))
+            {
+                var translations = group.SelectMany(_ => _);
+                foreach (var translation in translations.Where(_ => !string.IsNullOrEmpty(_.Name)).GroupBy(_ => _.Language))
+                {
+                    var longestTranslation = translation.Aggregate(new Translation { Name = "" }, (max, cur) => max.Name.Length > cur.Name.Length ? max : cur);
+                    if (shrinkedDictionary.ContainsKey(group.Key))
+                    {
+                        shrinkedDictionary[group.Key].Add(longestTranslation);
+                    }
+                    else
+                    {
+                        var list = new List<Translation>();
+                        list.Add(longestTranslation);
+                        shrinkedDictionary.Add(group.Key, list);
+                    }
+                }
+            }
+            return shrinkedDictionary;
+        }
     }
 }
