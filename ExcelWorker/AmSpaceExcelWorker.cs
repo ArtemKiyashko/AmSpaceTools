@@ -13,7 +13,7 @@ namespace ExcelWorker
     {
         public IEnumerable<IdpExcelColumn> GetColumnDataPreview(string fileName, int rowLimit)
         {
-            using (var file = new FileStream(fileName, FileMode.Open))
+            using (var file = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             using (var excel = new ExcelPackage(file))
             {
                 var result = new List<IdpExcelColumn>();
@@ -36,7 +36,7 @@ namespace ExcelWorker
 
         public IEnumerable<IdpExcelRow> GetAllRows(string fileName, IEnumerable<IdpExcelColumn> columnDefinitions, bool ignoreFirstRow = true)
         {
-            using (var file = new FileStream(fileName, FileMode.Open))
+            using (var file = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             using (var excel = new ExcelPackage(file))
             {
                 var result = new List<IdpExcelRow>();
