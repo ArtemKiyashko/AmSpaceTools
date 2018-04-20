@@ -43,7 +43,6 @@ namespace AmSpaceTools.Infrastructure
                 
                 _.For<IAmSpaceClient>().Use<AmSpaceClient.AmSpaceClient>().Singleton();
                 _.For<MainWindowViewModel>().Use<MainWindowViewModel>().Singleton();
-                _.For<ProfileViewModel>().Use<ProfileViewModel>().Singleton();
                 _.For<IExcelWorker>().Use<AmSpaceExcelWorker>().Transient();
                 _.For<IExcelWorker>().DecorateAllWith<ExcelWorkerDecorator>();
                 _.For<ILog>().Use(a => LogManager.GetLogger(typeof(App)));

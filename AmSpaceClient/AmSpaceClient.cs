@@ -18,32 +18,17 @@ namespace AmSpaceClient
 {
     public class AmSpaceClient : IAmSpaceClient
     {
-        private Uri _baseAddress;
-
         public CookieContainer CookieContainer { get; private set; }
         public bool IsAthorized { get; private set; }
         public LoginResult LoginResult { get; private set; }
         public string ClientId { get; private set; }
         public string GrantPermissionType { get; private set; }
-        public Uri BaseAddress
-        {
-            get
-            {
-                return _baseAddress;
-            }
-            private set
-            {
-                _baseAddress = value;
-                AmSpaceHttpClient.BaseAddress = value;
-            }
-        }
         public ApiEndpoints Endpoints { get; private set; }
         public HttpClient AmSpaceHttpClient { get; private set; }
         
         public AmSpaceClient()
         {
             CookieContainer = new CookieContainer();
-            Endpoints = new ApiEndpoints();
 
             var handler = new HttpClientHandler()
             {
@@ -57,7 +42,7 @@ namespace AmSpaceClient
         public async Task<bool> LoginRequestAsync(string userName, SecureString password, IAmSpaceEnvironment environment)
         {
             if (IsAthorized) return true;
-            BaseAddress = new Uri(environment.BaseAddress);
+            Endpoints = new ApiEndpoints(environment.BaseAddress);
             ClientId = environment.ClientId;
             GrantPermissionType = environment.GrantPermissionType;
             var values = new Dictionary<string, string>
@@ -83,7 +68,7 @@ namespace AmSpaceClient
             if (!IsAthorized) throw new UnauthorizedAccessException();
             var result = await AmSpaceHttpClient.GetAsync(link);
             if (!result.IsSuccessStatusCode)
-                result = await AmSpaceHttpClient.GetAsync("/static/avatar.png");
+                result = await AmSpaceHttpClient.GetAsync($"{Endpoints.BaseAddress}/static/avatar.png");
             var content = await result.Content.ReadAsByteArrayAsync();
             return (BitmapSource)new ImageSourceConverter().ConvertFrom(content);
         }
@@ -110,7 +95,7 @@ namespace AmSpaceClient
         public async Task<CompetencyAction> GetCompetencyActionsAsync(long competencyId)
         {
             if (!IsAthorized) throw new UnauthorizedAccessException();
-            var endpoint = Endpoints.CompetecyActionEndpoint.Replace("{0}", competencyId.ToString());
+            var endpoint = string.Format(Endpoints.CompetecyActionEndpoint, competencyId.ToString());
             var result = await AmSpaceHttpClient.GetAsync(endpoint);
             if (!result.IsSuccessStatusCode) throw new Exception("something go wrong while getting Compenetcy Actions");
             var content = await result.Content.ReadAsStringAsync();
@@ -137,6 +122,7 @@ namespace AmSpaceClient
             var content = new FormUrlEncodedContent(values);
             var result = await AmSpaceHttpClient.PostAsync(Endpoints.LogoutEndpoint, content);
             if (result.StatusCode != HttpStatusCode.OK) return false;
+            IsAthorized = false;
             return true;
         }
 
@@ -164,12 +150,12 @@ namespace AmSpaceClient
 
         private void AddAuthHeaders()
         {
-            AmSpaceHttpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {LoginResult.AccessToken}");
+            AmSpaceHttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", LoginResult.AccessToken);
         }
 
         private void AddAuthCookies()
         {
-            CookieContainer.Add(_baseAddress, new Cookie("accessToken", LoginResult.AccessToken));
+            CookieContainer.Add(new Uri(Endpoints.BaseAddress), new Cookie("accessToken", LoginResult.AccessToken));
         }
     }
 }
