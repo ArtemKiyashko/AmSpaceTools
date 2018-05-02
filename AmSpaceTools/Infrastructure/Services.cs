@@ -1,4 +1,11 @@
 ﻿using AmSpaceClient;
+using AmSpaceModels;
+using AmSpaceTools.Decorators;
+using AmSpaceTools.ModelConverters;
+using AmSpaceTools.ViewModels;
+using AutoMapper;
+using ExcelWorker;
+using log4net;
 using StructureMap;
 using System;
 using System.Collections.Generic;
@@ -11,6 +18,18 @@ namespace AmSpaceTools.Infrastructure
     public static class Services
     {
         private static Container _container;
+        private static IConfigurationProvider _mapperConfiguration
+        {
+            get
+            {
+                return new MapperConfiguration(cfg => {
+                    cfg.CreateMap<IEnumerable<IdpExcelRow>, IEnumerable<CompetencyActionDto>>().ConvertUsing(new CompetencyActionConverter());
+                    cfg.CreateMap<IEnumerable<CompetencyAction>, IEnumerable<UpdateAction>>().ConvertUsing(new CompetencyActionsToUpdateConverter());
+                    cfg.CreateMap<IEnumerable<IdpExcelRow>, IEnumerable<UpdateAction>>().ConvertUsing(new IdpExcelRowToUpdateConverter());
+                    cfg.CreateMap<CompetencyAction, UpdateAction>().ConvertUsing(new ActionToUpdateConverter());
+                });
+            }
+        }
         public static Container Container
         {
             get
@@ -21,7 +40,18 @@ namespace AmSpaceTools.Infrastructure
         static Services()
         {
             _container = new Container(_ => {
+                
                 _.For<IAmSpaceClient>().Use<AmSpaceClient.AmSpaceClient>().Singleton();
+                _.For<MainWindowViewModel>().Use<MainWindowViewModel>().Singleton();
+                _.For<IExcelWorker>().Use<AmSpaceExcelWorker>().Transient();
+                _.For<IExcelWorker>().DecorateAllWith<ExcelWorkerDecorator>();
+                _.For<ILog>().Use(a => LogManager.GetLogger(typeof(App)));
+                _.For<IMapper>().Use(a => new Mapper(_mapperConfiguration)).Singleton();
+                _.For<IAmSpaceEnvironmentsProvider>().Use<AmSpaceEnvironmentsProvider>().Singleton();
+                _.Scan(scanner => {
+                    scanner.TheCallingAssembly();
+                    scanner.WithDefaultConventions();
+                });
             });
         }
     }

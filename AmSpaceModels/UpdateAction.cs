@@ -10,12 +10,12 @@ namespace AmSpaceModels
     public partial class UpdateAction
     {
         [JsonProperty("theory_actions")]
-        public List<Action> TheoryActions { get; set; }
+        public List<IdpAction> TheoryActions { get; set; }
 
         [JsonProperty("feedback_actions")]
-        public List<Action> FeedbackActions { get; set; }
+        public List<IdpAction> FeedbackActions { get; set; }
 
         [JsonProperty("practice_actions")]
-        public List<Action> PracticeActions { get; set; }
+        public List<IdpAction> PracticeActions { get; set; }
     }
 }

@@ -5,16 +5,19 @@ using System.Linq;
 using System.Security;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 
 namespace AmSpaceClient
 {
     public interface IAmSpaceClient
     {
-        Task<bool> LoginRequestAsync(string userName, SecureString password);
+        Task<bool> LoginRequestAsync(string userName, SecureString password, IAmSpaceEnvironment environment);
         Task<Profile> ProfileRequestAsync();
-        Task<IEnumerable<Competency>> GetCompetenciesAsync(List<Competency> competencies, string pageUrl);
+        Task<IEnumerable<Competency>> GetCompetenciesAsync();
         Task<IEnumerable<Level>> GetLevelsAsync();
-        Task<IEnumerable<CompetencyAction>> GetCompetencyActionsAsync();
-        Task UpdateActionAsync(UpdateAction model, long competencyId);
+        Task<CompetencyAction> GetCompetencyActionsAsync(long competencyId);
+        Task<bool> UpdateActionAsync(UpdateAction model, long competencyId);
+        Task<bool> LogoutRequestAsync();
+        Task<BitmapSource> GetAvatarAsync(string link);
     }
 }
