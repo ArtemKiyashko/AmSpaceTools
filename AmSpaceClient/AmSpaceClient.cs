@@ -157,5 +157,35 @@ namespace AmSpaceClient
         {
             CookieContainer.Add(new Uri(Endpoints.BaseAddress), new Cookie("accessToken", LoginResult.AccessToken));
         }
+
+        public Task<IEnumerable<SapDomain>> GetOrganizationStructureAsync(int rootMpk)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<SapUser>> GetUnitUsersAsync(int unitMpk)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> PutUserAsync(SapUser user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> PutDomainAsync(SapDomain domain)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> DisableUserAsync(SapUser user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> DisableDomainAsync(SapDomain domain)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

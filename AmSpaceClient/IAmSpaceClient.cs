@@ -19,5 +19,11 @@ namespace AmSpaceClient
         Task<bool> UpdateActionAsync(UpdateAction model, long competencyId);
         Task<bool> LogoutRequestAsync();
         Task<BitmapSource> GetAvatarAsync(string link);
+        Task<IEnumerable<SapDomain>> GetOrganizationStructureAsync(int rootMpk);
+        Task<IEnumerable<SapUser>> GetUnitUsersAsync(int unitMpk);
+        Task<bool> PutUserAsync(SapUser user);
+        Task<bool> PutDomainAsync(SapDomain domain);
+        Task<bool> DisableUserAsync(SapUser user);
+        Task<bool> DisableDomainAsync(SapDomain domain);
     }
 }

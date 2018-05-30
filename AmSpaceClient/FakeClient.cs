@@ -292,5 +292,134 @@ namespace AmSpaceClient
             var content = await result.Content.ReadAsByteArrayAsync();
             return (BitmapSource)new ImageSourceConverter().ConvertFrom(content);
         }
+
+        public Task<IEnumerable<SapDomain>> GetOrganizationStructureAsync(int rootMpk)
+        {
+            IEnumerable<SapDomain> result = new List<SapDomain>()
+            {
+                new SapDomain()
+                {
+                    Name = "Wock and Roll",
+                    DomainId = 1,
+                    ParentDomainId = null,
+                    Mpk = 1,
+                    Status = true
+                },
+                new SapDomain()
+                {
+                    Name = "District 1",
+                    DomainId = 2,
+                    ParentDomainId = 1,
+                    Mpk = 2,
+                    Status = true
+                },
+                new SapDomain()
+                {
+                    Name = "Region 1",
+                    DomainId = 3,
+                    ParentDomainId = 2,
+                    Mpk = 3,
+                    Status = true
+                },
+                new SapDomain()
+                {
+                    Name = "Restaurant 1",
+                    DomainId = 4,
+                    ParentDomainId = 3,
+                    Mpk = 4,
+                    Status = true
+                },
+                new SapDomain()
+                {
+                    Name = "Restaurant 2",
+                    DomainId = 5,
+                    ParentDomainId = 3,
+                    Mpk = 5,
+                    Status = true
+                },
+                new SapDomain()
+                {
+                    Name = "Restaurant 3",
+                    DomainId = 6,
+                    ParentDomainId = null,
+                    Mpk = 6,
+                    Status = false
+                }
+            };
+            return Task.FromResult(result);
+        }
+
+        public Task<IEnumerable<SapUser>> GetUnitUsersAsync(int unitMpk)
+        {
+            IEnumerable<SapUser> result = new List<SapUser>()
+            {
+                new SapUser()
+                {
+                    Hash = "fake_hash1",
+                    FirstName = "Jan",
+                    LastName = "Kovalski",
+                    MainEmployeeId = 1,
+                    EmployeeId = 1,
+                    StartDate = "2077-07-07",
+                    Status = 3,
+                    DomainId = unitMpk,
+                    PositionId = 1,
+                    PositionName = "worker 4000",
+                    ManagerEmployeeId = null,
+                    CountryCode = "RU"
+                },
+                new SapUser()
+                {
+                    Hash = "fake_hash2",
+                    FirstName = "Emma",
+                    LastName = "Watson",
+                    MainEmployeeId = 2,
+                    EmployeeId = 2,
+                    StartDate = "2777-07-07",
+                    Status = 3,
+                    DomainId = unitMpk,
+                    PositionId = 1,
+                    PositionName = "worker 4000",
+                    ManagerEmployeeId = 1,
+                    CountryCode = "RU"
+                },
+                new SapUser()
+                {
+                    Hash = "fake_hash2",
+                    FirstName = "Harry",
+                    LastName = "Potter",
+                    MainEmployeeId = 3,
+                    EmployeeId = 3,
+                    StartDate = "7777-07-07",
+                    Status = 0,
+                    DomainId = unitMpk,
+                    PositionId = 1,
+                    PositionName = "worker 4000",
+                    ManagerEmployeeId = 1,
+                    CountryCode = "RU"
+                }
+            };
+            return Task.FromResult(result);
+        }
+
+        public Task<bool> PutUserAsync(SapUser user)
+        {
+            return Task.FromResult(true);
+        }
+
+        public Task<bool> PutDomainAsync(SapDomain domain)
+        {
+            return Task.FromResult(true);
+        }
+
+        public Task<bool> DisableUserAsync(SapUser user)
+        {
+            return Task.FromResult(true);
+        }
+
+        public Task<bool> DisableDomainAsync(SapDomain domain)
+        {
+            return Task.FromResult(true);
+        }
     }
 }

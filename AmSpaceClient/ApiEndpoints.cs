@@ -15,6 +15,8 @@ namespace AmSpaceClient
         public string CompetecyActionEndpoint { get { return string.Format("{0}/api/v1/idp/admin/public/plans/{{0}}/", BaseAddress); } }
         public string UpdateActionEndpoint { get { return string.Format("{0}/api/v1/idp/admin/public/plans/{{0}}/batch/", BaseAddress); } }
         public string LogoutEndpoint { get { return $"{BaseAddress}/api/v1/o/revoke_token/"; } }
+        public string UserEndpoint { get { return $"{BaseAddress}/api/v1/sap/sync/user/"; } }
+        public string DomainEndpoint { get { return $"{BaseAddress}/api/v1/sap/sync/domain/"; } }
 
         public string BaseAddress { get; private set; }
 
