@@ -260,7 +260,7 @@ namespace AmSpaceClient
             return await Task.FromResult(true);
         }
 
-        public Task<Profile> ProfileRequestAsync()
+        public Task<Profile> ProfileRequestAsync(int? profileId = null)
         {
             ContractDatum fakeContract = new ContractDatum{
                 Position = new Position
@@ -293,110 +293,73 @@ namespace AmSpaceClient
             return (BitmapSource)new ImageSourceConverter().ConvertFrom(content);
         }
 
-        public Task<IEnumerable<SapDomain>> GetOrganizationStructureAsync(int rootMpk)
+        public Task<AmspaceDomain> GetOrganizationStructureAsync(int rootDomainId)
         {
-            IEnumerable<SapDomain> result = new List<SapDomain>()
+            AmspaceDomain result = new AmspaceDomain
             {
-                new SapDomain()
+                Name = "Wock and Roll",
+                Id = 1,
+                Children = new List<AmspaceDomain>
                 {
-                    Name = "Wock and Roll",
-                    DomainId = 1,
-                    ParentDomainId = null,
-                    Mpk = 1,
-                    Status = true
-                },
-                new SapDomain()
-                {
-                    Name = "District 1",
-                    DomainId = 2,
-                    ParentDomainId = 1,
-                    Mpk = 2,
-                    Status = true
-                },
-                new SapDomain()
-                {
-                    Name = "Region 1",
-                    DomainId = 3,
-                    ParentDomainId = 2,
-                    Mpk = 3,
-                    Status = true
-                },
-                new SapDomain()
-                {
-                    Name = "Restaurant 1",
-                    DomainId = 4,
-                    ParentDomainId = 3,
-                    Mpk = 4,
-                    Status = true
-                },
-                new SapDomain()
-                {
-                    Name = "Restaurant 2",
-                    DomainId = 5,
-                    ParentDomainId = 3,
-                    Mpk = 5,
-                    Status = true
-                },
-                new SapDomain()
-                {
-                    Name = "Restaurant 3",
-                    DomainId = 6,
-                    ParentDomainId = null,
-                    Mpk = 6,
-                    Status = false
+                    new AmspaceDomain
+                    {
+                        Name = "District 1",
+                        Id = 2,
+                        Children = new List<AmspaceDomain>
+                        {
+                            new AmspaceDomain
+                            {
+                                Name = "Region 1",
+                                Id = 3,
+                                Children = new List<AmspaceDomain>
+                                {
+                                    new AmspaceDomain
+                                    {
+                                        Name = "Restaurant 1",
+                                        Id = 4,
+                                        Children = new List<AmspaceDomain>
+                                        {
+                                            new AmspaceDomain
+                                            {
+                                                Name = "Restaurant 2",
+                                                Id = 5,
+                                                Children = null
+                                            },
+                                            new AmspaceDomain
+                                            {
+                                                Name = "Restaurant 3",
+                                                Id = 6,
+                                                Children = null
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             };
             return Task.FromResult(result);
         }
 
-        public Task<IEnumerable<SapUser>> GetUnitUsersAsync(int unitMpk)
+        public Task<IEnumerable<AmspaceUser>> GetDomainUsersAsync(int domainId)
         {
-            IEnumerable<SapUser> result = new List<SapUser>()
+            IEnumerable<AmspaceUser> result = new List<AmspaceUser>()
             {
-                new SapUser()
+                new AmspaceUser
                 {
-                    Hash = "fake_hash1",
-                    FirstName = "Jan",
-                    LastName = "Kovalski",
-                    MainEmployeeId = 1,
-                    EmployeeId = 1,
-                    StartDate = "2077-07-07",
-                    Status = 3,
-                    DomainId = unitMpk,
-                    PositionId = 1,
-                    PositionName = "worker 4000",
-                    ManagerEmployeeId = null,
-                    CountryCode = "RU"
+                    Id = 1,
+                    Name = "Jan Kovalski"
                 },
-                new SapUser()
+                new AmspaceUser()
                 {
-                    Hash = "fake_hash2",
-                    FirstName = "Emma",
-                    LastName = "Watson",
-                    MainEmployeeId = 2,
-                    EmployeeId = 2,
-                    StartDate = "2777-07-07",
-                    Status = 3,
-                    DomainId = unitMpk,
-                    PositionId = 1,
-                    PositionName = "worker 4000",
-                    ManagerEmployeeId = 1,
-                    CountryCode = "RU"
+                    Id = 2,
+                    Name = "Emma Watson"
                 },
-                new SapUser()
+                new AmspaceUser
                 {
-                    Hash = "fake_hash2",
-                    FirstName = "Harry",
-                    LastName = "Potter",
-                    MainEmployeeId = 3,
-                    EmployeeId = 3,
-                    StartDate = "7777-07-07",
-                    Status = 0,
-                    DomainId = unitMpk,
-                    PositionId = 1,
-                    PositionName = "worker 4000",
-                    ManagerEmployeeId = 1,
-                    CountryCode = "RU"
+                    Id = 3,
+                    Name = "Harry Potter"
                 }
             };
             return Task.FromResult(result);
@@ -421,5 +384,6 @@ namespace AmSpaceClient
         {
             return Task.FromResult(true);
         }
+
     }
 }

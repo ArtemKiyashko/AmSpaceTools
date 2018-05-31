@@ -38,7 +38,17 @@ namespace AmSpaceClient
             AmSpaceHttpClient = new HttpClient(handler);
             IsAthorized = false;
         }
-        
+
+        private void AddAuthHeaders()
+        {
+            AmSpaceHttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", LoginResult.AccessToken);
+        }
+
+        private void AddAuthCookies()
+        {
+            CookieContainer.Add(new Uri(Endpoints.BaseAddress), new Cookie("accessToken", LoginResult.AccessToken));
+        }
+
         public async Task<bool> LoginRequestAsync(string userName, SecureString password, IAmSpaceEnvironment environment)
         {
             if (IsAthorized) return true;
@@ -126,9 +136,10 @@ namespace AmSpaceClient
             return true;
         }
 
-        public async Task<Profile> ProfileRequestAsync()
+        public async Task<Profile> ProfileRequestAsync(int? profileId = null)
         {
-            var result = AmSpaceHttpClient.GetAsync(Endpoints.ProfileEndpoint, HttpCompletionOption.ResponseContentRead);
+            var endpoint = Endpoints.ProfileEndpoint + (profileId.HasValue ? profileId.Value.ToString() : "");
+            var result = AmSpaceHttpClient.GetAsync(endpoint, HttpCompletionOption.ResponseContentRead);
             var stringResult = await result.Result.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<Profile>(stringResult);
         }
@@ -148,29 +159,44 @@ namespace AmSpaceClient
             return true;
         }
 
-        private void AddAuthHeaders()
+        public async Task<AmspaceDomain> GetOrganizationStructureAsync(int rootDomainId)
         {
-            AmSpaceHttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", LoginResult.AccessToken);
+            return JsonConvert.DeserializeObject<AmspaceDomain>(await GetAsyncWrapper(Endpoints.DomainNodesEndpoint + rootDomainId, "domain nodes"));
         }
 
-        private void AddAuthCookies()
+        public async Task<IEnumerable<AmspaceUser>> GetDomainUsersAsync(int domainId)
         {
-            CookieContainer.Add(new Uri(Endpoints.BaseAddress), new Cookie("accessToken", LoginResult.AccessToken));
+            return JsonConvert.DeserializeObject<IEnumerable<AmspaceUser>>(await GetAsyncWrapper(Endpoints.UsersInDomainEndpoint + domainId, "user list"));
         }
 
-        public Task<IEnumerable<SapDomain>> GetOrganizationStructureAsync(int rootMpk)
+        public async Task<bool> PutUserAsync(SapUser user)
         {
-            throw new NotImplementedException();
-        }
+            var randomN = new Random().Next(DateTime.Now.Millisecond);
+            SapUser fake = new SapUser
+            {
+                Hash = "fake_" + randomN,
+                FirstName = "fake" + randomN,
+                LastName = "fakeSurname" + randomN,
+                MainEmployeeId = randomN,
+                EmployeeId = randomN,
+                StartDate = DateTime.Now.ToString(),
+                Status = 3,
+                DomainId = 86219,
+                PositionId = 1,
+                PositionName = "worker4000",
+                CountryCode = "RU"
+            };
 
-        public Task<IEnumerable<SapUser>> GetUnitUsersAsync(int unitMpk)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> PutUserAsync(SapUser user)
-        {
-            throw new NotImplementedException();
+            if (!IsAthorized) throw new UnauthorizedAccessException();
+            var stringContent = JsonConvert.SerializeObject(fake, Formatting.None, new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            });
+            var httpcontent = new StringContent(stringContent);
+            httpcontent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            var result = await AmSpaceHttpClient.PutAsync(Endpoints.UserSapEndpoint, httpcontent);
+            if (result.StatusCode != HttpStatusCode.OK) throw new Exception("something go wrong while updating user profile");
+            return true;
         }
 
         public Task<bool> PutDomainAsync(SapDomain domain)
@@ -186,6 +212,14 @@ namespace AmSpaceClient
         public Task<bool> DisableDomainAsync(SapDomain domain)
         {
             throw new NotImplementedException();
+        }
+
+        private async Task<string> GetAsyncWrapper(string endpoint, string errorSource)
+        {
+            if (!IsAthorized) throw new UnauthorizedAccessException();
+            var result = await AmSpaceHttpClient.GetAsync(endpoint);
+            if (!result.IsSuccessStatusCode) throw new Exception($"something go wrong while getting {errorSource}");
+            return await result.Content.ReadAsStringAsync();
         }
     }
 }

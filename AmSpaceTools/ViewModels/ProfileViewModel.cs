@@ -29,7 +29,11 @@ namespace AmSpaceTools.ViewModels
             Name = $"{_profile.FirstName} {_profile.LastName}";
             JobTitle = _profile.ContractData.FirstOrDefault().Position.Name;
             SetUpAvatar();
+            var asd = _client.PutUserAsync(new SapUser());
             LogoutCommand = new RelayCommand(LogOut);
+            //  test client methods
+            var users = _client.GetDomainUsersAsync(11498);
+            //  var domains = _client.GetOrganizationStructureAsync(185994);
         }
 
         private async void LogOut(object obj)
