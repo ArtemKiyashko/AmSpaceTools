@@ -293,7 +293,7 @@ namespace AmSpaceClient
             return (BitmapSource)new ImageSourceConverter().ConvertFrom(content);
         }
 
-        public Task<AmspaceDomain> GetOrganizationStructureAsync(int rootDomainId)
+        public Task<AmspaceDomain> GetOrganizationStructureAsync()
         {
             AmspaceDomain result = new AmspaceDomain
             {
@@ -375,12 +375,7 @@ namespace AmSpaceClient
             return Task.FromResult(true);
         }
 
-        public Task<bool> DisableUserAsync(SapUser user)
-        {
-            return Task.FromResult(true);
-        }
-
-        public Task<bool> DisableDomainAsync(SapDomain domain)
+        public Task<bool> DisableUserAsync(SapUserDelete user)
         {
             return Task.FromResult(true);
         }

@@ -19,11 +19,21 @@ namespace AmSpaceClient
         Task<bool> UpdateActionAsync(UpdateAction model, long competencyId);
         Task<bool> LogoutRequestAsync();
         Task<BitmapSource> GetAvatarAsync(string link);
-        Task<AmspaceDomain> GetOrganizationStructureAsync(int rootDomainId);
+        Task<AmspaceDomain> GetOrganizationStructureAsync();
         Task<IEnumerable<AmspaceUser>> GetDomainUsersAsync(int domainId);
+        /// <summary>
+        /// Allows only Create and Update users
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns>True in case of successful request</returns>
         Task<bool> PutUserAsync(SapUser user);
+        /// <summary>
+        /// Enables all changes to Domains: Create, Update and Disable Domains. To deactivate Domain,
+        /// set "Status" prop false and "ParentDomainId" to null
+        /// </summary>
+        /// <param name="domain"></param>
+        /// <returns>True in case of successful request</returns>
         Task<bool> PutDomainAsync(SapDomain domain);
-        Task<bool> DisableUserAsync(SapUser user);
-        Task<bool> DisableDomainAsync(SapDomain domain);
+        Task<bool> DisableUserAsync(SapUserDelete userToDelete);
     }
 }

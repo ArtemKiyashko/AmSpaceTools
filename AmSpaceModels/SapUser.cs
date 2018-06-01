@@ -7,6 +7,25 @@ using System.Threading.Tasks;
 
 namespace AmSpaceModels
 {
+    public class SapUserDelete
+    {
+        [JsonProperty("employee_id")]
+        public int EmployeeId { get; set; }
+
+        [JsonProperty("date")]
+        public string Date { get; set; }
+
+        [JsonProperty("status")]
+        public int Status { get; set; }
+
+        public SapUserDelete(int employeeId)
+        {
+            EmployeeId = employeeId;
+            Date = DateTime.Today.ToShortDateString();
+            Status = 0;
+        }
+    }
+
     public class SapUser
     {
 

@@ -85,18 +85,12 @@ namespace AmSpaceClient
 
         public async Task<IEnumerable<Competency>> GetCompetenciesAsync()
         {
-            if (!IsAthorized) throw new UnauthorizedAccessException();
-            var result = await AmSpaceHttpClient.GetAsync(Endpoints.CompetencyEndpoint);
-            if (!result.IsSuccessStatusCode) throw new Exception("something go wrong while getting Competencies");
-            var content = await result.Content.ReadAsStringAsync();
-            var pager = JsonConvert.DeserializeObject<CompetencyPager>(content);
+            var pager = await GetAsyncWrapper<CompetencyPager>(Endpoints.CompetencyEndpoint, "Competencies");
             var allComps = new List<Competency>();
             allComps.AddRange(pager.Results);
             while (!string.IsNullOrEmpty(pager.Next))
             {
-                result = await AmSpaceHttpClient.GetAsync(pager.Next);
-                content = await result.Content.ReadAsStringAsync();
-                pager = JsonConvert.DeserializeObject<CompetencyPager>(content);
+                pager = await GetAsyncWrapper<CompetencyPager>(pager.Next, "Competencies");
                 allComps.AddRange(pager.Results);
             }
             return allComps;
@@ -104,21 +98,12 @@ namespace AmSpaceClient
 
         public async Task<CompetencyAction> GetCompetencyActionsAsync(long competencyId)
         {
-            if (!IsAthorized) throw new UnauthorizedAccessException();
-            var endpoint = string.Format(Endpoints.CompetecyActionEndpoint, competencyId.ToString());
-            var result = await AmSpaceHttpClient.GetAsync(endpoint);
-            if (!result.IsSuccessStatusCode) throw new Exception("something go wrong while getting Compenetcy Actions");
-            var content = await result.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<CompetencyAction>(content);
+            return await GetAsyncWrapper<CompetencyAction>(string.Format(Endpoints.CompetecyActionEndpoint, competencyId.ToString()), "Compenetcy Actions");
         }
 
         public async Task<IEnumerable<Level>> GetLevelsAsync()
         {
-            if (!IsAthorized) throw new UnauthorizedAccessException();
-            var result = await AmSpaceHttpClient.GetAsync(Endpoints.LevelsEndpoint);
-            if (!result.IsSuccessStatusCode) throw new Exception("something go wrong while getting levels");
-            var content = await result.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<IEnumerable<Level>>(content);
+            return await GetAsyncWrapper<IEnumerable<Level>>(Endpoints.LevelsEndpoint, "levels");
         }
 
         public async Task<bool> LogoutRequestAsync()
@@ -146,8 +131,44 @@ namespace AmSpaceClient
 
         public async Task<bool> UpdateActionAsync(UpdateAction model, long competencyId)
         {
-            if (!IsAthorized) throw new UnauthorizedAccessException();
             var endpoint = string.Format(Endpoints.UpdateActionEndpoint, competencyId.ToString());
+            return await PutAsyncWrapper(model, endpoint);
+        }
+
+        public async Task<AmspaceDomain> GetOrganizationStructureAsync()
+        {
+            return await GetAsyncWrapper<AmspaceDomain>(Endpoints.DomainNodesEndpoint, "domain nodes");
+        }
+
+        public async Task<IEnumerable<AmspaceUser>> GetDomainUsersAsync(int domainId)
+        {
+            return await GetAsyncWrapper<IEnumerable<AmspaceUser>>(Endpoints.UsersInDomainEndpoint + domainId, "user list");
+        }
+
+        public async Task<bool> PutUserAsync(SapUser user)
+        {
+            return await PutAsyncWrapper(user, Endpoints.UserSapEndpoint);
+        }
+
+        public async Task<bool> PutDomainAsync(SapDomain domain)
+        {
+            return await PutAsyncWrapper(domain, Endpoints.DomainSapEndpoint);
+        }
+
+        public async Task<bool> DisableUserAsync(SapUserDelete user)
+        {
+            return await DeleteAsyncWrapper(user, Endpoints.UserSapEndpoint);
+        }
+
+        private async Task<T> GetAsyncWrapper<T>(string endpoint, string errorSource)
+        {
+            var result = await AmSpaceHttpClient.GetAsync(endpoint);
+            if (!result.IsSuccessStatusCode) throw new Exception($"something go wrong while getting {errorSource}");
+            return JsonConvert.DeserializeObject<T>(await result.Content.ReadAsStringAsync());
+        }
+
+        private async Task<bool> PutAsyncWrapper<T>(T model, string endpoint)
+        {
             var stringContent = JsonConvert.SerializeObject(model, Formatting.None, new JsonSerializerSettings
             {
                 NullValueHandling = NullValueHandling.Ignore
@@ -155,71 +176,26 @@ namespace AmSpaceClient
             var httpcontent = new StringContent(stringContent);
             httpcontent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             var result = await AmSpaceHttpClient.PutAsync(endpoint, httpcontent);
-            if (result.StatusCode != HttpStatusCode.OK) throw new Exception("something go wrong while updating Actions");
+            if (result.StatusCode != HttpStatusCode.OK || result.StatusCode != HttpStatusCode.Created) return false;
             return true;
         }
 
-        public async Task<AmspaceDomain> GetOrganizationStructureAsync(int rootDomainId)
+        private async Task<bool> DeleteAsyncWrapper<T>(T model, string endpoint)
         {
-            return JsonConvert.DeserializeObject<AmspaceDomain>(await GetAsyncWrapper(Endpoints.DomainNodesEndpoint + rootDomainId, "domain nodes"));
-        }
-
-        public async Task<IEnumerable<AmspaceUser>> GetDomainUsersAsync(int domainId)
-        {
-            return JsonConvert.DeserializeObject<IEnumerable<AmspaceUser>>(await GetAsyncWrapper(Endpoints.UsersInDomainEndpoint + domainId, "user list"));
-        }
-
-        public async Task<bool> PutUserAsync(SapUser user)
-        {
-            var randomN = new Random().Next(DateTime.Now.Millisecond);
-            SapUser fake = new SapUser
+            var request = new HttpRequestMessage
             {
-                Hash = "fake_" + randomN,
-                FirstName = "fake" + randomN,
-                LastName = "fakeSurname" + randomN,
-                MainEmployeeId = randomN,
-                EmployeeId = randomN,
-                StartDate = DateTime.Now.ToString(),
-                Status = 3,
-                DomainId = 86219,
-                PositionId = 1,
-                PositionName = "worker4000",
-                CountryCode = "RU"
+                Method = HttpMethod.Delete,
+                RequestUri = new Uri(endpoint),
+                Content = new StringContent(JsonConvert.SerializeObject(model, Formatting.None, new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore
+                }))
             };
+            request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            var result = await AmSpaceHttpClient.SendAsync(request);
 
-            if (!IsAthorized) throw new UnauthorizedAccessException();
-            var stringContent = JsonConvert.SerializeObject(fake, Formatting.None, new JsonSerializerSettings
-            {
-                NullValueHandling = NullValueHandling.Ignore
-            });
-            var httpcontent = new StringContent(stringContent);
-            httpcontent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            var result = await AmSpaceHttpClient.PutAsync(Endpoints.UserSapEndpoint, httpcontent);
-            if (result.StatusCode != HttpStatusCode.OK) throw new Exception("something go wrong while updating user profile");
+            if (result.StatusCode != HttpStatusCode.NoContent) return false;
             return true;
-        }
-
-        public Task<bool> PutDomainAsync(SapDomain domain)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> DisableUserAsync(SapUser user)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> DisableDomainAsync(SapDomain domain)
-        {
-            throw new NotImplementedException();
-        }
-
-        private async Task<string> GetAsyncWrapper(string endpoint, string errorSource)
-        {
-            if (!IsAthorized) throw new UnauthorizedAccessException();
-            var result = await AmSpaceHttpClient.GetAsync(endpoint);
-            if (!result.IsSuccessStatusCode) throw new Exception($"something go wrong while getting {errorSource}");
-            return await result.Content.ReadAsStringAsync();
         }
     }
 }
