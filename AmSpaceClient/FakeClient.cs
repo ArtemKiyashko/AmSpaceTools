@@ -293,43 +293,46 @@ namespace AmSpaceClient
             return (BitmapSource)new ImageSourceConverter().ConvertFrom(content);
         }
 
-        public Task<AmspaceDomain> GetOrganizationStructureAsync()
+        public Task<IEnumerable<AmspaceDomain>> GetOrganizationStructureAsync()
         {
-            AmspaceDomain result = new AmspaceDomain
+            IEnumerable<AmspaceDomain> result = new List<AmspaceDomain>
             {
-                Name = "Wock and Roll",
-                Id = 1,
-                Children = new List<AmspaceDomain>
+                new AmspaceDomain
                 {
-                    new AmspaceDomain
+                    Name = "Wock and Roll",
+                    Id = 1,
+                    Children = new List<AmspaceDomain>
                     {
-                        Name = "District 1",
-                        Id = 2,
-                        Children = new List<AmspaceDomain>
+                        new AmspaceDomain
                         {
-                            new AmspaceDomain
+                            Name = "District 1",
+                            Id = 2,
+                            Children = new List<AmspaceDomain>
                             {
-                                Name = "Region 1",
-                                Id = 3,
-                                Children = new List<AmspaceDomain>
+                                new AmspaceDomain
                                 {
-                                    new AmspaceDomain
+                                    Name = "Region 1",
+                                    Id = 3,
+                                    Children = new List<AmspaceDomain>
                                     {
-                                        Name = "Restaurant 1",
-                                        Id = 4,
-                                        Children = new List<AmspaceDomain>
+                                        new AmspaceDomain
                                         {
-                                            new AmspaceDomain
+                                            Name = "Restaurant 1",
+                                            Id = 4,
+                                            Children = new List<AmspaceDomain>
                                             {
-                                                Name = "Restaurant 2",
-                                                Id = 5,
-                                                Children = null
-                                            },
-                                            new AmspaceDomain
-                                            {
-                                                Name = "Restaurant 3",
-                                                Id = 6,
-                                                Children = null
+                                                new AmspaceDomain
+                                                {
+                                                    Name = "Restaurant 2",
+                                                    Id = 5,
+                                                    Children = null
+                                                },
+                                                new AmspaceDomain
+                                                {
+                                                    Name = "Restaurant 3",
+                                                    Id = 6,
+                                                    Children = null
+                                                }
                                             }
                                         }
                                     }

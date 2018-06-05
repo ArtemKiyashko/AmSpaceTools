@@ -30,11 +30,6 @@ namespace AmSpaceTools.ViewModels
             JobTitle = _profile.ContractData.FirstOrDefault().Position.Name;
             SetUpAvatar();
             LogoutCommand = new RelayCommand(LogOut);
-            //  test client methods
-            // var users = _client.GetDomainUsersAsync(11498);
-            // var asd = _client.PutUserAsync(new SapUser());
-            // var domains = _client.GetOrganizationStructureAsync(185994);
-
         }
 
         private async void LogOut(object obj)
@@ -50,6 +45,7 @@ namespace AmSpaceTools.ViewModels
         protected async void SetUpAvatar()
         {
             Avatar = await _client.GetAvatarAsync(_profileImageLink);
+            //var domains = await _client.GetOrganizationStructureAsync();
         }
         public BitmapSource Avatar
         {

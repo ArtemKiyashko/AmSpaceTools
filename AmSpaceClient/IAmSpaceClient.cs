@@ -19,7 +19,7 @@ namespace AmSpaceClient
         Task<bool> UpdateActionAsync(UpdateAction model, long competencyId);
         Task<bool> LogoutRequestAsync();
         Task<BitmapSource> GetAvatarAsync(string link);
-        Task<AmspaceDomain> GetOrganizationStructureAsync();
+        Task<IEnumerable<AmspaceDomain>> GetOrganizationStructureAsync();
         Task<IEnumerable<AmspaceUser>> GetDomainUsersAsync(int domainId);
         /// <summary>
         /// Allows only Create and Update users

@@ -135,9 +135,9 @@ namespace AmSpaceClient
             return await PutAsyncWrapper(model, endpoint);
         }
 
-        public async Task<AmspaceDomain> GetOrganizationStructureAsync()
+        public async Task<IEnumerable<AmspaceDomain>> GetOrganizationStructureAsync()
         {
-            return await GetAsyncWrapper<AmspaceDomain>(Endpoints.DomainNodesEndpoint, "domain nodes");
+            return await GetAsyncWrapper<IEnumerable<AmspaceDomain>>(Endpoints.DomainNodesEndpoint, "domain nodes");
         }
 
         public async Task<IEnumerable<AmspaceUser>> GetDomainUsersAsync(int domainId)
