@@ -20,6 +20,9 @@
         <DataTemplate DataType="{x:Type vm:ProfileViewModel}">
             <views:Profile/>
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:OrgStructureViewModel}">
+            <views:OrgStructure/>
+        </DataTemplate>
         <infrastructure:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </Window.Resources>
     <materialDesign:DialogHost Identifier="RootDialog">

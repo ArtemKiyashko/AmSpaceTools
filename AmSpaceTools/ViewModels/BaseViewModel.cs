@@ -93,6 +93,7 @@ namespace AmSpaceTools.ViewModels
             MainViewModel.SelectedViewModel = startupViewModel;
             MainViewModel.MenuItems.Clear();
             MainViewModel.MenuItems.Add(new MenuItem("IDP Translation", startupViewModel));
+            MainViewModel.MenuItems.Add(new MenuItem("Org. Structure", Services.Container.GetInstance<OrgStructureViewModel>()));
             MainViewModel.SelectedMenuItem = MainViewModel.MenuItems.FirstOrDefault(item => item.Content == startupViewModel);
         }
 
