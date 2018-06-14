@@ -64,9 +64,7 @@ namespace AmSpaceClient
                 };
             var content = new FormUrlEncodedContent(values);
             var result = await AmSpaceHttpClient.PostAsync(Endpoints.TokenEndpoint, content);
-            if (result.StatusCode != HttpStatusCode.OK) return false;
-            var resultContent = await result.Content.ReadAsStringAsync();
-            LoginResult = JsonConvert.DeserializeObject<LoginResult>(resultContent);
+            LoginResult = await result.ValidateAsync<LoginResult>();
             AddAuthHeaders();
             AddAuthCookies();
             IsAthorized = true;
@@ -85,12 +83,12 @@ namespace AmSpaceClient
 
         public async Task<IEnumerable<Competency>> GetCompetenciesAsync()
         {
-            var pager = await GetAsyncWrapper<CompetencyPager>(Endpoints.CompetencyEndpoint, "Competencies");
+            var pager = await GetAsyncWrapper<CompetencyPager>(Endpoints.CompetencyEndpoint);
             var allComps = new List<Competency>();
             allComps.AddRange(pager.Results);
             while (!string.IsNullOrEmpty(pager.Next))
             {
-                pager = await GetAsyncWrapper<CompetencyPager>(pager.Next, "Competencies");
+                pager = await GetAsyncWrapper<CompetencyPager>(pager.Next);
                 allComps.AddRange(pager.Results);
             }
             return allComps;
@@ -98,12 +96,12 @@ namespace AmSpaceClient
 
         public async Task<CompetencyAction> GetCompetencyActionsAsync(long competencyId)
         {
-            return await GetAsyncWrapper<CompetencyAction>(string.Format(Endpoints.CompetecyActionEndpoint, competencyId.ToString()), "Compenetcy Actions");
+            return await GetAsyncWrapper<CompetencyAction>(string.Format(Endpoints.CompetecyActionEndpoint, competencyId.ToString()));
         }
 
         public async Task<IEnumerable<Level>> GetLevelsAsync()
         {
-            return await GetAsyncWrapper<IEnumerable<Level>>(Endpoints.LevelsEndpoint, "levels");
+            return await GetAsyncWrapper<IEnumerable<Level>>(Endpoints.LevelsEndpoint);
         }
 
         public async Task<bool> LogoutRequestAsync()
@@ -116,7 +114,7 @@ namespace AmSpaceClient
                 };
             var content = new FormUrlEncodedContent(values);
             var result = await AmSpaceHttpClient.PostAsync(Endpoints.LogoutEndpoint, content);
-            if (result.StatusCode != HttpStatusCode.OK) return false;
+            await result.ValidateAsync();
             IsAthorized = false;
             return true;
         }
@@ -124,9 +122,8 @@ namespace AmSpaceClient
         public async Task<Profile> ProfileRequestAsync(int? profileId = null)
         {
             var endpoint = Endpoints.ProfileEndpoint + (profileId.HasValue ? profileId.Value.ToString() : "");
-            var result = AmSpaceHttpClient.GetAsync(endpoint, HttpCompletionOption.ResponseContentRead);
-            var stringResult = await result.Result.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<Profile>(stringResult);
+            var result = await AmSpaceHttpClient.GetAsync(endpoint, HttpCompletionOption.ResponseContentRead);
+            return await result.ValidateAsync<Profile>();
         }
 
         public async Task<bool> UpdateActionAsync(UpdateAction model, long competencyId)
@@ -137,12 +134,12 @@ namespace AmSpaceClient
 
         public async Task<IEnumerable<AmspaceDomain>> GetOrganizationStructureAsync()
         {
-            return await GetAsyncWrapper<IEnumerable<AmspaceDomain>>(Endpoints.DomainNodesEndpoint, "domain nodes");
+            return await GetAsyncWrapper<IEnumerable<AmspaceDomain>>(Endpoints.DomainNodesEndpoint);
         }
 
         public async Task<IEnumerable<AmspaceUser>> GetDomainUsersAsync(int domainId)
         {
-            return await GetAsyncWrapper<IEnumerable<AmspaceUser>>(Endpoints.UsersInDomainEndpoint + domainId, "user list");
+            return await GetAsyncWrapper<IEnumerable<AmspaceUser>>(Endpoints.UsersInDomainEndpoint + domainId);
         }
 
         public async Task<bool> PutUserAsync(SapUser user)
@@ -160,11 +157,10 @@ namespace AmSpaceClient
             return await DeleteAsyncWrapper(user, Endpoints.UserSapEndpoint);
         }
 
-        private async Task<T> GetAsyncWrapper<T>(string endpoint, string errorSource)
+        private async Task<T> GetAsyncWrapper<T>(string endpoint) where T : class
         {
             var result = await AmSpaceHttpClient.GetAsync(endpoint);
-            if (!result.IsSuccessStatusCode) throw new Exception($"something go wrong while getting {errorSource}");
-            return JsonConvert.DeserializeObject<T>(await result.Content.ReadAsStringAsync());
+            return await result.ValidateAsync<T>();
         }
 
         private async Task<bool> PutAsyncWrapper<T>(T model, string endpoint)
@@ -176,8 +172,7 @@ namespace AmSpaceClient
             var httpcontent = new StringContent(stringContent);
             httpcontent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             var result = await AmSpaceHttpClient.PutAsync(endpoint, httpcontent);
-            if (result.StatusCode != HttpStatusCode.OK || result.StatusCode != HttpStatusCode.Created) return false;
-            return true;
+            return await result.ValidateAsync();
         }
 
         private async Task<bool> DeleteAsyncWrapper<T>(T model, string endpoint)
@@ -193,9 +188,19 @@ namespace AmSpaceClient
             };
             request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             var result = await AmSpaceHttpClient.SendAsync(request);
+            return await result.ValidateAsync();
+        }
 
-            if (result.StatusCode != HttpStatusCode.NoContent) return false;
-            return true;
+        private async Task<TOutput> PostAsyncWrapper<TInput, TOutput>(TInput model, string endpoint) where TOutput : class
+        {
+            var stringContent = JsonConvert.SerializeObject(model, Formatting.None, new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            });
+            var httpcontent = new StringContent(stringContent);
+            httpcontent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            var result = await AmSpaceHttpClient.PostAsync(endpoint, httpcontent);
+            return await result.ValidateAsync<TOutput>();
         }
     }
 }

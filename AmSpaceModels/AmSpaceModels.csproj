@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActionType.cs" />
+    <Compile Include="AmSpaceError.cs" />
     <Compile Include="AmspaceStructureData.cs" />
     <Compile Include="AmSpaceEnvironment.cs" />
     <Compile Include="BaseModel.cs" />
