@@ -260,7 +260,7 @@ namespace AmSpaceClient
             return await Task.FromResult(true);
         }
 
-        public Task<Profile> ProfileRequestAsync()
+        public Task<Profile> ProfileRequestAsync(int? profileId = null)
         {
             ContractDatum fakeContract = new ContractDatum{
                 Position = new Position
@@ -292,5 +292,96 @@ namespace AmSpaceClient
             var content = await result.Content.ReadAsByteArrayAsync();
             return (BitmapSource)new ImageSourceConverter().ConvertFrom(content);
         }
+
+        public Task<IEnumerable<AmspaceDomain>> GetOrganizationStructureAsync()
+        {
+            IEnumerable<AmspaceDomain> result = new List<AmspaceDomain>
+            {
+                new AmspaceDomain
+                {
+                    Name = "Wock and Roll",
+                    Id = 1,
+                    Children = new List<AmspaceDomain>
+                    {
+                        new AmspaceDomain
+                        {
+                            Name = "District 1",
+                            Id = 2,
+                            Children = new List<AmspaceDomain>
+                            {
+                                new AmspaceDomain
+                                {
+                                    Name = "Region 1",
+                                    Id = 3,
+                                    Children = new List<AmspaceDomain>
+                                    {
+                                        new AmspaceDomain
+                                        {
+                                            Name = "Restaurant 1",
+                                            Id = 4,
+                                            Children = new List<AmspaceDomain>
+                                            {
+                                                new AmspaceDomain
+                                                {
+                                                    Name = "Restaurant 2",
+                                                    Id = 5,
+                                                    Children = null
+                                                },
+                                                new AmspaceDomain
+                                                {
+                                                    Name = "Restaurant 3",
+                                                    Id = 6,
+                                                    Children = null
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            return Task.FromResult(result);
+        }
+
+        public Task<IEnumerable<AmspaceUser>> GetDomainUsersAsync(int domainId)
+        {
+            IEnumerable<AmspaceUser> result = new List<AmspaceUser>()
+            {
+                new AmspaceUser
+                {
+                    Id = 1,
+                    Name = "Jan Kovalski"
+                },
+                new AmspaceUser()
+                {
+                    Id = 2,
+                    Name = "Emma Watson"
+                },
+                new AmspaceUser
+                {
+                    Id = 3,
+                    Name = "Harry Potter"
+                }
+            };
+            return Task.FromResult(result);
+        }
+
+        public Task<bool> PutUserAsync(SapUser user)
+        {
+            return Task.FromResult(true);
+        }
+
+        public Task<bool> PutDomainAsync(SapDomain domain)
+        {
+            return Task.FromResult(true);
+        }
+
+        public Task<bool> DisableUserAsync(SapUserDelete user)
+        {
+            return Task.FromResult(true);
+        }
+
     }
 }
