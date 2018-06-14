@@ -29,18 +29,18 @@ namespace AmSpaceTools.ViewModels
             }
         }
 
-        public ICommand EditDomainName { get => _editDomainName; set => _editDomainName = value; }
-        public ICommand DeleteDomain { get => _deleteDomain; set => _deleteDomain = value; }
-        public ICommand CreateDomain { get => _createDomain; set => _createDomain = value; }
-        public ICommand GetDomainTreeFromServer { get => _getDomainTreeFromServer; set => _getDomainTreeFromServer = value; }
+        public ICommand EditDomainNameCommand { get => _editDomainNameCommand; set => _editDomainNameCommand = value; }
+        public ICommand DeleteDomainCommand { get => _deleteDomainCommand; set => _deleteDomainCommand = value; }
+        public ICommand CreateDomainCommand { get => _createDomainCommand; set => _createDomainCommand = value; }
+        public ICommand GetDomainTreeFromServerCommand { get => _getDomainTreeFromServerCommand; set => _getDomainTreeFromServerCommand = value; }
         public bool StructureIsEmpty { get { return DomainTree == null || !DomainTree.Any(); } }
 
         public ICommand OpenFileCommand { get => _openFileCommand; set => _openFileCommand = value; }
 
-        private ICommand _editDomainName;
-        private ICommand _deleteDomain;
-        private ICommand _createDomain;
-        private ICommand _getDomainTreeFromServer;
+        private ICommand _editDomainNameCommand;
+        private ICommand _deleteDomainCommand;
+        private ICommand _createDomainCommand;
+        private ICommand _getDomainTreeFromServerCommand;
         private ICommand _openFileCommand;
         private IEnumerable<AmspaceDomain> _domainTree;
         private readonly IExcelWorker _excelWorker;
@@ -52,8 +52,26 @@ namespace AmSpaceTools.ViewModels
             _excelWorker = excelWorker;
             _mapper = mapper;
             _client = client;
-            GetDomainTreeFromServer = new RelayCommand(DownloadTree);
+            GetDomainTreeFromServerCommand = new RelayCommand(DownloadTree);
             OpenFileCommand = new RelayCommand(OpenTreeFromFile);
+            CreateDomainCommand = new RelayCommand(CreateDomain);
+            EditDomainNameCommand = new RelayCommand(EditDomainName);
+            DeleteDomainCommand = new RelayCommand(DeleteDomain);
+        }
+
+        private void DeleteDomain(object obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void CreateDomain(object obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void EditDomainName(object obj)
+        {
+            throw new NotImplementedException();
         }
 
         private void OpenTreeFromFile(object obj)

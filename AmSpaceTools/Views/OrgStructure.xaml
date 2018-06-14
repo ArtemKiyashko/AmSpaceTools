@@ -52,7 +52,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Button Command="{Binding GetDomainTreeFromServer}"
+            <Button Command="{Binding GetDomainTreeFromServerCommand}"
                     Grid.Column="0"
                     Grid.Row="0"
                     Margin="0 5 10 10"
@@ -97,11 +97,59 @@
             ItemsSource="{Binding DomainTree}">
             <TreeView.Resources>
                 <HierarchicalDataTemplate 
-                DataType="{x:Type models:AmspaceDomain}"
-                ItemsSource="{Binding Children}">
-                    <TextBlock
-                    Text="{Binding Name}"
-                    Margin="3 2" />
+                    DataType="{x:Type models:AmspaceDomain}"
+                    ItemsSource="{Binding Children}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" MinWidth="300"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock
+                            Grid.Column="0"
+                            Text="{Binding Name}"
+                            Margin="3 4"/>
+                        <Button 
+                            Command="{Binding 
+                                DataContext.EditDomainNameCommand,  
+                                RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:OrgStructure}}}"
+                            CommandParameter="{Binding }"
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                            Height="Auto"
+                            Width="Auto"
+                            Margin="0"
+                            ToolTip="Rename unit"
+                            Grid.Column="1">
+                                <materialDesign:PackIcon Kind="RenameBox" />
+                        </Button>
+                        <Button 
+                            Command="{Binding 
+                                DataContext.CreateDomainCommand,  
+                                RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:OrgStructure}}}"
+                            CommandParameter="{Binding }"
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                            Height="Auto"
+                            Width="Auto"
+                            Margin="0"
+                            ToolTip="Create unit"
+                            Grid.Column="2">
+                                <materialDesign:PackIcon Kind="Plus" />
+                        </Button>
+                        <Button 
+                            Command="{Binding 
+                                DataContext.DeleteDomainCommand,  
+                                RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:OrgStructure}}}"
+                            CommandParameter="{Binding }"
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                            Height="Auto"
+                            Width="Auto"
+                            Margin="0"
+                            ToolTip="Delete unit"
+                            Grid.Column="3">
+                                <materialDesign:PackIcon Kind="Delete" />
+                        </Button>
+                    </Grid>
                 </HierarchicalDataTemplate>
             </TreeView.Resources>
         </TreeView>
