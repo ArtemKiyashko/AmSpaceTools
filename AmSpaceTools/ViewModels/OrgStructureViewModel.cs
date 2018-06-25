@@ -1,8 +1,10 @@
 ﻿using AmSpaceClient;
 using AmSpaceModels;
 using AmSpaceTools.Infrastructure;
+using AmSpaceTools.Views;
 using AutoMapper;
 using ExcelWorker;
+using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -59,9 +61,25 @@ namespace AmSpaceTools.ViewModels
             DeleteDomainCommand = new RelayCommand(DeleteDomain);
         }
 
-        private void DeleteDomain(object obj)
+        private async void DeleteDomain(object obj)
         {
-            throw new NotImplementedException();
+            var domain = (AmspaceDomain)obj;
+            var view = new ConfirmUnitDelete()
+            {
+                DataContext = domain
+            };
+            var result = (bool)await DialogHost.Show(view, "RootDialog");
+            if (!result) return;
+            IsLoading = true;
+            var deleteResult = await _client.PutDomainAsync(new SapDomain {
+                DomainId = domain.Id,
+                Name = domain.Name,
+                Mpk = -1,
+                Status = false,
+                ParentDomainId = 0
+            });
+            if (deleteResult) DownloadTree(null);
+            IsLoading = false;
         }
 
         private void CreateDomain(object obj)

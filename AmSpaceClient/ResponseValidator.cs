@@ -35,7 +35,7 @@ namespace AmSpaceClient
             if (!response.IsSuccessStatusCode)
             {
                 var error = JsonConvert.DeserializeObject<AmSpaceError>(resultContent);
-                throw new Exception(error.ErrorDescription);
+                throw new Exception(error.ErrorDescription ?? error.Details);
             }
             return true;
         }

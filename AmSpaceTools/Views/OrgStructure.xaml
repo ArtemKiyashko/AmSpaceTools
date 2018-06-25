@@ -94,64 +94,57 @@
             Grid.ColumnSpan="2"
             ScrollViewer.HorizontalScrollBarVisibility="Auto"
             ScrollViewer.VerticalScrollBarVisibility="Auto"
-            ItemsSource="{Binding DomainTree}">
-            <TreeView.Resources>
+            ItemsSource="{Binding DomainTree}"
+            HorizontalContentAlignment="Stretch">
+            <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate 
                     DataType="{x:Type models:AmspaceDomain}"
                     ItemsSource="{Binding Children}">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" MinWidth="300"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
                         <TextBlock
                             Grid.Column="0"
                             Text="{Binding Name}"
                             Margin="3 4"/>
-                        <Button 
-                            Command="{Binding 
-                                DataContext.EditDomainNameCommand,  
-                                RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:OrgStructure}}}"
-                            CommandParameter="{Binding }"
-                            Style="{StaticResource MaterialDesignFlatButton}"
-                            Height="Auto"
-                            Width="Auto"
-                            Margin="0"
-                            ToolTip="Rename unit"
-                            Grid.Column="1">
-                                <materialDesign:PackIcon Kind="RenameBox" />
-                        </Button>
-                        <Button 
-                            Command="{Binding 
-                                DataContext.CreateDomainCommand,  
-                                RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:OrgStructure}}}"
-                            CommandParameter="{Binding }"
-                            Style="{StaticResource MaterialDesignFlatButton}"
-                            Height="Auto"
-                            Width="Auto"
-                            Margin="0"
-                            ToolTip="Create unit"
-                            Grid.Column="2">
-                                <materialDesign:PackIcon Kind="Plus" />
-                        </Button>
-                        <Button 
-                            Command="{Binding 
-                                DataContext.DeleteDomainCommand,  
-                                RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:OrgStructure}}}"
-                            CommandParameter="{Binding }"
-                            Style="{StaticResource MaterialDesignFlatButton}"
-                            Height="Auto"
-                            Width="Auto"
-                            Margin="0"
-                            ToolTip="Delete unit"
-                            Grid.Column="3">
-                                <materialDesign:PackIcon Kind="Delete" />
-                        </Button>
+                        <StackPanel Orientation="Horizontal" Grid.Column="2" HorizontalAlignment="Right">
+                            <Button
+                                Command="{Binding 
+                                    DataContext.EditDomainNameCommand,  
+                                    RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:OrgStructure}}}"
+                                CommandParameter="{Binding }"
+                                Style="{StaticResource MaterialDesignFlatButton}"
+                                Margin="0"
+                                ToolTip="Rename unit">
+                                    <materialDesign:PackIcon Kind="RenameBox" />
+                            </Button>
+                            <Button 
+                                Command="{Binding 
+                                    DataContext.CreateDomainCommand,  
+                                    RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:OrgStructure}}}"
+                                CommandParameter="{Binding }"
+                                Style="{StaticResource MaterialDesignFlatButton}"
+                                Margin="0"
+                                ToolTip="Create unit">
+                                    <materialDesign:PackIcon Kind="Plus" />
+                            </Button>
+                            <Button 
+                                Command="{Binding 
+                                    DataContext.DeleteDomainCommand,  
+                                    RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:OrgStructure}}}"
+                                CommandParameter="{Binding }"
+                                Style="{StaticResource MaterialDesignFlatButton}"
+                                Margin="0"
+                                ToolTip="Delete unit">
+                                    <materialDesign:PackIcon Kind="Delete" />
+                            </Button>
+                        </StackPanel>
                     </Grid>
                 </HierarchicalDataTemplate>
-            </TreeView.Resources>
+            </TreeView.ItemTemplate>
         </TreeView>
         <ProgressBar IsIndeterminate="True" Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"
                      Grid.Column="0"

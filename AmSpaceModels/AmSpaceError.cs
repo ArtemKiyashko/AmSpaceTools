@@ -14,5 +14,8 @@ namespace AmSpaceModels
 
         [JsonProperty("error_description")]
         public string ErrorDescription { get; set; }
+
+        [JsonProperty("detail")]
+        public string Details { get; set; }
     }
 }
