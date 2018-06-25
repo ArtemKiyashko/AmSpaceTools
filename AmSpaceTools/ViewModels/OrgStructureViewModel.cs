@@ -82,14 +82,46 @@ namespace AmSpaceTools.ViewModels
             IsLoading = false;
         }
 
-        private void CreateDomain(object obj)
+        private async void CreateDomain(object obj)
         {
-            throw new NotImplementedException();
+            var parentDomain = (AmspaceDomain)obj;
+            var newDomain = new SapDomain();
+            var view = new EditUnitName()
+            {
+                DataContext = newDomain
+            };
+            var result = (bool)await DialogHost.Show(view, "RootDialog");
+            if (!result) return;
+            newDomain.DomainId = DomainTree.Descendants(_ => _.Children).Max(_ => _.Id) + 1;
+            newDomain.ParentDomainId = parentDomain.Id;
+            newDomain.Mpk = -1;
+            newDomain.Status = true;
+            IsLoading = true;
+            var createResult = await _client.PutDomainAsync(newDomain);
+            if (createResult) DownloadTree(null);
+            IsLoading = false;
         }
 
-        private void EditDomainName(object obj)
+        private async void EditDomainName(object obj)
         {
-            throw new NotImplementedException();
+            var domain = (AmspaceDomain)obj;
+            var view = new EditUnitName()
+            {
+                DataContext = domain
+            };
+            var result = (bool)await DialogHost.Show(view, "RootDialog");
+            if (!result) return;
+            IsLoading = true;
+            var editResult = await _client.PutDomainAsync(new SapDomain
+                {
+                    DomainId = domain.Id,
+                    Name = domain.Name,
+                    Mpk = -1,
+                    Status = true,
+                    ParentDomainId = domain.FindParentNode(DomainTree, (_) => _.Children).Id
+                });
+            if (editResult) DownloadTree(null);
+            IsLoading = false;
         }
 
         private void OpenTreeFromFile(object obj)

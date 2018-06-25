@@ -90,6 +90,7 @@
     <Compile Include="Infrastructure\NotEmptyValidationRule.cs" />
     <Compile Include="Infrastructure\RelayCommand.cs" />
     <Compile Include="Infrastructure\Services.cs" />
+    <Compile Include="Infrastructure\TreeExtensions.cs" />
     <Compile Include="ModelConverters\ActionToUpdateConverter.cs" />
     <Compile Include="ModelConverters\CompetencyActionConverter.cs" />
     <Compile Include="ModelConverters\CompetencyActionsToUpdateConverter.cs" />
@@ -103,6 +104,9 @@
     <Compile Include="ViewModels\ProfileViewModel.cs" />
     <Compile Include="Views\ConfirmUnitDelete.xaml.cs">
       <DependentUpon>ConfirmUnitDelete.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditUnitName.xaml.cs">
+      <DependentUpon>EditUnitName.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Error.xaml.cs">
       <DependentUpon>Error.xaml</DependentUpon>
@@ -132,6 +136,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Views\ConfirmUnitDelete.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\EditUnitName.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
