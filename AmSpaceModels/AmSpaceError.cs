@@ -17,5 +17,8 @@ namespace AmSpaceModels
 
         [JsonProperty("detail")]
         public string Details { get; set; }
+
+        [JsonProperty("non_field_errors")]
+        public string MissingFields { get; set; }
     }
 }
