@@ -92,7 +92,14 @@ namespace AmSpaceClient
 
         public async Task<HttpResponseMessage> PostAsyncWrapper(string endpoint, FormUrlEncodedContent content)
         {
+
             return await AmSpaceHttpClient.PostAsync(endpoint, content);
+        }
+
+        public async Task<TOutput> PostAsyncWrapper<TOutput>(string endpoint, FormUrlEncodedContent content) where TOutput : class
+        {
+            var result = await AmSpaceHttpClient.PostAsync(endpoint, content);
+            return await result.ValidateAsync<TOutput>();
         }
     }
 }
