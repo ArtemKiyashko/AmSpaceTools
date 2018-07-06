@@ -48,7 +48,9 @@
     <Compile Include="ApiEndpoints.cs" />
     <Compile Include="FakeClient.cs" />
     <Compile Include="IAmSpaceClient.cs" />
+    <Compile Include="IRequestWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RequestsWrapper.cs" />
     <Compile Include="ResponseValidator.cs" />
     <Compile Include="SecureStringExtensions.cs" />
   </ItemGroup>
