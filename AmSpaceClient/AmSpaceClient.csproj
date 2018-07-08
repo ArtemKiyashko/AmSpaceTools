@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="AmSpaceClient.cs" />
     <Compile Include="ApiEndpoints.cs" />
+    <Compile Include="BitmapSourceConverter.cs" />
     <Compile Include="FakeClient.cs" />
     <Compile Include="IAmSpaceClient.cs" />
     <Compile Include="IRequestWrapper.cs" />

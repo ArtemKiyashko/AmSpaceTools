@@ -31,15 +31,23 @@ namespace AmSpaceClient
 
         public static async Task<bool> ValidateAsync(this HttpResponseMessage response)
         {
-            var resultContent = await response.Content.ReadAsStringAsync();
+            
             if (!response.IsSuccessStatusCode)
             {
-                var error = JsonConvert.DeserializeObject<AmSpaceError>(resultContent);
-                throw new Exception(
-                    error.ErrorDescription ?? 
-                    error.Details ?? 
+                var resultContent = await response.Content.ReadAsStringAsync();
+                var error = new AmSpaceError();
+                try
+                {
+                    error = JsonConvert.DeserializeObject<AmSpaceError>(resultContent);
+                }
+                finally
+                {
+                    throw new Exception(
+                    error.ErrorDescription ??
+                    error.Details ??
                     error.MissingFields
-                );
+                    );
+                }
             }
             return true;
         }

@@ -47,7 +47,8 @@ namespace AmSpaceClient
 
         public async Task<HttpResponseMessage> GetAsyncWrapper(string endpoint)
         {
-            return await AmSpaceHttpClient.GetAsync(endpoint);
+            var result = await AmSpaceHttpClient.GetAsync(endpoint);
+            return result;
         }
 
         public async Task<bool> PutAsyncWrapper<T>(T model, string endpoint)

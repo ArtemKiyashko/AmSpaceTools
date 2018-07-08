@@ -1,6 +1,7 @@
 ﻿using AmSpaceModels;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Security;
 using System.Text;
@@ -18,7 +19,7 @@ namespace AmSpaceClient
         Task<CompetencyAction> GetCompetencyActionsAsync(long competencyId);
         Task<bool> UpdateActionAsync(UpdateAction model, long competencyId);
         Task<bool> LogoutRequestAsync();
-        Task<BitmapSource> GetAvatarAsync(string link);
+        Task<BitmapSource> GetAvatarAsync(string link, IImageConverter converter = null);
         Task<IEnumerable<AmspaceDomain>> GetOrganizationStructureAsync();
         Task<IEnumerable<AmspaceUser>> GetDomainUsersAsync(int domainId);
         /// <summary>

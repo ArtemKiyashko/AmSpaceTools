@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Configuration;
 using System.Linq;
 using System.Net;
@@ -24,13 +25,22 @@ namespace AmSpaceClient
         public string ClientId { get; private set; }
         public string GrantPermissionType { get; private set; }
         public ApiEndpoints Endpoints { get; private set; }
-        public IRequestsWrapper RequestsWrapper { get; set; }
+        private IRequestsWrapper RequestsWrapper { get; set; }
         
         
         public AmSpaceClient()
         {
             RequestsWrapper = new RequestsWrapper();
             IsAthorized = false;
+            
+        }
+
+        public AmSpaceClient(IRequestsWrapper requestsWrapper, ApiEndpoints endpoints )
+        {
+            RequestsWrapper = requestsWrapper;
+            Endpoints = endpoints;
+            IsAthorized = false;
+
         }
 
         public async Task<bool> LoginRequestAsync(string userName, SecureString password, IAmSpaceEnvironment environment)
@@ -54,14 +64,15 @@ namespace AmSpaceClient
             return true;
         }
 
-        public async Task<BitmapSource> GetAvatarAsync(string link)
+        public async Task<BitmapSource> GetAvatarAsync(string link, IImageConverter converter = null)
         {
-            if (!IsAthorized) throw new UnauthorizedAccessException();
+            //  if (!IsAthorized) throw new UnauthorizedAccessException();
             var result = await RequestsWrapper.GetAsyncWrapper(link);
             if (!result.IsSuccessStatusCode)
                 result = await RequestsWrapper.GetAsyncWrapper($"{Endpoints.BaseAddress}/static/avatar.png");
+            await result.ValidateAsync();
             var content = await result.Content.ReadAsByteArrayAsync();
-            return (BitmapSource)new ImageSourceConverter().ConvertFrom(content);
+            return (converter ?? new BitmapSourceConverter()).ConvertFromByteArray(content);
         }
 
         public async Task<IEnumerable<Competency>> GetCompetenciesAsync()

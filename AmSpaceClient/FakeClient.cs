@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using AmSpaceModels;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.ComponentModel;
 
 namespace AmSpaceClient
 {
@@ -383,5 +384,9 @@ namespace AmSpaceClient
             return Task.FromResult(true);
         }
 
+        public Task<BitmapSource> GetAvatarAsync(string link, IImageConverter converter = null)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
