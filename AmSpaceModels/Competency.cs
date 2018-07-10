@@ -47,5 +47,8 @@ namespace AmSpaceModels
 
         [JsonProperty("translations")]
         public List<Translation> Translations { get; set; }
+
+        [JsonIgnore]
+        public Level Level { get; set; }
     }
 }

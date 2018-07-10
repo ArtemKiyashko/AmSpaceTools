@@ -91,6 +91,8 @@ namespace AmSpaceClient
                 pager = await GetAsyncWrapper<CompetencyPager>(pager.Next);
                 allComps.AddRange(pager.Results);
             }
+            var levels = await GetLevelsAsync();
+            allComps.ForEach(comp => comp.Level = levels.FirstOrDefault(_ => _.Id == comp.LevelId));
             return allComps;
         }
 

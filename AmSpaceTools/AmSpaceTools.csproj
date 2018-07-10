@@ -81,8 +81,9 @@
     <Compile Include="Infrastructure\AmSpaceEnvironmentsProvider.cs" />
     <Compile Include="Infrastructure\ColumnDefinitionError.cs" />
     <Compile Include="Infrastructure\CsvLogAppender.cs" />
+    <Compile Include="Infrastructure\DictionaryExtensions.cs" />
     <Compile Include="Infrastructure\IAmSpaceEnvironmentsProvider.cs" />
-    <Compile Include="Infrastructure\ExcelRowEqualityComparer.cs" />
+    <Compile Include="Infrastructure\IdpExcelRowEqualityComparer.cs" />
     <Compile Include="Infrastructure\IHavePassword.cs" />
     <Compile Include="Infrastructure\BoolToVisibilityConverter.cs" />
     <Compile Include="Infrastructure\ListExtensions.cs" />
@@ -92,9 +93,7 @@
     <Compile Include="Infrastructure\Services.cs" />
     <Compile Include="Infrastructure\TreeExtensions.cs" />
     <Compile Include="ModelConverters\ActionToUpdateConverter.cs" />
-    <Compile Include="ModelConverters\CompetencyActionConverter.cs" />
-    <Compile Include="ModelConverters\CompetencyActionsToUpdateConverter.cs" />
-    <Compile Include="ModelConverters\IdpExcelRowToUpdateConverter.cs" />
+    <Compile Include="ModelConverters\CompetencyActionsToExcelRowConverter.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="ViewModels\ErrorViewModel.cs" />
     <Compile Include="ViewModels\IdpTranslationsPreviewViewModel.cs" />

@@ -119,13 +119,13 @@ namespace AmSpaceTools.ViewModels
         {
             IsLoading = true;
             var competencies = await _client.GetCompetenciesAsync();
-            var allAmSpaceActions = new List<IdpAction>();
+            var allAmSpaceActions = new Dictionary<Competency, List<IdpAction>>();
             var uniqueActions = AllRows.NormalizeTranslations();
             foreach (var competency in competencies)
             {
                 if (competency.ActionCount == 0) continue;
                 var compActions = await _client.GetCompetencyActionsAsync(competency.Id.Value);
-                allAmSpaceActions.AddRange(compActions.Actions);
+                allAmSpaceActions.UpsertKey(competency).AddRange(compActions.Actions);
                 foreach (var action in compActions.Actions)
                 {
                     if (!uniqueActions.ContainsKey(action.Name)) continue;
@@ -140,18 +140,13 @@ namespace AmSpaceTools.ViewModels
             IsLoading = false;
         }
 
-        private void DetermineMissingMatchingActions(IEnumerable<IdpAction> compActions)
+        private void DetermineMissingMatchingActions(IDictionary<Competency, List<IdpAction>> compActions)
         {
-            var foundActions = from ca in compActions
-                               join rows in AllRows on ca.Name equals rows.ActionSourceDescription
-                               select new IdpExcelRow
-                               {
-                                   CompetencyName = rows.CompetencyName,
-                                   CompetencyLevel = rows.CompetencyLevel,
-                                   ActionPercentage = rows.ActionPercentage,
-                                   ActionSourceDescription = rows.ActionSourceDescription
-                               };
-            SaveUploadResults(AllRows.Except(foundActions, new ExcelRowEqualityComparer()), foundActions);
+            var targetActions = _mapper.Map<IEnumerable<IdpExcelRow>>(compActions);
+            var matchedActions = targetActions.Intersect(AllRows, new IdpExcelRowEqualityComparer());
+            SaveUploadResults(
+                AllRows.Except(matchedActions, new IdpExcelRowEqualityComparer()),
+                matchedActions);
         }
 
         protected void SaveUploadResults(IEnumerable<IdpExcelRow> missingActions, IEnumerable<IdpExcelRow> matchingActions)
