@@ -26,6 +26,14 @@ namespace AmSpaceTools.Infrastructure
             }
         }
 
+        public static void ForEach<T>(this IEnumerable<T> enumeration, Action<T> action)
+        {
+            foreach (T item in enumeration)
+            {
+                action(item);
+            }
+        }
+
         public static Dictionary<string, List<Translation>> NormalizeTranslations(this IEnumerable<IdpExcelRow> source)
         {
             var uniqueActions = source.ToLookup(x => x.ActionSourceDescription, e => e.Translations);

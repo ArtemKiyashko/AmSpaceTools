@@ -23,5 +23,8 @@ namespace AmSpaceModels
 
         [JsonProperty("editable")]
         public bool Editable { get; set; }
+
+        [JsonIgnore]
+        public bool Updated { get; set; }
     }
 }

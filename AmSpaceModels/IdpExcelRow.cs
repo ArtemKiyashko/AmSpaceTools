@@ -15,5 +15,8 @@ namespace AmSpaceModels
 
         [EpplusIgnore]
         public List<Translation> Translations { get; set; }
+
+        [EpplusIgnore]
+        public bool Taken { get; set; }
     }
 }

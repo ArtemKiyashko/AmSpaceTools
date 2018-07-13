@@ -21,6 +21,7 @@ namespace AmSpaceTools.ModelConverters
                     row.CompetencyName = comp.Key.Name;
                     row.CompetencyLevel = Int32.Parse(comp.Key.Level.Name);
                     row.ActionSourceDescription = action.Name;
+                    row.Taken = action.Updated;
                     switch (action.ActionType.Value)
                     {
                         case 0: row.ActionPercentage = 10;

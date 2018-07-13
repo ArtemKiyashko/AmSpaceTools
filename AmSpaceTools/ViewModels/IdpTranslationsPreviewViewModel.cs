@@ -27,6 +27,7 @@ namespace AmSpaceTools.ViewModels
         private IMapper _mapper;
         private IAmSpaceClient _client;
         private ObservableCollection<ColumnDefinitionError> _errors;
+        private int _similarityPercent;
 
         public ObservableCollection<ColumnDefinitionError> Errors { get => _errors; set => _errors = value; }
 
@@ -61,6 +62,11 @@ namespace AmSpaceTools.ViewModels
             }
         }
 
+        public int SimilarityPercent
+        {
+            get { return _similarityPercent; }
+            set { _similarityPercent = value; }
+        }
 
         public IEnumerable<IdpExcelColumn> ExcelColumnsPreview
         {
@@ -113,6 +119,7 @@ namespace AmSpaceTools.ViewModels
             OpenFileCommand = new RelayCommand(OpenFile);
             UploadDataCommand = new RelayCommand(UploadData);
             Errors = new ObservableCollection<ColumnDefinitionError>();
+            _similarityPercent = 100;
         }
 
         private async void UploadData(object obj)
@@ -128,10 +135,12 @@ namespace AmSpaceTools.ViewModels
                 allAmSpaceActions.UpsertKey(competency).AddRange(compActions.Actions);
                 foreach (var action in compActions.Actions)
                 {
-                    if (!uniqueActions.ContainsKey(action.Name)) continue;
-                    var translationKey = uniqueActions[action.Name];
-                    foreach (var translation in translationKey)
+                    var translationKey = uniqueActions.FindSimilar(action.Name, SimilarityPercent);
+                    if (translationKey.Value == null) continue;
+                    foreach (var translation in translationKey.Value)
                         action.Translations.UpsertTranslation(translation);
+                    action.Updated = true;
+                    AllRows.Where(_ => _.ActionSourceDescription == translationKey.Key).ForEach(_ => _.Taken = true);
                 }
                 var transformedActions = _mapper.Map<UpdateAction>(compActions);
                 var result = await _client.UpdateActionAsync(transformedActions, competency.Id.Value);
@@ -143,10 +152,9 @@ namespace AmSpaceTools.ViewModels
         private void DetermineMissingMatchingActions(IDictionary<Competency, List<IdpAction>> compActions)
         {
             var targetActions = _mapper.Map<IEnumerable<IdpExcelRow>>(compActions);
-            var matchedActions = targetActions.Intersect(AllRows, new IdpExcelRowEqualityComparer());
             SaveUploadResults(
-                AllRows.Except(matchedActions, new IdpExcelRowEqualityComparer()),
-                matchedActions);
+                AllRows.Where(_ => !_.Taken),
+                targetActions.Where(_ => _.Taken));
         }
 
         protected void SaveUploadResults(IEnumerable<IdpExcelRow> missingActions, IEnumerable<IdpExcelRow> matchingActions)
