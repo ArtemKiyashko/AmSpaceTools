@@ -1,5 +1,6 @@
 ﻿using AmSpaceClient;
-using AmSpaceModels;
+using AmSpaceModels.Organization;
+using AmSpaceModels.Sap;
 using AmSpaceTools.Infrastructure;
 using AmSpaceTools.Views;
 using AutoMapper;

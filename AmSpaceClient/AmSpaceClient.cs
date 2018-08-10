@@ -1,18 +1,21 @@
-﻿using System;
+﻿using AmSpaceModels;
+using AmSpaceModels.Idp;
+using AmSpaceModels.Organization;
+using AmSpaceModels.Performance;
+using AmSpaceModels.Sap;
+using AmSpaceTools.Infrastructure;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using AmSpaceModels;
-using AmSpaceTools.Infrastructure;
-using Newtonsoft.Json;
+using UriBuilderExtended;
 
 namespace AmSpaceClient
 {
@@ -49,6 +52,71 @@ namespace AmSpaceClient
             CookieContainer.Add(new Uri(Endpoints.BaseAddress), new Cookie("accessToken", LoginResult.AccessToken));
         }
 
+        private async Task<T> GetAsyncWrapper<T>(string endpoint) where T : class
+        {
+            var result = await AmSpaceHttpClient.GetAsync(endpoint);
+            return await result.ValidateAsync<T>();
+        }
+
+        private async Task<bool> PutAsyncWrapper<T>(T model, string endpoint)
+        {
+            var httpcontent = PrepareContent(model);
+            var result = await AmSpaceHttpClient.PutAsync(endpoint, httpcontent);
+            return await result.ValidateAsync();
+        }
+
+        private async Task<bool> DeleteAsyncWrapper<T>(T model, string endpoint)
+        {
+            var request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Delete,
+                RequestUri = new Uri(endpoint),
+                Content = PrepareContent(model)
+            };
+            var result = await AmSpaceHttpClient.SendAsync(request);
+            return await result.ValidateAsync();
+        }
+
+        private async Task<bool> DeleteAsyncWrapper(string endpoint)
+        {
+            var request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Delete,
+                RequestUri = new Uri(endpoint),
+            };
+            var result = await AmSpaceHttpClient.SendAsync(request);
+            return await result.ValidateAsync();
+        }
+
+        private async Task<TOutput> PostAsyncWrapper<TInput, TOutput>(TInput model, string endpoint) where TOutput : class
+        {
+            var httpcontent = PrepareContent(model);
+            var result = await AmSpaceHttpClient.PostAsync(endpoint, httpcontent);
+            return await result.ValidateAsync<TOutput>();
+        }
+
+        private async Task<TOutput> PatchAsyncWrapper<TInput, TOutput>(TInput model, string endpoint) where TOutput : class
+        {
+            var request = new HttpRequestMessage
+            {
+                Method = new HttpMethod("PATCH"),
+                RequestUri = new Uri(endpoint),
+                Content = PrepareContent(model)
+            };
+            var result = await AmSpaceHttpClient.SendAsync(request);
+            return await result.ValidateAsync<TOutput>();
+        }
+        private StringContent PrepareContent<TInput>(TInput model)
+        {
+            var stringContent = JsonConvert.SerializeObject(model, Formatting.None, new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            });
+            var httpcontent = new StringContent(stringContent);
+            httpcontent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            return httpcontent;
+        }
+
         public async Task<bool> LoginRequestAsync(string userName, SecureString password, IAmSpaceEnvironment environment)
         {
             if (IsAthorized) return true;
@@ -83,7 +151,7 @@ namespace AmSpaceClient
 
         public async Task<IEnumerable<Competency>> GetCompetenciesAsync()
         {
-            var pager = await GetAsyncWrapper<CompetencyPager>(Endpoints.CompetencyEndpoint);
+            var pager = await GetAsyncWrapper<CompetencyPager>(Endpoints.CompetencyAdminEndpoint);
             var allComps = new List<Competency>();
             allComps.AddRange(pager.Results);
             while (!string.IsNullOrEmpty(pager.Next))
@@ -98,7 +166,7 @@ namespace AmSpaceClient
 
         public async Task<CompetencyAction> GetCompetencyActionsAsync(long competencyId)
         {
-            return await GetAsyncWrapper<CompetencyAction>(string.Format(Endpoints.CompetecyActionEndpoint, competencyId.ToString()));
+            return await GetAsyncWrapper<CompetencyAction>(string.Format(Endpoints.CompetecyActionAdminEndpoint, competencyId.ToString()));
         }
 
         public async Task<IEnumerable<Level>> GetLevelsAsync()
@@ -121,11 +189,9 @@ namespace AmSpaceClient
             return true;
         }
 
-        public async Task<Profile> ProfileRequestAsync(int? profileId = null)
+        public async Task<Profile> GetProfileAsync()
         {
-            var endpoint = Endpoints.ProfileEndpoint + (profileId.HasValue ? profileId.Value.ToString() : "");
-            var result = await AmSpaceHttpClient.GetAsync(endpoint, HttpCompletionOption.ResponseContentRead);
-            return await result.ValidateAsync<Profile>();
+            return await GetAsyncWrapper<Profile>(Endpoints.ProfileEndpoint);
         }
 
         public async Task<bool> UpdateActionAsync(UpdateAction model, long competencyId)
@@ -159,50 +225,119 @@ namespace AmSpaceClient
             return await DeleteAsyncWrapper(user, Endpoints.UserSapEndpoint);
         }
 
-        private async Task<T> GetAsyncWrapper<T>(string endpoint) where T : class
+        public async Task<IEnumerable<Position>> GetPositionsInLevelsAsync(IEnumerable<Level> levels)
         {
-            var result = await AmSpaceHttpClient.GetAsync(endpoint);
-            return await result.ValidateAsync<T>();
+            var url = new UriBuilder(Endpoints.PositionsEndpoint);
+            var levelsString = levels.Select(_ => _.Id.ToString()).Aggregate((curr, next) => $"{curr},{next}");
+            url.AddQuery("levels", levelsString);
+            return await GetAsyncWrapper<IEnumerable<Position>>(url.ToString());
         }
 
-        private async Task<bool> PutAsyncWrapper<T>(T model, string endpoint)
+        public async Task<IEnumerable<Position>> GetPositionsAsync()
         {
-            var stringContent = JsonConvert.SerializeObject(model, Formatting.None, new JsonSerializerSettings
-            {
-                NullValueHandling = NullValueHandling.Ignore
-            });
-            var httpcontent = new StringContent(stringContent);
-            httpcontent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            var result = await AmSpaceHttpClient.PutAsync(endpoint, httpcontent);
-            return await result.ValidateAsync();
+            return await GetAsyncWrapper<IEnumerable<Position>>(Endpoints.PositionsEndpoint);
         }
 
-        private async Task<bool> DeleteAsyncWrapper<T>(T model, string endpoint)
+        public async Task<IEnumerable<People>> GetPeopleAsync()
         {
-            var request = new HttpRequestMessage
-            {
-                Method = HttpMethod.Delete,
-                RequestUri = new Uri(endpoint),
-                Content = new StringContent(JsonConvert.SerializeObject(model, Formatting.None, new JsonSerializerSettings
-                {
-                    NullValueHandling = NullValueHandling.Ignore
-                }))
-            };
-            request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            var result = await AmSpaceHttpClient.SendAsync(request);
-            return await result.ValidateAsync();
+            return await GetAsyncWrapper<IEnumerable<People>>(Endpoints.PeopleEndpoint);
         }
 
-        private async Task<TOutput> PostAsyncWrapper<TInput, TOutput>(TInput model, string endpoint) where TOutput : class
+        public async Task<IEnumerable<People>> GetPeopleInPositionsAsync(IEnumerable<Position> positions)
         {
-            var stringContent = JsonConvert.SerializeObject(model, Formatting.None, new JsonSerializerSettings
-            {
-                NullValueHandling = NullValueHandling.Ignore
-            });
-            var httpcontent = new StringContent(stringContent);
-            httpcontent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            var result = await AmSpaceHttpClient.PostAsync(endpoint, httpcontent);
-            return await result.ValidateAsync<TOutput>();
+            var url = new UriBuilder(Endpoints.PeopleEndpoint);
+            var positionsString = positions.Select(_ => _.Id.ToString()).Aggregate((curr, next) => $"{curr},{next}");
+            url.AddQuery("positions", positionsString);
+            return await GetAsyncWrapper<IEnumerable<People>>(url.ToString());
+        }
+
+        public async Task<IEnumerable<Kpi>> GetFinancialKpiAsync(ContractDatum userContract)
+        {
+            var url = string.Format(Endpoints.KpiFinancialCustomAdminEndpoint, userContract.Id);
+            return await GetAsyncWrapper<IEnumerable<Kpi>>(url);
+        }
+
+        public async Task<IEnumerable<Kpi>> GetNonFinancialKpiAsync(ContractDatum userContract)
+        {
+            var url = string.Format(Endpoints.KpiNonFinancialCustomAdminEndpoint, userContract.Id);
+            return await GetAsyncWrapper<IEnumerable<Kpi>>(url);
+        }
+
+        public async Task<IEnumerable<Goal>> GetGoalsAsync(ContractDatum userContract, Roadmap roadmap)
+        {
+            var url = string.Format(Endpoints.GoalsAdminEndpoint, userContract.Id, roadmap.Year);
+            return await GetAsyncWrapper<IEnumerable<Goal>>(url);
+        }
+
+        public async Task<Roadmaps> GetRoadmapsAsync(ContractDatum userContract)
+        {
+            var url = string.Format(Endpoints.RoadmapsAdminEndpoint, userContract.Id);
+            return await GetAsyncWrapper<Roadmaps>(url);
+        }
+
+        public async Task<Profile> GetProfileByIdAsync(long Id)
+        {
+            return await GetAsyncWrapper<Profile>($"{Endpoints.ProfileEndpoint}{Id}");
+        }
+
+        public async Task<Kpi> CreateFinancialKpiAsync(ContractDatum userContract, Kpi kpi)
+        {
+            var url = string.Format(Endpoints.KpiFinancialCustomAdminEndpoint, userContract.Id);
+            return await PostAsyncWrapper<Kpi, Kpi>(kpi, url);
+        }
+
+        public async Task<Kpi> CreateNonFinancialKpiAsync(ContractDatum userContract, Kpi kpi)
+        {
+            var url = string.Format(Endpoints.KpiNonFinancialCustomAdminEndpoint, userContract.Id);
+            return await PostAsyncWrapper<Kpi, Kpi>(kpi, url);
+        }
+
+        public async Task<Kpi> UpdateFinancialKpiAsync(ContractDatum userContract, Kpi kpi)
+        {
+            var url = $"{string.Format(Endpoints.KpiFinancialCustomAdminEndpoint, userContract.Id)}{kpi.Id}/";
+            return await PatchAsyncWrapper<Kpi, Kpi>(kpi, url);
+        }
+
+        public async Task<Kpi> UpdateNonFinancialKpiAsync(ContractDatum userContract, Kpi kpi)
+        {
+            var url = $"{string.Format(Endpoints.KpiNonFinancialCustomAdminEndpoint, userContract.Id)}{kpi.Id}/";
+            return await PatchAsyncWrapper<Kpi, Kpi>(kpi, url);
+        }
+
+        public async Task<Roadmap> CreateRoadmapAsync(ContractDatum userContract, Roadmap roadmap)
+        {
+            var url = string.Format(Endpoints.RoadmapsAdminEndpoint, userContract.Id);
+            return await PostAsyncWrapper<Roadmap, Roadmap>(roadmap, url);
+        }
+
+        public async Task<Goal> CreateGoalAsync(ContractDatum userContract, Roadmap roadmap, Goal goal)
+        {
+            var url = string.Format(Endpoints.GoalsAdminEndpoint, userContract.Id, roadmap.Year);
+            return await PostAsyncWrapper<Goal, Goal>(goal, url);
+        }
+
+        public async Task<Goal> UpdateGoalAsync(ContractDatum userContract, Roadmap roadmap, Goal goal)
+        {
+            var url = $"{string.Format(Endpoints.GoalsAdminEndpoint, userContract.Id, roadmap.Year)}{goal.Id}/";
+            return await PatchAsyncWrapper<Goal, Goal>(goal, url);
+        }
+
+        public async Task<bool> DeleteGoalAsync(ContractDatum userContract, Roadmap roadmap, Goal goal)
+        {
+            var url = $"{string.Format(Endpoints.GoalsAdminEndpoint, userContract.Id, roadmap.Year)}{goal.Id}/";
+            return await DeleteAsyncWrapper(url);
+        }
+
+        public async Task<bool> DeleteFinancialKpiAsync(ContractDatum userContract, Kpi kpi)
+        {
+            var url = $"{string.Format(Endpoints.KpiFinancialCustomAdminEndpoint, userContract.Id)}{kpi.Id}/";
+            return await DeleteAsyncWrapper(url);
+        }
+
+        public async Task<bool> DeleteNonFinancialKpiAsync(ContractDatum userContract, Kpi kpi)
+        {
+            var url = $"{string.Format(Endpoints.KpiNonFinancialCustomAdminEndpoint, userContract.Id)}{kpi.Id}/";
+            return await DeleteAsyncWrapper(url);
         }
     }
 }

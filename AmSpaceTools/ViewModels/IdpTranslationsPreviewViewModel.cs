@@ -1,5 +1,5 @@
 ﻿using AmSpaceClient;
-using AmSpaceModels;
+using AmSpaceModels.Idp;
 using AmSpaceTools.Infrastructure;
 using AmSpaceTools.ModelConverters;
 using AutoMapper;

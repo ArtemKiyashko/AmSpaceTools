@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AmSpaceModels
+namespace AmSpaceModels.Idp
 {
     public class IdpExcelColumn : BaseModel
     {

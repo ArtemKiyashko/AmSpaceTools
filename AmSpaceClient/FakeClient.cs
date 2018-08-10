@@ -8,6 +8,10 @@ using System.Threading.Tasks;
 using AmSpaceModels;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using AmSpaceModels.Idp;
+using AmSpaceModels.Organization;
+using AmSpaceModels.Sap;
+using AmSpaceModels.Performance;
 
 namespace AmSpaceClient
 {
@@ -260,7 +264,7 @@ namespace AmSpaceClient
             return await Task.FromResult(true);
         }
 
-        public Task<Profile> ProfileRequestAsync(int? profileId = null)
+        public Task<Profile> GetProfileAsync()
         {
             ContractDatum fakeContract = new ContractDatum{
                 Position = new Position
@@ -268,7 +272,7 @@ namespace AmSpaceClient
                     Name = "Fake Department"
                 }
             };
-            ContractDatum[] fakeContractData = { fakeContract };
+            var fakeContractData = new List<ContractDatum> { fakeContract };
 
             var result = new Profile
             {
@@ -383,5 +387,99 @@ namespace AmSpaceClient
             return Task.FromResult(true);
         }
 
+        public Task<IEnumerable<Position>> GetPositionsInLevelsAsync(IEnumerable<Level> levels)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Position>> GetPositionsAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<People>> GetPeopleAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<People>> GetPeopleInPositionsAsync(IEnumerable<Position> positions)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Kpi>> GetFinancialKpiAsync(ContractDatum userContract)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Kpi>> GetNonFinancialKpiAsync(ContractDatum userContract)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Goal>> GetGoalsAsync(ContractDatum userContract, Roadmap roadmap)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Roadmaps> GetRoadmapsAsync(ContractDatum userContract)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Profile> GetProfileByIdAsync(long Id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Kpi> CreateFinancialKpiAsync(ContractDatum userContract, Kpi kpi)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Kpi> CreateNonFinancialKpiAsync(ContractDatum userContract, Kpi kpi)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Kpi> UpdateFinancialKpiAsync(ContractDatum userContract, Kpi kpi)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Kpi> UpdateNonFinancialKpiAsync(ContractDatum userContract, Kpi kpi)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Roadmap> CreateRoadmapAsync(ContractDatum userContract, Roadmap roadmap)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Goal> CreateGoalAsync(ContractDatum userContract, Roadmap roadmap, Goal goal)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Goal> UpdateGoalAsync(ContractDatum userContract, Roadmap roadmap, Goal goal)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> DeleteGoalAsync(ContractDatum userContract, Roadmap roadmap, Goal goal)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> DeleteFinancialKpiAsync(ContractDatum userContract, Kpi kpi)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> DeleteNonFinancialKpiAsync(ContractDatum userContract, Kpi kpi)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

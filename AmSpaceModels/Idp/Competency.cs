@@ -1,11 +1,12 @@
-﻿using Newtonsoft.Json;
+﻿using AmSpaceModels.Organization;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AmSpaceModels
+namespace AmSpaceModels.Idp
 {
     public partial class CompetencyPager
     {

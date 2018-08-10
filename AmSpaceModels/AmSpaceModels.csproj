@@ -43,31 +43,35 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ActionType.cs" />
+    <Compile Include="Idp\ActionType.cs" />
     <Compile Include="AmSpaceError.cs" />
-    <Compile Include="AmspaceStructureData.cs" />
+    <Compile Include="Organization\AmspaceStructureData.cs" />
     <Compile Include="AmSpaceEnvironment.cs" />
     <Compile Include="BaseModel.cs" />
-    <Compile Include="Competency.cs" />
-    <Compile Include="CompetencyAction.cs" />
-    <Compile Include="CompetencyActionDto.cs" />
-    <Compile Include="SapDomain.cs" />
+    <Compile Include="Idp\Competency.cs" />
+    <Compile Include="Idp\CompetencyAction.cs" />
+    <Compile Include="Performance\Goal.cs" />
+    <Compile Include="Performance\Kpi.cs" />
+    <Compile Include="Organization\People.cs" />
+    <Compile Include="Performance\Roadmaps.cs" />
+    <Compile Include="Sap\SapDomain.cs" />
     <Compile Include="IAmSpaceEnvironment.cs" />
     <Compile Include="EpplusIgnoreAttribute.cs" />
-    <Compile Include="IdpExcelColumn.cs" />
-    <Compile Include="IdpAction.cs" />
-    <Compile Include="IdpExcelRow.cs" />
-    <Compile Include="Level.cs" />
+    <Compile Include="Idp\IdpExcelColumn.cs" />
+    <Compile Include="Idp\IdpAction.cs" />
+    <Compile Include="Idp\IdpExcelRow.cs" />
+    <Compile Include="Organization\Level.cs" />
     <Compile Include="Login.cs" />
     <Compile Include="LoginResult.cs" />
     <Compile Include="Profile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SapUser.cs" />
-    <Compile Include="Translation.cs" />
-    <Compile Include="UpdateAction.cs" />
+    <Compile Include="Sap\SapUser.cs" />
+    <Compile Include="Idp\Translation.cs" />
+    <Compile Include="Idp\UpdateAction.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

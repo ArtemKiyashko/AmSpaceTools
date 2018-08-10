@@ -1,5 +1,6 @@
 ﻿using AmSpaceClient;
 using AmSpaceModels;
+using AmSpaceModels.Performance;
 using AmSpaceTools.Infrastructure;
 using System;
 using System.Collections.Generic;
@@ -40,7 +41,7 @@ namespace AmSpaceTools.ViewModels
 
         protected async void SetUpProfile()
         {
-            _profile = await _client.ProfileRequestAsync();
+            _profile = await _client.GetProfileAsync();
             _profileImageLink = _profile.Avatar;
             Name = $"{_profile.FirstName} {_profile.LastName}";
             JobTitle = _profile.ContractData.FirstOrDefault().Position.Name;

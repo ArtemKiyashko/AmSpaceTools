@@ -73,7 +73,7 @@ namespace AmSpaceModels
         public string TumblrUsername { get; set; }
 
         [JsonProperty("contract_data")]
-        public ContractDatum[] ContractData { get; set; }
+        public List<ContractDatum> ContractData { get; set; }
 
         [JsonProperty("count_certificates")]
         public CountCertificates CountCertificates { get; set; }
