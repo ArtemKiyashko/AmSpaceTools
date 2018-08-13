@@ -1,5 +1,6 @@
 ﻿using AmSpaceModels;
 using AmSpaceModels.Idp;
+using AmSpaceModels.Performance;
 using ExcelWorker;
 using log4net;
 using System;
@@ -58,6 +59,34 @@ namespace AmSpaceTools.Decorators
             catch (Exception ex)
             {
                 _logger.Error($"Error during reading rows from {fileName}", ex);
+                throw;
+            }
+        }
+
+        public IEnumerable<KpiExcelRow> ExctractKpiData(string fileName, string sheetName)
+        {
+            _logger.Info($"Extracting Kpis from {fileName}");
+            try
+            {
+                return _decoratee.ExctractKpiData(fileName, sheetName);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Error during extracting Kpis from {fileName}", ex);
+                throw;
+            }
+        }
+
+        public IEnumerable<GoalExcelRow> ExctractGoalData(string fileName, string sheetName)
+        {
+            _logger.Info($"Extracting Goals from {fileName}");
+            try
+            {
+                return _decoratee.ExctractGoalData(fileName, sheetName);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Error during extracting Goals from {fileName}", ex);
                 throw;
             }
         }

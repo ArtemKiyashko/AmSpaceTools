@@ -339,5 +339,15 @@ namespace AmSpaceClient
             var url = $"{string.Format(Endpoints.KpiNonFinancialCustomAdminEndpoint, userContract.Id)}{kpi.Id}/";
             return await DeleteAsyncWrapper(url);
         }
+
+        public void Dispose()
+        {
+            AmSpaceHttpClient = null;
+            IsAthorized = false;
+            LoginResult = null;
+            ClientId = null;
+            GrantPermissionType = null;
+            CookieContainer = null;
+        }
     }
 }

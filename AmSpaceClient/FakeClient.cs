@@ -481,5 +481,10 @@ namespace AmSpaceClient
         {
             throw new NotImplementedException();
         }
+
+        public void Dispose()
+        {
+            
+        }
     }
 }

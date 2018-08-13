@@ -51,8 +51,10 @@
     <Compile Include="Idp\Competency.cs" />
     <Compile Include="Idp\CompetencyAction.cs" />
     <Compile Include="Performance\Goal.cs" />
+    <Compile Include="Performance\GoalExcelRow.cs" />
     <Compile Include="Performance\Kpi.cs" />
     <Compile Include="Organization\People.cs" />
+    <Compile Include="Performance\KpiExcelRow.cs" />
     <Compile Include="Performance\Roadmaps.cs" />
     <Compile Include="Sap\SapDomain.cs" />
     <Compile Include="IAmSpaceEnvironment.cs" />

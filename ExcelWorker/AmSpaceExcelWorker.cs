@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AmSpaceModels.Idp;
+using AmSpaceModels.Performance;
+using EPPlus.DataExtractor;
 using OfficeOpenXml;
 
 namespace ExcelWorker
@@ -87,6 +89,47 @@ namespace ExcelWorker
                 header.AutoFitColumns();
                 ws.View.FreezePanes(2, 1);
                 excel.Save();
+            }
+        }
+
+        public IEnumerable<KpiExcelRow> ExctractKpiData(string fileName, string sheetName)
+        {
+            using (var file = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            using (var excel = new ExcelPackage(file))
+            {
+                var ws = string.IsNullOrEmpty(sheetName) ?
+                    excel.Workbook.Worksheets[1] :
+                    excel.Workbook.Worksheets[sheetName];
+                return ws.Extract<KpiExcelRow>()
+                    .WithProperty(p => p.Year, "A")
+                    .WithProperty(p => p.Country, "B")
+                    .WithProperty(p => p.Brand, "C")
+                    .WithProperty(p => p.Position, "D")
+                    .WithProperty(p => p.KpiDescription, "E")
+                    .WithProperty(p => p.KpiTarget, "F")
+                    .WithProperty(p => p.KpiType, "G")
+                    .GetData(2, ws.Dimension.End.Row);
+            }
+        }
+
+        public IEnumerable<GoalExcelRow> ExctractGoalData(string fileName, string sheetName)
+        {
+            using (var file = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            using (var excel = new ExcelPackage(file))
+            {
+                var ws = string.IsNullOrEmpty(sheetName) ?
+                    excel.Workbook.Worksheets[1] :
+                    excel.Workbook.Worksheets[sheetName];
+                return ws.Extract<GoalExcelRow>()
+                    .WithProperty(p => p.Year, "A")
+                    .WithProperty(p => p.Country, "B")
+                    .WithProperty(p => p.Brand, "C")
+                    .WithProperty(p => p.Position, "D")
+                    .WithProperty(p => p.Perspective, "E")
+                    .WithProperty(p => p.Goal, "F")
+                    .WithProperty(p => p.Weight, "G")
+                    .WithProperty(p => p.Kpi, "H")
+                    .GetData(2, ws.Dimension.End.Row);
             }
         }
     }

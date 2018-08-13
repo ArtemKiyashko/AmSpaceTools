@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 
 namespace AmSpaceClient
 {
-    public interface IAmSpaceClient
+    public interface IAmSpaceClient : IDisposable
     {
         Task<bool> LoginRequestAsync(string userName, SecureString password, IAmSpaceEnvironment environment);
         Task<Profile> GetProfileAsync();
