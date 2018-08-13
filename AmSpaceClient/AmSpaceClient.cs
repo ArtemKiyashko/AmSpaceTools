@@ -349,5 +349,30 @@ namespace AmSpaceClient
             GrantPermissionType = null;
             CookieContainer = null;
         }
+
+        public async Task<IEnumerable<Brand>> GetBrandsAsync()
+        {
+            return await GetAsyncWrapper<IEnumerable<Brand>>(Endpoints.BrandsEndpoint);
+        }
+
+        public async Task<IEnumerable<Country>> GetCountriesAsync(Brand brand)
+        {
+            var url = string.Format(Endpoints.CountriesEndpoint, brand.Id);
+            return await GetAsyncWrapper<IEnumerable<Country>>(url);
+        }
+
+        public async Task<IEnumerable<SearchUserResult>> FindUser(string query, Brand brand, OrganizationGroup orgGroup, UserStatus status, string domain)
+        {
+            var url = string.Format(Endpoints.SearchUsersEndpoint, query, brand.Id, orgGroup.Id, status, domain);
+            var pager = await GetAsyncWrapper<SearchUsers>(url);
+            var result = new List<SearchUserResult>();
+            result.AddRange(pager.Results);
+            while (!string.IsNullOrEmpty(pager.Next))
+            {
+                pager = await GetAsyncWrapper<SearchUsers>(pager.Next);
+                result.AddRange(pager.Results);
+            }
+            return result;
+        }
     }
 }

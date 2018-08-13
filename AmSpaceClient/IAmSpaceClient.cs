@@ -58,5 +58,8 @@ namespace AmSpaceClient
         Task<bool> DeleteGoalAsync(ContractDatum userContract, Roadmap roadmap, Goal goal);
         Task<bool> DeleteFinancialKpiAsync(ContractDatum userContract, Kpi kpi);
         Task<bool> DeleteNonFinancialKpiAsync(ContractDatum userContract, Kpi kpi);
+        Task<IEnumerable<Brand>> GetBrandsAsync();
+        Task<IEnumerable<Country>> GetCountriesAsync(Brand brand);
+        Task<IEnumerable<SearchUserResult>> FindUser(string query, Brand brand, OrganizationGroup orgGroup, UserStatus status, string domain);
     }
 }

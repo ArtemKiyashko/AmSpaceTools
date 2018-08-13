@@ -39,6 +39,17 @@ namespace AmSpaceClient
         /// </remarks>
         /// </summary>
         public string GoalsAdminEndpoint { get { return $"{BaseAddress}/api/v1/performance/goals/admin/{{0}}/roadmaps/{{1}}/goals/"; } }
+        public string BrandsEndpoint { get { return $"{BaseAddress}/api/v1/organization/brands/"; } }
+        /// <summary>
+        /// <remarks>Brand ID</remarks>
+        /// </summary>
+        public string CountriesEndpoint { get { return $"{BaseAddress}/api/v1/organization/brands/{{0}}/countries/"; } }
+        /// <summary>
+        /// <remarks>
+        /// User name, Brand ID, Organizational group (crew, managers), User status (active, suspended, terminated), domain name (PL, CZ, etc)
+        /// </remarks>
+        /// </summary>
+        public string SearchUsersEndpoint { get { return $"{BaseAddress}/api/v1/search/users/?query={{0}}&brand={{1}}&organization_group={{2}}&status={{3}}&domain={{4}}"; } }
 
         public string BaseAddress { get; private set; }
 

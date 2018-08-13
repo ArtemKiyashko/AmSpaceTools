@@ -50,6 +50,10 @@
     <Compile Include="BaseModel.cs" />
     <Compile Include="Idp\Competency.cs" />
     <Compile Include="Idp\CompetencyAction.cs" />
+    <Compile Include="Organization\Brand.cs" />
+    <Compile Include="Organization\Country.cs" />
+    <Compile Include="Organization\OrganizationGroup.cs" />
+    <Compile Include="Organization\SearchUsers.cs" />
     <Compile Include="Performance\Goal.cs" />
     <Compile Include="Performance\GoalExcelRow.cs" />
     <Compile Include="Performance\Kpi.cs" />

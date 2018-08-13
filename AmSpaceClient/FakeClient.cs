@@ -486,5 +486,20 @@ namespace AmSpaceClient
         {
             
         }
+
+        public Task<IEnumerable<Brand>> GetBrandsAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Country>> GetCountriesAsync(Brand brand)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<SearchUserResult>> FindUser(string query, Brand brand, OrganizationGroup orgGroup, UserStatus status, string domain)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
