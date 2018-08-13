@@ -101,14 +101,14 @@ namespace ExcelWorker
                     excel.Workbook.Worksheets[1] :
                     excel.Workbook.Worksheets[sheetName];
                 return ws.Extract<KpiExcelRow>()
-                    .WithProperty(p => p.Year, "A")
+                    .WithProperty(p => p.Year, "A", (_) => Int32.Parse(_.ToString()))
                     .WithProperty(p => p.Country, "B")
                     .WithProperty(p => p.Brand, "C")
                     .WithProperty(p => p.Position, "D")
                     .WithProperty(p => p.KpiDescription, "E")
                     .WithProperty(p => p.KpiTarget, "F")
                     .WithProperty(p => p.KpiType, "G")
-                    .GetData(2, ws.Dimension.End.Row);
+                    .GetData(2, ws.Dimension.End.Row).ToList();
             }
         }
 
@@ -121,15 +121,15 @@ namespace ExcelWorker
                     excel.Workbook.Worksheets[1] :
                     excel.Workbook.Worksheets[sheetName];
                 return ws.Extract<GoalExcelRow>()
-                    .WithProperty(p => p.Year, "A")
+                    .WithProperty(p => p.Year, "A", (_) => Int32.Parse(_.ToString()))
                     .WithProperty(p => p.Country, "B")
                     .WithProperty(p => p.Brand, "C")
                     .WithProperty(p => p.Position, "D")
                     .WithProperty(p => p.Perspective, "E")
                     .WithProperty(p => p.Goal, "F")
-                    .WithProperty(p => p.Weight, "G")
+                    .WithProperty(p => p.Weight, "G", (_) => Int32.Parse(_.ToString()))
                     .WithProperty(p => p.Kpi, "H")
-                    .GetData(2, ws.Dimension.End.Row);
+                    .GetData(2, ws.Dimension.End.Row).ToList();
             }
         }
     }
