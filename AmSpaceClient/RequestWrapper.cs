@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 namespace AmSpaceClient
 {
 
-    public class RequestWrapper : IRequestsWrapper
+    public class RequestWrapper : IRequestWrapper
     {
         public CookieContainer CookieContainer { get; private set; }
         public HttpClient AmSpaceHttpClient { get; private set; }

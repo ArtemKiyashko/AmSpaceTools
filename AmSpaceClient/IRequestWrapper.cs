@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace AmSpaceClient
 {
-    public interface IRequestsWrapper
+    public interface IRequestWrapper
     {
         CookieContainer CookieContainer { get; }
         HttpClient AmSpaceHttpClient { get; }

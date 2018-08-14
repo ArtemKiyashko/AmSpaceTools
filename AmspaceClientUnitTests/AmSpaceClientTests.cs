@@ -23,16 +23,16 @@ namespace AmspaceClientUnitTests
     public class AmSpaceClientTests
     {
         private Mock<AmSpaceClient.AmSpaceHttpClient> _amSpaceClientMock;
-        private Mock<IRequestsWrapper> _requestsWrapper;
+        private Mock<IRequestWrapper> _requestsWrapper;
         private IAmSpaceClient _amSpaceClient;
 
         [SetUp]
         public void SetUp()
         {
-            _requestsWrapper = new Mock<IRequestsWrapper>();
+            _requestsWrapper = new Mock<IRequestWrapper>();
             _amSpaceClientMock = new Mock<AmSpaceClient.AmSpaceHttpClient>();
             _amSpaceClientMock.SetupGet(c => c.Endpoints).Returns(new ApiEndpoints("https://a.b"));
-            _amSpaceClientMock.SetupGet(c => c.RequestsWrapper).Returns(_requestsWrapper.Object);
+            _amSpaceClientMock.SetupGet(c => c.RequestWrapper).Returns(_requestsWrapper.Object);
             _amSpaceClient = _amSpaceClientMock.Object;
         }
 
