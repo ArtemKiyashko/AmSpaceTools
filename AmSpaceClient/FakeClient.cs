@@ -266,13 +266,13 @@ namespace AmSpaceClient
 
         public Task<Profile> GetProfileAsync()
         {
-            ContractDatum fakeContract = new ContractDatum{
+            ContractProfile fakeContract = new ContractProfile{
                 Position = new Position
                 {
                     Name = "Fake Department"
                 }
             };
-            var fakeContractData = new List<ContractDatum> { fakeContract };
+            var fakeContractData = new List<ContractProfile> { fakeContract };
 
             var result = new Profile
             {
@@ -407,22 +407,22 @@ namespace AmSpaceClient
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Kpi>> GetFinancialKpiAsync(ContractDatum userContract)
+        public Task<IEnumerable<Kpi>> GetFinancialKpiAsync(ContractSearch userContract)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Kpi>> GetNonFinancialKpiAsync(ContractDatum userContract)
+        public Task<IEnumerable<Kpi>> GetNonFinancialKpiAsync(ContractSearch userContract)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Goal>> GetGoalsAsync(ContractDatum userContract, Roadmap roadmap)
+        public Task<IEnumerable<Goal>> GetGoalsAsync(ContractSearch userContract, Roadmap roadmap)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Roadmaps> GetRoadmapsAsync(ContractDatum userContract)
+        public Task<Roadmaps> GetRoadmapsAsync(ContractSearch userContract)
         {
             throw new NotImplementedException();
         }
@@ -432,52 +432,52 @@ namespace AmSpaceClient
             throw new NotImplementedException();
         }
 
-        public Task<Kpi> CreateFinancialKpiAsync(ContractDatum userContract, Kpi kpi)
+        public Task<Kpi> CreateFinancialKpiAsync(ContractSearch userContract, Kpi kpi)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Kpi> CreateNonFinancialKpiAsync(ContractDatum userContract, Kpi kpi)
+        public Task<Kpi> CreateNonFinancialKpiAsync(ContractSearch userContract, Kpi kpi)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Kpi> UpdateFinancialKpiAsync(ContractDatum userContract, Kpi kpi)
+        public Task<Kpi> UpdateFinancialKpiAsync(ContractSearch userContract, Kpi kpi)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Kpi> UpdateNonFinancialKpiAsync(ContractDatum userContract, Kpi kpi)
+        public Task<Kpi> UpdateNonFinancialKpiAsync(ContractSearch userContract, Kpi kpi)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Roadmap> CreateRoadmapAsync(ContractDatum userContract, Roadmap roadmap)
+        public Task<Roadmap> CreateRoadmapAsync(ContractSearch userContract, Roadmap roadmap)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Goal> CreateGoalAsync(ContractDatum userContract, Roadmap roadmap, Goal goal)
+        public Task<Goal> CreateGoalAsync(ContractSearch userContract, Roadmap roadmap, Goal goal)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Goal> UpdateGoalAsync(ContractDatum userContract, Roadmap roadmap, Goal goal)
+        public Task<Goal> UpdateGoalAsync(ContractSearch userContract, Roadmap roadmap, Goal goal)
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> DeleteGoalAsync(ContractDatum userContract, Roadmap roadmap, Goal goal)
+        public Task<bool> DeleteGoalAsync(ContractSearch userContract, Roadmap roadmap, Goal goal)
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> DeleteFinancialKpiAsync(ContractDatum userContract, Kpi kpi)
+        public Task<bool> DeleteFinancialKpiAsync(ContractSearch userContract, Kpi kpi)
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> DeleteNonFinancialKpiAsync(ContractDatum userContract, Kpi kpi)
+        public Task<bool> DeleteNonFinancialKpiAsync(ContractSearch userContract, Kpi kpi)
         {
             throw new NotImplementedException();
         }
@@ -498,6 +498,11 @@ namespace AmSpaceClient
         }
 
         public Task<IEnumerable<SearchUserResult>> FindUser(string query, Brand brand, OrganizationGroup orgGroup, UserStatus status, string domain)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<OrganizationGroup>> GetOrganizationGroupsAsync()
         {
             throw new NotImplementedException();
         }

@@ -251,25 +251,25 @@ namespace AmSpaceClient
             return await GetAsyncWrapper<IEnumerable<People>>(url.ToString());
         }
 
-        public async Task<IEnumerable<Kpi>> GetFinancialKpiAsync(ContractDatum userContract)
+        public async Task<IEnumerable<Kpi>> GetFinancialKpiAsync(ContractSearch userContract)
         {
             var url = string.Format(Endpoints.KpiFinancialCustomAdminEndpoint, userContract.Id);
             return await GetAsyncWrapper<IEnumerable<Kpi>>(url);
         }
 
-        public async Task<IEnumerable<Kpi>> GetNonFinancialKpiAsync(ContractDatum userContract)
+        public async Task<IEnumerable<Kpi>> GetNonFinancialKpiAsync(ContractSearch userContract)
         {
             var url = string.Format(Endpoints.KpiNonFinancialCustomAdminEndpoint, userContract.Id);
             return await GetAsyncWrapper<IEnumerable<Kpi>>(url);
         }
 
-        public async Task<IEnumerable<Goal>> GetGoalsAsync(ContractDatum userContract, Roadmap roadmap)
+        public async Task<IEnumerable<Goal>> GetGoalsAsync(ContractSearch userContract, Roadmap roadmap)
         {
             var url = string.Format(Endpoints.GoalsAdminEndpoint, userContract.Id, roadmap.Year);
             return await GetAsyncWrapper<IEnumerable<Goal>>(url);
         }
 
-        public async Task<Roadmaps> GetRoadmapsAsync(ContractDatum userContract)
+        public async Task<Roadmaps> GetRoadmapsAsync(ContractSearch userContract)
         {
             var url = string.Format(Endpoints.RoadmapsAdminEndpoint, userContract.Id);
             return await GetAsyncWrapper<Roadmaps>(url);
@@ -280,61 +280,61 @@ namespace AmSpaceClient
             return await GetAsyncWrapper<Profile>($"{Endpoints.ProfileEndpoint}{Id}");
         }
 
-        public async Task<Kpi> CreateFinancialKpiAsync(ContractDatum userContract, Kpi kpi)
+        public async Task<Kpi> CreateFinancialKpiAsync(ContractSearch userContract, Kpi kpi)
         {
             var url = string.Format(Endpoints.KpiFinancialCustomAdminEndpoint, userContract.Id);
             return await PostAsyncWrapper<Kpi, Kpi>(kpi, url);
         }
 
-        public async Task<Kpi> CreateNonFinancialKpiAsync(ContractDatum userContract, Kpi kpi)
+        public async Task<Kpi> CreateNonFinancialKpiAsync(ContractSearch userContract, Kpi kpi)
         {
             var url = string.Format(Endpoints.KpiNonFinancialCustomAdminEndpoint, userContract.Id);
             return await PostAsyncWrapper<Kpi, Kpi>(kpi, url);
         }
 
-        public async Task<Kpi> UpdateFinancialKpiAsync(ContractDatum userContract, Kpi kpi)
+        public async Task<Kpi> UpdateFinancialKpiAsync(ContractSearch userContract, Kpi kpi)
         {
             var url = $"{string.Format(Endpoints.KpiFinancialCustomAdminEndpoint, userContract.Id)}{kpi.Id}/";
             return await PatchAsyncWrapper<Kpi, Kpi>(kpi, url);
         }
 
-        public async Task<Kpi> UpdateNonFinancialKpiAsync(ContractDatum userContract, Kpi kpi)
+        public async Task<Kpi> UpdateNonFinancialKpiAsync(ContractSearch userContract, Kpi kpi)
         {
             var url = $"{string.Format(Endpoints.KpiNonFinancialCustomAdminEndpoint, userContract.Id)}{kpi.Id}/";
             return await PatchAsyncWrapper<Kpi, Kpi>(kpi, url);
         }
 
-        public async Task<Roadmap> CreateRoadmapAsync(ContractDatum userContract, Roadmap roadmap)
+        public async Task<Roadmap> CreateRoadmapAsync(ContractSearch userContract, Roadmap roadmap)
         {
             var url = string.Format(Endpoints.RoadmapsAdminEndpoint, userContract.Id);
             return await PostAsyncWrapper<Roadmap, Roadmap>(roadmap, url);
         }
 
-        public async Task<Goal> CreateGoalAsync(ContractDatum userContract, Roadmap roadmap, Goal goal)
+        public async Task<Goal> CreateGoalAsync(ContractSearch userContract, Roadmap roadmap, Goal goal)
         {
             var url = string.Format(Endpoints.GoalsAdminEndpoint, userContract.Id, roadmap.Year);
             return await PostAsyncWrapper<Goal, Goal>(goal, url);
         }
 
-        public async Task<Goal> UpdateGoalAsync(ContractDatum userContract, Roadmap roadmap, Goal goal)
+        public async Task<Goal> UpdateGoalAsync(ContractSearch userContract, Roadmap roadmap, Goal goal)
         {
             var url = $"{string.Format(Endpoints.GoalsAdminEndpoint, userContract.Id, roadmap.Year)}{goal.Id}/";
             return await PatchAsyncWrapper<Goal, Goal>(goal, url);
         }
 
-        public async Task<bool> DeleteGoalAsync(ContractDatum userContract, Roadmap roadmap, Goal goal)
+        public async Task<bool> DeleteGoalAsync(ContractSearch userContract, Roadmap roadmap, Goal goal)
         {
             var url = $"{string.Format(Endpoints.GoalsAdminEndpoint, userContract.Id, roadmap.Year)}{goal.Id}/";
             return await DeleteAsyncWrapper(url);
         }
 
-        public async Task<bool> DeleteFinancialKpiAsync(ContractDatum userContract, Kpi kpi)
+        public async Task<bool> DeleteFinancialKpiAsync(ContractSearch userContract, Kpi kpi)
         {
             var url = $"{string.Format(Endpoints.KpiFinancialCustomAdminEndpoint, userContract.Id)}{kpi.Id}/";
             return await DeleteAsyncWrapper(url);
         }
 
-        public async Task<bool> DeleteNonFinancialKpiAsync(ContractDatum userContract, Kpi kpi)
+        public async Task<bool> DeleteNonFinancialKpiAsync(ContractSearch userContract, Kpi kpi)
         {
             var url = $"{string.Format(Endpoints.KpiNonFinancialCustomAdminEndpoint, userContract.Id)}{kpi.Id}/";
             return await DeleteAsyncWrapper(url);
@@ -363,7 +363,7 @@ namespace AmSpaceClient
 
         public async Task<IEnumerable<SearchUserResult>> FindUser(string query, Brand brand, OrganizationGroup orgGroup, UserStatus status, string domain)
         {
-            var url = string.Format(Endpoints.SearchUsersEndpoint, query, brand.Id, orgGroup.Id, status, domain);
+            var url = string.Format(Endpoints.SearchUsersEndpoint, query, brand.Id, orgGroup.Id, (int)status, domain);
             var pager = await GetAsyncWrapper<SearchUsers>(url);
             var result = new List<SearchUserResult>();
             result.AddRange(pager.Results);
@@ -373,6 +373,11 @@ namespace AmSpaceClient
                 result.AddRange(pager.Results);
             }
             return result;
+        }
+
+        public async Task<IEnumerable<OrganizationGroup>> GetOrganizationGroupsAsync()
+        {
+            return await GetAsyncWrapper<IEnumerable<OrganizationGroup>>(Endpoints.OrganizationGroupsEndpoint);
         }
     }
 }

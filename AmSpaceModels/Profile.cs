@@ -73,7 +73,7 @@ namespace AmSpaceModels
         public string TumblrUsername { get; set; }
 
         [JsonProperty("contract_data")]
-        public List<ContractDatum> ContractData { get; set; }
+        public List<ContractProfile> ContractData { get; set; }
 
         [JsonProperty("count_certificates")]
         public CountCertificates CountCertificates { get; set; }
@@ -133,13 +133,13 @@ namespace AmSpaceModels
         public bool? CanDevelop { get; set; }
     }
 
-    public partial class ContractDatum
+    public partial class ContractProfile
     {
         [JsonProperty("id")]
         public long? Id { get; set; }
 
         [JsonProperty("manager")]
-        public ContractDatumManager Manager { get; set; }
+        public ContractProfileManager Manager { get; set; }
 
         [JsonProperty("additional_approver")]
         public object AdditionalApprover { get; set; }
@@ -187,7 +187,7 @@ namespace AmSpaceModels
         public long? LevelLevel { get; set; }
     }
 
-    public partial class ContractDatumManager
+    public partial class ContractProfileManager
     {
         [JsonProperty("id")]
         public long? Id { get; set; }

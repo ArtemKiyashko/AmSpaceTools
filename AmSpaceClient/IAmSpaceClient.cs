@@ -44,22 +44,23 @@ namespace AmSpaceClient
         Task<IEnumerable<Position>> GetPositionsAsync();
         Task<IEnumerable<People>> GetPeopleAsync();
         Task<IEnumerable<People>> GetPeopleInPositionsAsync(IEnumerable<Position> positions);
-        Task<IEnumerable<Kpi>> GetFinancialKpiAsync(ContractDatum userContract);
-        Task<IEnumerable<Kpi>> GetNonFinancialKpiAsync(ContractDatum userContract);
-        Task<IEnumerable<Goal>> GetGoalsAsync(ContractDatum userContract, Roadmap roadmap);
-        Task<Roadmaps> GetRoadmapsAsync(ContractDatum userContract);
-        Task<Kpi> CreateFinancialKpiAsync(ContractDatum userContract, Kpi kpi);
-        Task<Kpi> CreateNonFinancialKpiAsync(ContractDatum userContract, Kpi kpi);
-        Task<Kpi> UpdateFinancialKpiAsync(ContractDatum userContract, Kpi kpi);
-        Task<Kpi> UpdateNonFinancialKpiAsync(ContractDatum userContract, Kpi kpi);
-        Task<Roadmap> CreateRoadmapAsync(ContractDatum userContract, Roadmap roadmap);
-        Task<Goal> CreateGoalAsync(ContractDatum userContract, Roadmap roadmap, Goal goal);
-        Task<Goal> UpdateGoalAsync(ContractDatum userContract, Roadmap roadmap, Goal goal);
-        Task<bool> DeleteGoalAsync(ContractDatum userContract, Roadmap roadmap, Goal goal);
-        Task<bool> DeleteFinancialKpiAsync(ContractDatum userContract, Kpi kpi);
-        Task<bool> DeleteNonFinancialKpiAsync(ContractDatum userContract, Kpi kpi);
+        Task<IEnumerable<Kpi>> GetFinancialKpiAsync(ContractSearch userContract);
+        Task<IEnumerable<Kpi>> GetNonFinancialKpiAsync(ContractSearch userContract);
+        Task<IEnumerable<Goal>> GetGoalsAsync(ContractSearch userContract, Roadmap roadmap);
+        Task<Roadmaps> GetRoadmapsAsync(ContractSearch userContract);
+        Task<Kpi> CreateFinancialKpiAsync(ContractSearch userContract, Kpi kpi);
+        Task<Kpi> CreateNonFinancialKpiAsync(ContractSearch userContract, Kpi kpi);
+        Task<Kpi> UpdateFinancialKpiAsync(ContractSearch userContract, Kpi kpi);
+        Task<Kpi> UpdateNonFinancialKpiAsync(ContractSearch userContract, Kpi kpi);
+        Task<Roadmap> CreateRoadmapAsync(ContractSearch userContract, Roadmap roadmap);
+        Task<Goal> CreateGoalAsync(ContractSearch userContract, Roadmap roadmap, Goal goal);
+        Task<Goal> UpdateGoalAsync(ContractSearch userContract, Roadmap roadmap, Goal goal);
+        Task<bool> DeleteGoalAsync(ContractSearch userContract, Roadmap roadmap, Goal goal);
+        Task<bool> DeleteFinancialKpiAsync(ContractSearch userContract, Kpi kpi);
+        Task<bool> DeleteNonFinancialKpiAsync(ContractSearch userContract, Kpi kpi);
         Task<IEnumerable<Brand>> GetBrandsAsync();
         Task<IEnumerable<Country>> GetCountriesAsync(Brand brand);
         Task<IEnumerable<SearchUserResult>> FindUser(string query, Brand brand, OrganizationGroup orgGroup, UserStatus status, string domain);
+        Task<IEnumerable<OrganizationGroup>> GetOrganizationGroupsAsync();
     }
 }

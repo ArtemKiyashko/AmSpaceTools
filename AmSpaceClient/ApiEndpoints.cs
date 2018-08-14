@@ -50,6 +50,7 @@ namespace AmSpaceClient
         /// </remarks>
         /// </summary>
         public string SearchUsersEndpoint { get { return $"{BaseAddress}/api/v1/search/users/?query={{0}}&brand={{1}}&organization_group={{2}}&status={{3}}&domain={{4}}"; } }
+        public string OrganizationGroupsEndpoint { get { return $"{BaseAddress}/api/v1/organization/organization_groups/"; } }
 
         public string BaseAddress { get; private set; }
 

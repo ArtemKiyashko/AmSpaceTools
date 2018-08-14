@@ -40,13 +40,13 @@ namespace AmSpaceModels.Organization
         public string LastName { get; set; }
 
         [JsonProperty("contracts")]
-        public List<Contract> Contracts { get; set; }
+        public List<ContractSearch> Contracts { get; set; }
 
         [JsonProperty("roles")]
         public List<string> Roles { get; set; }
     }
 
-    public partial class Contract
+    public partial class ContractSearch
     {
         [JsonProperty("id")]
         public long Id { get; set; }
