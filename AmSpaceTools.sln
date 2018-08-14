@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmSpaceModels", "AmSpaceMod
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelWorker", "ExcelWorker\ExcelWorker.csproj", "{EBE6D9BA-8E09-4216-8663-84AF37F661FE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmspaceClientUnitTests", "AmspaceClientUnitTests\AmspaceClientUnitTests.csproj", "{8DE7A1D2-38E6-4557-A148-DABE64AC9192}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{EBE6D9BA-8E09-4216-8663-84AF37F661FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EBE6D9BA-8E09-4216-8663-84AF37F661FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EBE6D9BA-8E09-4216-8663-84AF37F661FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8DE7A1D2-38E6-4557-A148-DABE64AC9192}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8DE7A1D2-38E6-4557-A148-DABE64AC9192}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8DE7A1D2-38E6-4557-A148-DABE64AC9192}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8DE7A1D2-38E6-4557-A148-DABE64AC9192}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

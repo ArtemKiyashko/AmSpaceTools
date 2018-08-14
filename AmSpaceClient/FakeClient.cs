@@ -12,6 +12,7 @@ using AmSpaceModels.Idp;
 using AmSpaceModels.Organization;
 using AmSpaceModels.Sap;
 using AmSpaceModels.Performance;
+using System.ComponentModel;
 
 namespace AmSpaceClient
 {
@@ -503,6 +504,10 @@ namespace AmSpaceClient
         }
 
         public Task<IEnumerable<OrganizationGroup>> GetOrganizationGroupsAsync()
+        {
+            throw new NotImplementedException();
+        }
+        public Task<BitmapSource> GetAvatarAsync(string link, IImageConverter converter = null)
         {
             throw new NotImplementedException();
         }
