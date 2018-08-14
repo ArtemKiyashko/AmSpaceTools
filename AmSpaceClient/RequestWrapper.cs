@@ -12,12 +12,12 @@ using Newtonsoft.Json;
 namespace AmSpaceClient
 {
 
-    public class RequestsWrapper : IRequestsWrapper
+    public class RequestWrapper : IRequestsWrapper
     {
         public CookieContainer CookieContainer { get; private set; }
         public HttpClient AmSpaceHttpClient { get; private set; }
 
-        public RequestsWrapper()
+        public RequestWrapper()
         {
             CookieContainer = new CookieContainer();
 

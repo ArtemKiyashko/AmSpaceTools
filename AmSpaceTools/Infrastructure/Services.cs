@@ -39,8 +39,7 @@ namespace AmSpaceTools.Infrastructure
         static Services()
         {
             _container = new Container(_ => {
-                _.For<IRequestsWrapper>().Use<RequestsWrapper>().Singleton();
-                _.For<IAmSpaceClient>().Use<AmSpaceClient.AmSpaceClient>().Singleton();
+                _.For<IAmSpaceClient>().Use<AmSpaceClient.AmSpaceHttpClient>().Singleton();
                 _.For<MainWindowViewModel>().Use<MainWindowViewModel>().Singleton();
                 _.For<IExcelWorker>().Use<AmSpaceExcelWorker>().Transient();
                 _.For<IExcelWorker>().DecorateAllWith<ExcelWorkerDecorator>();

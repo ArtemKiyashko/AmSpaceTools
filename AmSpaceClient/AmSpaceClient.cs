@@ -12,29 +12,37 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using UriBuilderExtended;
 
 namespace AmSpaceClient
 {
-    public class AmSpaceClient : IAmSpaceClient
+    public class AmSpaceHttpClient : IAmSpaceClient
     {
-        
+        private IRequestsWrapper _requestsWrapper;
+
         public bool IsAthorized { get; private set; }
         public LoginResult LoginResult { get; private set; }
         public string ClientId { get; private set; }
         public string GrantPermissionType { get; private set; }
         public virtual ApiEndpoints Endpoints { get; private set; }
-        public virtual IRequestsWrapper RequestsWrapper { get; private set; }
-        
-        
-        public AmSpaceClient()
+        public virtual IRequestsWrapper RequestsWrapper
         {
-            RequestsWrapper = new RequestsWrapper();
-            IsAthorized = false;
-            
+            get
+            {
+                if (_requestsWrapper == null)
+                    _requestsWrapper = new RequestWrapper();
+                return _requestsWrapper;
+            }
         }
-       
+
+
+        public AmSpaceHttpClient()
+        {
+            IsAthorized = false;
+        }
+
         public async Task<bool> LoginRequestAsync(string userName, SecureString password, IAmSpaceEnvironment environment)
         {
             if (IsAthorized) return true;
@@ -56,15 +64,14 @@ namespace AmSpaceClient
             return true;
         }
 
-        public async Task<BitmapSource> GetAvatarAsync(string link, IImageConverter converter = null)
+        public async Task<BitmapSource> GetAvatarAsync(string link)
         {
-            //  if (!IsAthorized) throw new UnauthorizedAccessException();
             var result = await RequestsWrapper.GetAsyncWrapper(link);
             if (!result.IsSuccessStatusCode)
                 result = await RequestsWrapper.GetAsyncWrapper($"{Endpoints.BaseAddress}/static/avatar.png");
             await result.ValidateAsync();
             var content = await result.Content.ReadAsByteArrayAsync();
-            return (converter ?? new BitmapSourceConverter()).ConvertFromByteArray(content);
+            return (BitmapSource)new ImageSourceConverter().ConvertFrom(content);
         }
 
         public async Task<IEnumerable<Competency>> GetCompetenciesAsync()
@@ -260,7 +267,7 @@ namespace AmSpaceClient
 
         public void Dispose()
         {
-            RequestsWrapper = null;
+            _requestsWrapper = null;
             IsAthorized = false;
             LoginResult = null;
             ClientId = null;

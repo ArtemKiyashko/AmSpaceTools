@@ -14,16 +14,13 @@ namespace AmSpaceClient
         public static async Task<TOutput> ValidateAsync<TOutput>(this HttpResponseMessage response) where TOutput : class
         {
             var resultContent = await response.Content.ReadAsStringAsync();
-            if (!response.IsSuccessStatusCode)
-            {
-                var error = JsonConvert.DeserializeObject<AmSpaceError>(resultContent);
-                throw new Exception(error.ErrorDescription);
-            }
             try
             {
+                if (!response.IsSuccessStatusCode)
+                    response.TryConverToAmSpaceError(resultContent);
                 return JsonConvert.DeserializeObject<TOutput>(resultContent);
             }
-            catch(Exception)
+            catch (Exception)
             {
                 throw;
             }
@@ -31,25 +28,28 @@ namespace AmSpaceClient
 
         public static async Task<bool> ValidateAsync(this HttpResponseMessage response)
         {
-            
+            var resultContent = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode)
-            {
-                var resultContent = await response.Content.ReadAsStringAsync();
-                var error = new AmSpaceError();
-                try
-                {
-                    error = JsonConvert.DeserializeObject<AmSpaceError>(resultContent);
-                }
-                finally
-                {
-                    throw new Exception(
-                    error.ErrorDescription ??
-                    error.Details ??
-                    error.MissingFields
-                    );
-                }
-            }
+                response.TryConverToAmSpaceError(resultContent);
             return true;
         }
+
+        private static void TryConverToAmSpaceError(this HttpResponseMessage response, string resultContent)
+        {
+            try
+            {
+                var error = JsonConvert.DeserializeObject<AmSpaceError>(resultContent);
+                throw new Exception(
+                        error.ErrorDescription ??
+                        error.Details ??
+                        error.MissingFields);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
     }
 }

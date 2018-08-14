@@ -24,7 +24,7 @@ namespace AmSpaceClient
         Task<CompetencyAction> GetCompetencyActionsAsync(long competencyId);
         Task<bool> UpdateActionAsync(UpdateAction model, long competencyId);
         Task<bool> LogoutRequestAsync();
-        Task<BitmapSource> GetAvatarAsync(string link, IImageConverter converter = null);
+        Task<BitmapSource> GetAvatarAsync(string link);
         Task<IEnumerable<AmspaceDomain>> GetOrganizationStructureAsync();
         Task<IEnumerable<AmspaceUser>> GetDomainUsersAsync(int domainId);
         /// <summary>

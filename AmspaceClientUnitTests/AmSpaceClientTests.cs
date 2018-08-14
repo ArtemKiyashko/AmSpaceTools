@@ -13,13 +13,16 @@ using System.Net.Http.Headers;
 using System.Windows.Media.Imaging;
 using System.ComponentModel;
 using System.Globalization;
+using AmspaceClientUnitTests.Extensions;
+using System.Windows.Media;
+using System.IO;
 
 namespace AmspaceClientUnitTests
 {
     [TestFixture]
     public class AmSpaceClientTests
     {
-        private Mock<AmSpaceClient.AmSpaceClient> _amSpaceClientMock;
+        private Mock<AmSpaceClient.AmSpaceHttpClient> _amSpaceClientMock;
         private Mock<IRequestsWrapper> _requestsWrapper;
         private IAmSpaceClient _amSpaceClient;
 
@@ -27,7 +30,7 @@ namespace AmspaceClientUnitTests
         public void SetUp()
         {
             _requestsWrapper = new Mock<IRequestsWrapper>();
-            _amSpaceClientMock = new Mock<AmSpaceClient.AmSpaceClient>();
+            _amSpaceClientMock = new Mock<AmSpaceClient.AmSpaceHttpClient>();
             _amSpaceClientMock.SetupGet(c => c.Endpoints).Returns(new ApiEndpoints("https://a.b"));
             _amSpaceClientMock.SetupGet(c => c.RequestsWrapper).Returns(_requestsWrapper.Object);
             _amSpaceClient = _amSpaceClientMock.Object;
@@ -78,21 +81,19 @@ namespace AmspaceClientUnitTests
             _requestsWrapper.Verify(rw => rw.AddAuthHeaders(It.IsAny<AuthenticationHeaderValue>()), Times.AtLeastOnce);
         }
 
+        /// <summary>
+        /// Should be re-designed as we dont throw typed Exception, we forward them from AmSpace
+        /// </summary>
         [Test]
         public void GetAvatarAsync_WhenCalledWithoutPriorAuth_Throws()
         {
             var response = new HttpResponseMessage(HttpStatusCode.Unauthorized);
-            response.Content = new StringContent("a");
-            var converterMock = new Mock<IImageConverter>();
-            converterMock.Setup(cm => cm.ConvertFromByteArray(It.IsAny<byte[]>())).Returns(new BitmapImage());
-
+            response.Content = new StringContent("{}");
             _requestsWrapper
                 .Setup(rw => rw.GetAsyncWrapper(It.IsAny<string>()))
                 .Returns(Task.FromResult(response));
-
-            AsyncTestDelegate call = () => _amSpaceClient.GetAvatarAsync("a", converterMock.Object);
-
-            Assert.ThrowsAsync(Is.TypeOf(typeof(Exception)), call);
+            AsyncTestDelegate call = () => _amSpaceClient.GetAvatarAsync("a");
+            Assert.ThrowsAsync(typeof(Exception), call);
         }
 
         [Test]
@@ -101,15 +102,14 @@ namespace AmspaceClientUnitTests
             var response1 = new HttpResponseMessage(HttpStatusCode.Unauthorized);
             response1.Content = new StringContent("a");
             var response2 = new HttpResponseMessage(HttpStatusCode.OK);
-            response1.Content = new StringContent("b");
+            response2.Content = new ByteArrayContent(ImageExtensions.CreateRandomBitmap().ToArray());
+
             _requestsWrapper
                 .SetupSequence(rw => rw.GetAsyncWrapper(It.IsAny<string>()))
                 .Returns(Task.FromResult(response1))
                 .Returns(Task.FromResult(response2));
-            var converterMock = new Mock<IImageConverter>();
-            converterMock.Setup(cm => cm.ConvertFromByteArray(It.IsAny<byte[]>())).Returns(new BitmapImage());
 
-            var result = _amSpaceClient.GetAvatarAsync("a", converterMock.Object);
+            var result = _amSpaceClient.GetAvatarAsync("a");
 
             _requestsWrapper.Verify(rw => rw.GetAsyncWrapper(It.IsAny<string>()), Times.Exactly(2));
         }
