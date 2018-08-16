@@ -16,10 +16,10 @@ namespace AmSpaceModels.Performance
         public string Description { get; set; }
 
         [JsonProperty("weight")]
-        public object Weight { get; set; }
+        public int? Weight { get; set; }
 
         [JsonProperty("perspective")]
-        public long Perspective { get; set; }
+        public Perspective Perspective { get; set; }
 
         [JsonProperty("status")]
         public long Status { get; set; }
@@ -34,10 +34,10 @@ namespace AmSpaceModels.Performance
         public DateTimeOffset UpdatedAt { get; set; }
 
         [JsonProperty("created_by")]
-        public long CreatedBy { get; set; }
+        public long? CreatedBy { get; set; }
 
         [JsonProperty("updated_by")]
-        public long UpdatedBy { get; set; }
+        public long? UpdatedBy { get; set; }
 
         [JsonProperty("kpi")]
         public Kpi Kpi { get; set; }

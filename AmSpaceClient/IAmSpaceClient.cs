@@ -54,7 +54,8 @@ namespace AmSpaceClient
         Task<Kpi> UpdateFinancialKpiAsync(ContractSearch userContract, Kpi kpi);
         Task<Kpi> UpdateNonFinancialKpiAsync(ContractSearch userContract, Kpi kpi);
         Task<Roadmap> CreateRoadmapAsync(ContractSearch userContract, Roadmap roadmap);
-        Task<Goal> CreateGoalAsync(ContractSearch userContract, Roadmap roadmap, Goal goal);
+        Task<Roadmap> UpdateRoadmapAsync(ContractSearch userContract, Roadmap roadmap);
+        Task<Goal> CreateGoalAsync(ContractSearch userContract, Roadmap roadmap, GoalNew goal);
         Task<Goal> UpdateGoalAsync(ContractSearch userContract, Roadmap roadmap, Goal goal);
         Task<bool> DeleteGoalAsync(ContractSearch userContract, Roadmap roadmap, Goal goal);
         Task<bool> DeleteFinancialKpiAsync(ContractSearch userContract, Kpi kpi);
@@ -63,5 +64,6 @@ namespace AmSpaceClient
         Task<IEnumerable<Country>> GetCountriesAsync(Brand brand);
         Task<IEnumerable<SearchUserResult>> FindUser(string query, Brand brand, OrganizationGroup orgGroup, UserStatus status, string domain);
         Task<IEnumerable<OrganizationGroup>> GetOrganizationGroupsAsync();
+        Task<IEnumerable<GoalWeight>> UpdateGoalsWeight(IEnumerable<GoalWeight> weights, ContractSearch userContract, Roadmap roadmap);
     }
 }

@@ -234,10 +234,10 @@ namespace AmSpaceClient
             return await RequestWrapper.PostAsyncWrapper<Roadmap, Roadmap>(roadmap, url);
         }
 
-        public async Task<Goal> CreateGoalAsync(ContractSearch userContract, Roadmap roadmap, Goal goal)
+        public async Task<Goal> CreateGoalAsync(ContractSearch userContract, Roadmap roadmap, GoalNew goal)
         {
             var url = string.Format(Endpoints.GoalsAdminEndpoint, userContract.Id, roadmap.Year);
-            return await RequestWrapper.PostAsyncWrapper<Goal, Goal>(goal, url);
+            return await RequestWrapper.PostAsyncWrapper<GoalNew, Goal>(goal, url);
         }
 
         public async Task<Goal> UpdateGoalAsync(ContractSearch userContract, Roadmap roadmap, Goal goal)
@@ -301,6 +301,19 @@ namespace AmSpaceClient
         public async Task<IEnumerable<OrganizationGroup>> GetOrganizationGroupsAsync()
         {
             return await RequestWrapper.GetAsyncWrapper<IEnumerable<OrganizationGroup>>(Endpoints.OrganizationGroupsEndpoint);
+        }
+
+        public async Task<IEnumerable<GoalWeight>> UpdateGoalsWeight(IEnumerable<GoalWeight> weights, ContractSearch userContract, Roadmap roadmap)
+        {
+            var url = string.Format(Endpoints.GoalsWeightAdminEndpoint, userContract.Id, roadmap.Year);
+            return await RequestWrapper.PatchAsyncWrapper<IEnumerable<GoalWeight>, IEnumerable<GoalWeight>>(weights, url);
+        }
+
+        public async Task<Roadmap> UpdateRoadmapAsync(ContractSearch userContract, Roadmap roadmap)
+        {
+            var url = string.Format(Endpoints.RoadmapUpdateAdminEndpoint, userContract.Id, roadmap.Year);
+            roadmap.Year = null;
+            return await RequestWrapper.PatchAsyncWrapper<Roadmap, Roadmap>(roadmap, url);
         }
     }
 }

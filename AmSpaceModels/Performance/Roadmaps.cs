@@ -40,21 +40,29 @@ namespace AmSpaceModels.Performance
     public partial class Roadmap
     {
         [JsonProperty("id")]
-        public long Id { get; set; }
+        public long? Id { get; set; }
 
         [JsonProperty("year")]
-        public long Year { get; set; }
+        public long? Year { get; set; }
 
         [JsonProperty("status")]
-        public long Status { get; set; }
+        public RoadmapStatus? Status { get; set; }
 
         [JsonProperty("created_at")]
-        public DateTimeOffset CreatedAt { get; set; }
+        public DateTimeOffset? CreatedAt { get; set; }
 
         [JsonProperty("contract")]
         public Contract Contract { get; set; }
 
         [JsonProperty("is_available")]
-        public bool IsAvailable { get; set; }
+        public bool? IsAvailable { get; set; }
+    }
+
+    public enum RoadmapStatus
+    {
+        ROADMAP_IN_PROGRESS,
+        ROADMAP_ACCEPTED,
+        ROADMAP_PENDING,
+        ROADMAP_FILLED
     }
 }

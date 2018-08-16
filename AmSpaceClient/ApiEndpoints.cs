@@ -34,6 +34,10 @@ namespace AmSpaceClient
         /// </summary>
         public string RoadmapsAdminEndpoint { get { return $"{BaseAddress}/api/v1/performance/goals/admin/{{0}}/roadmaps/"; } }
         /// <summary>
+        /// <remarks>Contract ID, Year</remarks>
+        /// </summary>
+        public string RoadmapUpdateAdminEndpoint { get { return $"{BaseAddress}/api/v1/performance/goals/admin/{{0}}/roadmaps/{{1}}/"; } }
+        /// <summary>
         /// <remarks>
         /// Contract ID, Year
         /// </remarks>
@@ -51,6 +55,12 @@ namespace AmSpaceClient
         /// </summary>
         public string SearchUsersEndpoint { get { return $"{BaseAddress}/api/v1/search/users/?query={{0}}&brand={{1}}&organization_group={{2}}&status={{3}}&domain={{4}}"; } }
         public string OrganizationGroupsEndpoint { get { return $"{BaseAddress}/api/v1/organization/organization_groups/"; } }
+        /// <summary>
+        /// <remarks>
+        /// Contract ID, Year
+        /// </remarks>
+        /// </summary>
+        public string GoalsWeightAdminEndpoint { get { return $"{BaseAddress}/api/v1/performance/goals/admin/{{0}}/roadmaps/{{1}}/goals/manager/"; } }
 
         public string BaseAddress { get; private set; }
 
