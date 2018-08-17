@@ -73,6 +73,11 @@ namespace AmSpaceClient
             return (BitmapSource)new ImageSourceConverter().ConvertFrom(content);
         }
 
+        public async Task<IEnumerable<Level>> GetLevelsAsync()
+        {
+            return await RequestWrapper.GetAsyncWrapper<IEnumerable<Level>>(Endpoints.LevelsEndpoint);
+        }
+
         public async Task<IEnumerable<Competency>> GetCompetenciesAsync()
         {
             var pager = await RequestWrapper.GetAsyncWrapper<CompetencyPager>(Endpoints.CompetencyAdminEndpoint);
@@ -91,11 +96,6 @@ namespace AmSpaceClient
         public async Task<CompetencyAction> GetCompetencyActionsAsync(long competencyId)
         {
             return await RequestWrapper.GetAsyncWrapper<CompetencyAction>(string.Format(Endpoints.CompetecyActionAdminEndpoint, competencyId.ToString()));
-        }
-
-        public async Task<IEnumerable<Level>> GetLevelsAsync()
-        {
-            return await RequestWrapper.GetAsyncWrapper<IEnumerable<Level>>(Endpoints.LevelsEndpoint);
         }
 
         public async Task<bool> LogoutRequestAsync()

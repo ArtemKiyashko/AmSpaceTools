@@ -20,7 +20,7 @@ using System.IO;
 namespace AmspaceClientUnitTests
 {
     [TestFixture]
-    public class AmSpaceClientTests
+    public class CommonTests
     {
         private Mock<AmSpaceClient.AmSpaceHttpClient> _amSpaceClientMock;
         private Mock<IRequestWrapper> _requestsWrapper;
@@ -37,7 +37,7 @@ namespace AmspaceClientUnitTests
         }
 
         [Test]
-        public void LoginRequestAsync_WhenCalledWithOkCredentials_ReturnsTrue()
+        public async Task LoginRequestAsync_WhenCalledWithOkCredentials_ReturnsTrue()
         {
             var loginResult = new LoginResult();
             _requestsWrapper
@@ -48,7 +48,7 @@ namespace AmspaceClientUnitTests
 
             var result = _amSpaceClient.LoginRequestAsync("a", secureString, amspaceEnv);
 
-            Assert.IsTrue(result.Result);
+            Assert.IsTrue(await result);
         }
 
         [Test]
@@ -79,21 +79,6 @@ namespace AmspaceClientUnitTests
 
             _requestsWrapper.Verify( rw => rw.AddAuthCookies(It.IsAny<Uri>(), It.IsAny<Cookie>()), Times.AtLeastOnce);
             _requestsWrapper.Verify(rw => rw.AddAuthHeaders(It.IsAny<AuthenticationHeaderValue>()), Times.AtLeastOnce);
-        }
-
-        /// <summary>
-        /// Should be re-designed as we dont throw typed Exception, we forward them from AmSpace
-        /// </summary>
-        [Test]
-        public void GetAvatarAsync_WhenCalledWithoutPriorAuth_Throws()
-        {
-            var response = new HttpResponseMessage(HttpStatusCode.Unauthorized);
-            response.Content = new StringContent("{}");
-            _requestsWrapper
-                .Setup(rw => rw.GetAsyncWrapper(It.IsAny<string>()))
-                .Returns(Task.FromResult(response));
-            AsyncTestDelegate call = () => _amSpaceClient.GetAvatarAsync("a");
-            Assert.ThrowsAsync(typeof(Exception), call);
         }
 
         [Test]
