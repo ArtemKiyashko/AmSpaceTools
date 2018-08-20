@@ -16,7 +16,7 @@ namespace AmspaceClientUnitTests.IdpTests
     {
         private Mock<AmSpaceClient.AmSpaceHttpClient> _amSpaceClientMock;
         private Mock<IRequestWrapper> _requestsWrapper;
-        private IAmSpaceClient _amSpaceClient;
+        private AmSpaceClient.AmSpaceHttpClient _amSpaceClient;
 
         [SetUp]
         public void SetUp()
@@ -29,7 +29,7 @@ namespace AmspaceClientUnitTests.IdpTests
         }
 
         [Test]
-        public async Task GetLevelsAsync_WhenCalled_ReturnsIenumerableOfLevels()
+        public async Task GetLevelsAsync_WhenCalled_ReturnsIenumerableOfLevelsInstance()
         {
             var value = new List<Level> { new Level(), new Level() } as IEnumerable<Level>;
             _requestsWrapper
@@ -42,25 +42,33 @@ namespace AmspaceClientUnitTests.IdpTests
         }
 
         [Test]
-        public async Task GetLevelsAsync_WhenCalled_ReturnsExectReceivedAmountOfLevels()
+        public void GetLevelsAsync_WhenCalled_UseCorrectEndpoint()
+        {
+            var endpoint = _amSpaceClient.Endpoints.LevelsEndpoint;
+
+            var result = _amSpaceClient.GetLevelsAsync();
+
+            _requestsWrapper.Verify(wr => wr.GetAsyncWrapper<IEnumerable<Level>>(endpoint));
+        }
+
+        [Test]
+        public async Task GetLevelsAsync_WhenCalled_ReturnsAllReceivedLevels()
         {
             var value = new List<Level> { new Level(), new Level(), new Level()} as IEnumerable<Level>;
             _requestsWrapper
                 .Setup(rw => rw.GetAsyncWrapper<IEnumerable<Level>>(It.IsAny<string>())).
                 Returns(Task.FromResult(value));
 
-            var result = _amSpaceClient.GetLevelsAsync();
+            var result = await _amSpaceClient.GetLevelsAsync();
 
-            Assert.That((await result).Count() == value.Count());
+            Assert.That(result.Count() == value.Count());
+            Assert.That(result.SequenceEqual(value));
         }
 
-
         [Test]
-        public async Task GetCompetenciesAsync_WhenCalled_ReturnsIEnumerableOfCompetency()
+        public async Task GetCompetenciesAsync_WhenCalled_ReturnsIEnumerableOfCompetencyInstance()
         {
-            var levels = new List<Level> { new Level() } as IEnumerable<Level>;
             var pager = new CompetencyPager { Results = new List<Competency>() };
-
             _requestsWrapper
                 .Setup(rw => rw.GetAsyncWrapper<CompetencyPager>(It.IsAny<string>()))
                 .Returns(Task.FromResult(pager));
@@ -68,6 +76,16 @@ namespace AmspaceClientUnitTests.IdpTests
             var result = _amSpaceClient.GetCompetenciesAsync();
 
             Assert.IsInstanceOf<IEnumerable<Competency>>(await result);
+        }
+
+        [Test]
+        public void GetCompetenciesAsync_WhenCalled_UseCorrectEndpoint()
+        {
+            var endpoint = _amSpaceClient.Endpoints.CompetencyAdminEndpoint;
+
+            var result = _amSpaceClient.GetCompetenciesAsync();
+
+            _requestsWrapper.Verify(wr => wr.GetAsyncWrapper<CompetencyPager>(endpoint));
         }
 
         [Test]
@@ -98,6 +116,60 @@ namespace AmspaceClientUnitTests.IdpTests
             Assert.That(result.SequenceEqual(allCompetency));
         }
 
+        [Test]
+        public async Task GetCompetenciesAsync_WhenCalled_ReturnCompetenciesWithFilledLevelProperty()
+        {
+            var pager = new CompetencyPager { Results = new List<Competency> { new Competency { LevelId = 1 } } };
+            var levels = new List<Level> { new Level { Id = 1 } } as IEnumerable<Level>;
+            _requestsWrapper
+                .Setup(rw => rw.GetAsyncWrapper<CompetencyPager>(It.IsAny<string>()))
+                .Returns(Task.FromResult(pager));
+            _requestsWrapper
+                .Setup(rw => rw.GetAsyncWrapper<IEnumerable<Level>>(It.IsAny<string>())).
+                Returns(Task.FromResult(levels));
+
+            var result = await _amSpaceClient.GetCompetenciesAsync();
+
+            Assert.That(result.ElementAtOrDefault(0)?.Level, Is.Not.Null);
+        }
+
+        [Test]
+        public async Task GetCompetencyActionsAsync_WhenCalled_ReturnsCompetencyActionInstance()
+        {
+            var value = new CompetencyAction();
+            _requestsWrapper
+                .Setup(rw => rw.GetAsyncWrapper<CompetencyAction>(It.IsAny<string>())).
+                Returns(Task.FromResult(value));
+
+            var result = await _amSpaceClient.GetCompetencyActionsAsync(1);
+
+            Assert.IsInstanceOf<CompetencyAction>(result);
+            Assert.That(value == result);
+        }
+
+        [Test]
+        public async Task GetCompetencyActionsAsync_WhenCalled_ReturnsReceivedCompetencyAction()
+        {
+            var value = new CompetencyAction();
+            _requestsWrapper
+                .Setup(rw => rw.GetAsyncWrapper<CompetencyAction>(It.IsAny<string>())).
+                Returns(Task.FromResult(value));
+
+            var result = await _amSpaceClient.GetCompetencyActionsAsync(1);
+
+            Assert.That(value == result);
+        }
+
+        [Test]
+        public void GetCompetencyActionsAsync_WhenCalled_UseCorrectEndpoint()
+        {
+            long id = 1;
+            var endpoint = string.Format(_amSpaceClient.Endpoints.CompetecyActionAdminEndpoint, id);
+
+            var result = _amSpaceClient.GetCompetencyActionsAsync(id);
+
+            _requestsWrapper.Verify(wr => wr.GetAsyncWrapper<CompetencyAction>(endpoint));
+        }
 
     }
 }
