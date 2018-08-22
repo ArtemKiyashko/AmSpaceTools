@@ -1,0 +1,3 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/jvqs7ea9m2qqgdvs?svg=true&passingText=last%20push%20passing&pendingText=last%20push%20pending&failingText=last%20push%20failed)](https://ci.appveyor.com/project/Artem86/amspacetools)
+[![Build status](https://ci.appveyor.com/api/projects/status/jvqs7ea9m2qqgdvs/branch/develop?svg=true&passingText=develop%20passing&pendingText=develop%20pending&failingText=develop%20failed)](https://ci.appveyor.com/project/Artem86/amspacetools/branch/develop)
+[![Build status](https://ci.appveyor.com/api/projects/status/jvqs7ea9m2qqgdvs/branch/master?svg=true&passingText=master%20passing&pendingText=master%20pending&failingText=master%20failed)](https://ci.appveyor.com/project/Artem86/amspacetools/branch/master)
