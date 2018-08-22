@@ -72,8 +72,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AmSpaceClientTests.cs" />
+    <Compile Include="CommonTests.cs" />
     <Compile Include="Extensions\ImageExtensions.cs" />
+    <Compile Include="IdpTests\IdpTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -89,6 +90,11 @@
       <Project>{5C08369F-DD2D-4A5B-936D-6815B607DFB7}</Project>
       <Name>AmSpaceModels</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="OrganizationTests\" />
+    <Folder Include="PerformanceTests\" />
+    <Folder Include="SapTests\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

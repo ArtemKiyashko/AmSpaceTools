@@ -20,11 +20,11 @@ using System.IO;
 namespace AmspaceClientUnitTests
 {
     [TestFixture]
-    public class AmSpaceClientTests
+    public class CommonTests
     {
         private Mock<AmSpaceClient.AmSpaceHttpClient> _amSpaceClientMock;
         private Mock<IRequestWrapper> _requestsWrapper;
-        private IAmSpaceClient _amSpaceClient;
+        private AmSpaceClient.AmSpaceHttpClient _amSpaceClient;
 
         [SetUp]
         public void SetUp()
@@ -37,7 +37,23 @@ namespace AmspaceClientUnitTests
         }
 
         [Test]
-        public void LoginRequestAsync_WhenCalledWithOkCredentials_ReturnsTrue()
+        public async Task LoginRequestAsync_WhenCalled_UseCorrectEndpoint()
+        {
+            var loginResult = new LoginResult();
+            var secureString = new SecureString();
+            var amspaceEnv = new AmSpaceEnvironment { BaseAddress = "http://b.c" };
+            _requestsWrapper
+                .Setup(rw => rw.PostAsyncWrapper<LoginResult>(It.IsAny<string>(), It.IsAny<FormUrlEncodedContent>()))
+                .Returns(Task.FromResult(loginResult));
+
+            var result = await _amSpaceClient.LoginRequestAsync("a", secureString, amspaceEnv);
+            var endpoint = _amSpaceClient.Endpoints.TokenEndpoint;
+
+            _requestsWrapper.Verify(rw => rw.PostAsyncWrapper<LoginResult>(endpoint, It.IsAny<FormUrlEncodedContent>()));
+        }
+
+        [Test]
+        public async Task LoginRequestAsync_WhenCalledWithOkCredentials_ReturnsTrue()
         {
             var loginResult = new LoginResult();
             _requestsWrapper
@@ -48,7 +64,7 @@ namespace AmspaceClientUnitTests
 
             var result = _amSpaceClient.LoginRequestAsync("a", secureString, amspaceEnv);
 
-            Assert.IsTrue(result.Result);
+            Assert.IsTrue(await result);
         }
 
         [Test]
@@ -60,13 +76,13 @@ namespace AmspaceClientUnitTests
             var secureString = new SecureString();
             var amspaceEnv = new AmSpaceEnvironment { BaseAddress = "http://a.b" };
 
-            AsyncTestDelegate call = () => _amSpaceClient.LoginRequestAsync("a", secureString, amspaceEnv);
+            Task call() => _amSpaceClient.LoginRequestAsync("a", secureString, amspaceEnv);
 
             Assert.ThrowsAsync<Exception>(call);
         }
 
         [Test]
-        public void LoginRequestAsync_WhenCalledWithOkCredentials_CallsAddAuthCookiesAndAddAuthHeaders()
+        public async Task LoginRequestAsync_WhenCalledWithOkCredentials_CallsAddAuthCookiesAndAddAuthHeaders()
         {
             var loginResult = new LoginResult();
             _requestsWrapper
@@ -75,25 +91,10 @@ namespace AmspaceClientUnitTests
             var secureString = new SecureString();
             var amspaceEnv = new AmSpaceEnvironment { BaseAddress = "http://a.b" };
 
-            _amSpaceClient.LoginRequestAsync("a", secureString, amspaceEnv);
+            await _amSpaceClient.LoginRequestAsync("a", secureString, amspaceEnv);
 
             _requestsWrapper.Verify( rw => rw.AddAuthCookies(It.IsAny<Uri>(), It.IsAny<Cookie>()), Times.AtLeastOnce);
             _requestsWrapper.Verify(rw => rw.AddAuthHeaders(It.IsAny<AuthenticationHeaderValue>()), Times.AtLeastOnce);
-        }
-
-        /// <summary>
-        /// Should be re-designed as we dont throw typed Exception, we forward them from AmSpace
-        /// </summary>
-        [Test]
-        public void GetAvatarAsync_WhenCalledWithoutPriorAuth_Throws()
-        {
-            var response = new HttpResponseMessage(HttpStatusCode.Unauthorized);
-            response.Content = new StringContent("{}");
-            _requestsWrapper
-                .Setup(rw => rw.GetAsyncWrapper(It.IsAny<string>()))
-                .Returns(Task.FromResult(response));
-            AsyncTestDelegate call = () => _amSpaceClient.GetAvatarAsync("a");
-            Assert.ThrowsAsync(typeof(Exception), call);
         }
 
         [Test]
@@ -115,7 +116,7 @@ namespace AmspaceClientUnitTests
         }
 
         [Test]
-        public void GetAvatarAsync_WhenCalled_ReturnsBitmapSourceObject()
+        public void GetAvatarAsync_WhenCalled_ReturnsBitmapSourceObjectInstance()
         {
             var response = new HttpResponseMessage(HttpStatusCode.OK);
 
