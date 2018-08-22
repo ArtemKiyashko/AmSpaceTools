@@ -62,9 +62,9 @@ namespace AmspaceClientUnitTests
             var secureString = new SecureString();
             var amspaceEnv = new AmSpaceEnvironment {BaseAddress = "http://a.b"};
 
-            var result = _amSpaceClient.LoginRequestAsync("a", secureString, amspaceEnv);
+            var result = await _amSpaceClient.LoginRequestAsync("a", secureString, amspaceEnv);
 
-            Assert.IsTrue(await result);
+            Assert.IsTrue(result);
         }
 
         [Test]
@@ -116,19 +116,18 @@ namespace AmspaceClientUnitTests
         }
 
         [Test]
-        public void GetAvatarAsync_WhenCalled_ReturnsBitmapSourceObjectInstance()
+        public async Task GetAvatarAsync_WhenCalled_ReturnsBitmapSourceObjectInstance()
         {
             var response = new HttpResponseMessage(HttpStatusCode.OK);
+            response.Content = new ByteArrayContent(ImageExtensions.CreateRandomBitmap().ToArray());
 
             _requestsWrapper
                 .SetupSequence(rw => rw.GetAsyncWrapper(It.IsAny<string>()))
                 .Returns(Task.FromResult(response));
 
-            var result = _amSpaceClient.GetAvatarAsync("a");
+            var result =  await _amSpaceClient.GetAvatarAsync("a");
 
-            Assert.That(result, Is.TypeOf(typeof(Task<BitmapSource>)));
+            Assert.IsInstanceOf<BitmapSource>(result);
         }
-
-
     }
 }

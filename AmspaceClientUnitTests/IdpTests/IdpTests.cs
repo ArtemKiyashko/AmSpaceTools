@@ -61,8 +61,7 @@ namespace AmspaceClientUnitTests.IdpTests
 
             var result = await _amSpaceClient.GetLevelsAsync();
 
-            Assert.That(result.Count() == value.Count());
-            Assert.That(result.SequenceEqual(value));
+            Assert.AreEqual(value, result);
         }
 
         [Test]
@@ -73,9 +72,9 @@ namespace AmspaceClientUnitTests.IdpTests
                 .Setup(rw => rw.GetAsyncWrapper<CompetencyPager>(It.IsAny<string>()))
                 .Returns(Task.FromResult(pager));
 
-            var result = _amSpaceClient.GetCompetenciesAsync();
+            var result = await _amSpaceClient.GetCompetenciesAsync();
 
-            Assert.IsInstanceOf<IEnumerable<Competency>>(await result);
+            Assert.IsInstanceOf<IEnumerable<Competency>>(result);
         }
 
         [Test]
@@ -113,14 +112,14 @@ namespace AmspaceClientUnitTests.IdpTests
             var allCompetency = pager1.Results;
             allCompetency.AddRange(pager2.Results);
 
-            Assert.That(result.SequenceEqual(allCompetency));
+            Assert.AreEqual(allCompetency, result);
         }
 
         [Test]
         public async Task GetCompetenciesAsync_WhenCalled_ReturnCompetenciesWithFilledLevelProperty()
         {
-            var pager = new CompetencyPager { Results = new List<Competency> { new Competency { LevelId = 1 } } };
-            var levels = new List<Level> { new Level { Id = 1 } } as IEnumerable<Level>;
+            var pager = new CompetencyPager { Results = new List<Competency> { new Competency { LevelId = 1 }, new Competency { LevelId = 2 } } };
+            var levels = new List<Level> { new Level { Id = 1 }, new Level { Id = 2 } } as IEnumerable<Level>;
             _requestsWrapper
                 .Setup(rw => rw.GetAsyncWrapper<CompetencyPager>(It.IsAny<string>()))
                 .Returns(Task.FromResult(pager));
@@ -130,7 +129,7 @@ namespace AmspaceClientUnitTests.IdpTests
 
             var result = await _amSpaceClient.GetCompetenciesAsync();
 
-            Assert.That(result.ElementAtOrDefault(0)?.Level, Is.Not.Null);
+            CollectionAssert.AllItemsAreNotNull(result.Select(_ => _.Level));
         }
 
         [Test]
@@ -144,7 +143,6 @@ namespace AmspaceClientUnitTests.IdpTests
             var result = await _amSpaceClient.GetCompetencyActionsAsync(1);
 
             Assert.IsInstanceOf<CompetencyAction>(result);
-            Assert.That(value == result);
         }
 
         [Test]
@@ -157,7 +155,7 @@ namespace AmspaceClientUnitTests.IdpTests
 
             var result = await _amSpaceClient.GetCompetencyActionsAsync(1);
 
-            Assert.That(value == result);
+            Assert.AreEqual(value, result);
         }
 
         [Test]
@@ -170,6 +168,5 @@ namespace AmspaceClientUnitTests.IdpTests
 
             _requestsWrapper.Verify(wr => wr.GetAsyncWrapper<CompetencyAction>(endpoint));
         }
-
     }
 }
