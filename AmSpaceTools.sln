@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelWorker", "ExcelWorker\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmspaceClientUnitTests", "AmspaceClientUnitTests\AmspaceClientUnitTests.csproj", "{8DE7A1D2-38E6-4557-A148-DABE64AC9192}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelWorkerTests", "ExcelWorkerTests\ExcelWorkerTests.csproj", "{990D3DD5-2EB3-4B26-989E-34E8FF582B11}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{8DE7A1D2-38E6-4557-A148-DABE64AC9192}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8DE7A1D2-38E6-4557-A148-DABE64AC9192}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8DE7A1D2-38E6-4557-A148-DABE64AC9192}.Release|Any CPU.Build.0 = Release|Any CPU
+		{990D3DD5-2EB3-4B26-989E-34E8FF582B11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{990D3DD5-2EB3-4B26-989E-34E8FF582B11}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{990D3DD5-2EB3-4B26-989E-34E8FF582B11}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{990D3DD5-2EB3-4B26-989E-34E8FF582B11}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

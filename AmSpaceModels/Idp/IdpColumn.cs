@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AmSpaceModels.Idp
 {
-    public class IdpExcelColumn : BaseModel
+    public class IdpColumn : BaseModel
     {
         private ColumnActionType _columnType;
 

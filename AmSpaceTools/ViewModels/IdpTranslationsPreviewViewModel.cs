@@ -4,6 +4,7 @@ using AmSpaceTools.Infrastructure;
 using AmSpaceTools.ModelConverters;
 using AutoMapper;
 using ExcelWorker;
+using ExcelWorker.Models;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,7 @@ namespace AmSpaceTools.ViewModels
 {
     public class IdpTranslationsPreviewViewModel : BaseViewModel
     {
-        private IEnumerable<IdpExcelColumn> _excelColumnsPreview;
+        private IEnumerable<IdpColumn> _excelColumnsPreview;
         private IExcelWorker _excelWorker;
         private ICommand _openFileCommand;
         private IEnumerable<IdpExcelRow> _allRows;
@@ -68,11 +69,11 @@ namespace AmSpaceTools.ViewModels
             set { _similarityPercent = value; }
         }
 
-        public IEnumerable<IdpExcelColumn> ExcelColumnsPreview
+        public IEnumerable<IdpColumn> ExcelColumnsPreview
         {
             get
             {
-                if (_excelColumnsPreview == null) _excelColumnsPreview = new List<IdpExcelColumn>();
+                if (_excelColumnsPreview == null) _excelColumnsPreview = new List<IdpColumn>();
                 return _excelColumnsPreview;
             }
             set

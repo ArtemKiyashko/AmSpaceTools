@@ -1,10 +1,11 @@
-﻿using System;
+﻿using AmSpaceModels.Idp;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AmSpaceModels.Idp
+namespace ExcelWorker.Models
 {
     public class IdpExcelRow
     {

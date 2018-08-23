@@ -2,6 +2,7 @@
 using AmSpaceModels.Idp;
 using AmSpaceModels.Performance;
 using ExcelWorker;
+using ExcelWorker.Models;
 using log4net;
 using System;
 using System.Collections.Generic;
@@ -21,7 +22,7 @@ namespace AmSpaceTools.Decorators
             _decoratee = decoratee;
             _logger = logger;
         }
-        public IEnumerable<IdpExcelColumn> GetColumnDataPreview(string fileName, int rowLimit)
+        public IEnumerable<IdpColumn> GetColumnDataPreview(string fileName, int rowLimit)
         {
             _logger.Info($"Getting IDP preview from file {fileName} with maximum {rowLimit} rows");
             try
@@ -49,7 +50,7 @@ namespace AmSpaceTools.Decorators
             }
         }
 
-        public IEnumerable<IdpExcelRow> GetAllRows(string fileName, IEnumerable<IdpExcelColumn> columnDefinitions, bool ignoreFirstRow = true)
+        public IEnumerable<IdpExcelRow> GetAllRows(string fileName, IEnumerable<IdpColumn> columnDefinitions, bool ignoreFirstRow = true)
         {
             _logger.Info($"Reading all rows from {fileName}");
             try
@@ -63,30 +64,16 @@ namespace AmSpaceTools.Decorators
             }
         }
 
-        public IEnumerable<KpiExcelRow> ExctractKpiData(string fileName, string sheetName)
+        public IEnumerable<T> ExctractData<T>(string fileName, string sheetName) where T : class, new()
         {
-            _logger.Info($"Extracting Kpis from {fileName}");
+            _logger.Info($"Extracting {(typeof (T)).Name} from {fileName}");
             try
             {
-                return _decoratee.ExctractKpiData(fileName, sheetName);
+                return _decoratee.ExctractData<T>(fileName, sheetName);
             }
             catch (Exception ex)
             {
-                _logger.Error($"Error during extracting Kpis from {fileName}", ex);
-                throw;
-            }
-        }
-
-        public IEnumerable<GoalExcelRow> ExctractGoalData(string fileName, string sheetName)
-        {
-            _logger.Info($"Extracting Goals from {fileName}");
-            try
-            {
-                return _decoratee.ExctractGoalData(fileName, sheetName);
-            }
-            catch (Exception ex)
-            {
-                _logger.Error($"Error during extracting Goals from {fileName}", ex);
+                _logger.Error($"Error during extracting {(typeof(T)).Name} from {fileName}", ex);
                 throw;
             }
         }

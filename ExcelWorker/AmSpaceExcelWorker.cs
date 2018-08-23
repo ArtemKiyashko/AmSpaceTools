@@ -7,36 +7,40 @@ using System.Threading.Tasks;
 using AmSpaceModels.Idp;
 using AmSpaceModels.Performance;
 using EPPlus.DataExtractor;
+using ExcelWorker.Models;
 using OfficeOpenXml;
+using EPPlus.Core.Extensions;
 
 namespace ExcelWorker
 {
     public class AmSpaceExcelWorker : IExcelWorker
     {
-        public IEnumerable<IdpExcelColumn> GetColumnDataPreview(string fileName, int rowLimit)
+        public IEnumerable<IdpColumn> GetColumnDataPreview(string fileName, int rowLimit)
         {
             using (var file = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             using (var excel = new ExcelPackage(file))
             {
-                var result = new List<IdpExcelColumn>();
+                var result = new List<IdpColumn>();
                 var ws = excel.Workbook.Worksheets.First(_ => _.Hidden == eWorkSheetHidden.Visible);
                 var lastColumn = ws.Dimension.End.Column;
 
                 for (var i = 1; i < lastColumn + 1; i++)
                 {
-                    var c = new IdpExcelColumn();
-                    c.WorkSheet = ws.Index;
-                    c.ColumnAddress = ws.Cells[1, i].Address;
-                    c.ColumnType = ColumnActionType.NotSpecified;
-                    c.ColumnIndex = i;
-                    c.ColumnData = ws.Cells[1, i, rowLimit, i].Select(_ => _.Text).ToList();
+                    var c = new IdpColumn
+                    {
+                        WorkSheet = ws.Index,
+                        ColumnAddress = ws.Cells[1, i].Address,
+                        ColumnType = ColumnActionType.NotSpecified,
+                        ColumnIndex = i,
+                        ColumnData = ws.Cells[1, i, rowLimit, i].Select(_ => _.Text).ToList()
+                    };
                     result.Add(c);
                 }
                 return result;
             }
         }
 
-        public IEnumerable<IdpExcelRow> GetAllRows(string fileName, IEnumerable<IdpExcelColumn> columnDefinitions, bool ignoreFirstRow = true)
+        public IEnumerable<IdpExcelRow> GetAllRows(string fileName, IEnumerable<IdpColumn> columnDefinitions, bool ignoreFirstRow = true)
         {
             using (var file = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             using (var excel = new ExcelPackage(file))
@@ -55,13 +59,15 @@ namespace ExcelWorker
                         //if whole row empty - stop iteration on ws
                         if (ws.Cells[i, 1, i, lastColumn].All(_ => _.Value == null)) break;
 
-                        var c = new IdpExcelRow();
-                        c.CompetencyName = ws.GetValue<string>(i, columnDefinitions.First(_ => _.ColumnType == ColumnActionType.CompetencyName).ColumnIndex);
-                        c.CompetencyLevel = ws.GetValue<int>(i, columnDefinitions.First(_ => _.ColumnType == ColumnActionType.CompetencyLevel).ColumnIndex);
-                        c.ActionPercentage = ws.GetValue<int>(i, columnDefinitions.First(_ => _.ColumnType == ColumnActionType.ActionPercentage).ColumnIndex);
-                        c.ActionSourceDescription = ws.GetValue<string>(i, columnDefinitions.First(_ => _.ColumnType == ColumnActionType.SourceText).ColumnIndex);
-                        c.Translations = new List<Translation>();
-                        foreach(var translation in columnDefinitions.Where(_ => _.ColumnType == ColumnActionType.Translation))
+                        var c = new IdpExcelRow
+                        {
+                            CompetencyName = ws.GetValue<string>(i, columnDefinitions.First(_ => _.ColumnType == ColumnActionType.CompetencyName).ColumnIndex),
+                            CompetencyLevel = ws.GetValue<int>(i, columnDefinitions.First(_ => _.ColumnType == ColumnActionType.CompetencyLevel).ColumnIndex),
+                            ActionPercentage = ws.GetValue<int>(i, columnDefinitions.First(_ => _.ColumnType == ColumnActionType.ActionPercentage).ColumnIndex),
+                            ActionSourceDescription = ws.GetValue<string>(i, columnDefinitions.First(_ => _.ColumnType == ColumnActionType.SourceText).ColumnIndex),
+                            Translations = new List<Translation>()
+                        };
+                        foreach (var translation in columnDefinitions.Where(_ => _.ColumnType == ColumnActionType.Translation))
                         {
                             c.Translations.Add(new Translation {
                                 Language = translation.Language.ToString().ToLower(),
@@ -92,7 +98,7 @@ namespace ExcelWorker
             }
         }
 
-        public IEnumerable<KpiExcelRow> ExctractKpiData(string fileName, string sheetName)
+        public IEnumerable<T> ExctractData<T>(string fileName, string sheetName) where T : class, new()
         {
             using (var file = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             using (var excel = new ExcelPackage(file))
@@ -100,36 +106,7 @@ namespace ExcelWorker
                 var ws = string.IsNullOrEmpty(sheetName) ?
                     excel.Workbook.Worksheets[1] :
                     excel.Workbook.Worksheets[sheetName];
-                return ws.Extract<KpiExcelRow>()
-                    .WithProperty(p => p.Year, "A", (_) => Int32.Parse(_.ToString()))
-                    .WithProperty(p => p.Country, "B")
-                    .WithProperty(p => p.Brand, "C")
-                    .WithProperty(p => p.Position, "D")
-                    .WithProperty(p => p.KpiDescription, "E")
-                    .WithProperty(p => p.KpiTarget, "F")
-                    .WithProperty(p => p.KpiType, "G")
-                    .GetData(2, ws.Dimension.End.Row).ToList();
-            }
-        }
-
-        public IEnumerable<GoalExcelRow> ExctractGoalData(string fileName, string sheetName)
-        {
-            using (var file = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            using (var excel = new ExcelPackage(file))
-            {
-                var ws = string.IsNullOrEmpty(sheetName) ?
-                    excel.Workbook.Worksheets[1] :
-                    excel.Workbook.Worksheets[sheetName];
-                return ws.Extract<GoalExcelRow>()
-                    .WithProperty(p => p.Year, "A", (_) => Int32.Parse(_.ToString()))
-                    .WithProperty(p => p.Country, "B")
-                    .WithProperty(p => p.Brand, "C")
-                    .WithProperty(p => p.Position, "D")
-                    .WithProperty(p => p.Perspective, "E")
-                    .WithProperty(p => p.Goal, "F")
-                    .WithProperty(p => p.Weight, "G", (_) => Int32.Parse(_.ToString()))
-                    .WithProperty(p => p.Kpi, "H")
-                    .GetData(2, ws.Dimension.End.Row).ToList();
+                return ws.ToList<T>(options => options.SkipCastingErrors());
             }
         }
     }
