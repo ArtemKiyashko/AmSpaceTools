@@ -83,16 +83,6 @@ namespace AmSpaceTools.ViewModels
             }
         }
 
-        public IEnumerable<IdpExcelRow> AllRows
-        {
-            get
-            {
-                if (_allRows == null)
-                    _allRows = _excelWorker.GetAllRows(CurrentFilePath, ExcelColumnsPreview);
-                return _allRows;
-            }
-        }
-
         public string CurrentFilePath
         {
             get { return _currentFilePath; }
@@ -128,7 +118,8 @@ namespace AmSpaceTools.ViewModels
             IsLoading = true;
             var competencies = await _client.GetCompetenciesAsync();
             var allAmSpaceActions = new Dictionary<Competency, List<IdpAction>>();
-            var uniqueActions = AllRows.NormalizeTranslations();
+            _allRows = _excelWorker.GetAllRows(ExcelColumnsPreview);
+            var uniqueActions = _allRows.NormalizeTranslations();
             foreach (var competency in competencies)
             {
                 if (competency.ActionCount == 0) continue;
@@ -141,7 +132,7 @@ namespace AmSpaceTools.ViewModels
                     foreach (var translation in translationKey.Value)
                         action.Translations.UpsertTranslation(translation);
                     action.Updated = true;
-                    AllRows.Where(_ => _.ActionSourceDescription == translationKey.Key).ForEach(_ => _.Taken = true);
+                    _allRows.Where(_ => _.ActionSourceDescription == translationKey.Key).ForEach(_ => _.Taken = true);
                 }
                 var transformedActions = _mapper.Map<UpdateAction>(compActions);
                 var result = await _client.UpdateActionAsync(transformedActions, competency.Id.Value);
@@ -154,7 +145,7 @@ namespace AmSpaceTools.ViewModels
         {
             var targetActions = _mapper.Map<IEnumerable<IdpExcelRow>>(compActions);
             SaveUploadResults(
-                AllRows.Where(_ => !_.Taken),
+                _allRows.Where(_ => !_.Taken),
                 targetActions.Where(_ => _.Taken));
         }
 
@@ -205,7 +196,8 @@ namespace AmSpaceTools.ViewModels
             if (dialog.ShowDialog() == true)
             {
                 CurrentFilePath = dialog.FileName;
-                ExcelColumnsPreview = _excelWorker.GetColumnDataPreview(CurrentFilePath, 10);
+                _excelWorker.OpenFile(CurrentFilePath);
+                ExcelColumnsPreview = _excelWorker.GetColumnDataPreview(10);
                 foreach(var excelColumn in ExcelColumnsPreview)
                     excelColumn.PropertyChanged += ExcelColumn_PropertyChanged;
             }

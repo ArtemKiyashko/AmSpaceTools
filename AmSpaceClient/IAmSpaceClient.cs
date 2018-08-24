@@ -65,5 +65,6 @@ namespace AmSpaceClient
         Task<IEnumerable<SearchUserResult>> FindUser(string query, Brand brand, OrganizationGroup orgGroup, UserStatus status, string domain);
         Task<IEnumerable<OrganizationGroup>> GetOrganizationGroupsAsync();
         Task<IEnumerable<GoalWeight>> UpdateGoalsWeight(IEnumerable<GoalWeight> weights, ContractSearch userContract, Roadmap roadmap);
+        Task<TemporaryAccount> CreateTemporaryAccount(TemporaryAccount accountInfo);
     }
 }

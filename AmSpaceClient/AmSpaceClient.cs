@@ -315,5 +315,10 @@ namespace AmSpaceClient
             roadmap.Year = null;
             return await RequestWrapper.PatchAsyncWrapper<Roadmap, Roadmap>(roadmap, url);
         }
+
+        public async Task<TemporaryAccount> CreateTemporaryAccount(TemporaryAccount accountInfo)
+        {
+            return await RequestWrapper.PostAsyncWrapper<TemporaryAccount, TemporaryAccount>(accountInfo, Endpoints.TemporaryAccountAdminEndpoint);
+        }
     }
 }

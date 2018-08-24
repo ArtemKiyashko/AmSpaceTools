@@ -54,6 +54,7 @@
     <Compile Include="Organization\Country.cs" />
     <Compile Include="Organization\OrganizationGroup.cs" />
     <Compile Include="Organization\SearchUsers.cs" />
+    <Compile Include="Organization\TemporaryAccount.cs" />
     <Compile Include="Performance\Goal.cs" />
     <Compile Include="Performance\GoalNew.cs" />
     <Compile Include="Performance\GoalWeight.cs" />

@@ -65,6 +65,8 @@
     <Compile Include="Models\GoalExcelRow.cs" />
     <Compile Include="Models\IdpExcelRow.cs" />
     <Compile Include="Models\KpiExcelRow.cs" />
+    <Compile Include="Models\SapPersonExcelRow.cs" />
+    <Compile Include="Models\SapPositionExcel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

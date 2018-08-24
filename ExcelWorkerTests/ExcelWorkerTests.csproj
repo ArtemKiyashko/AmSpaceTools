@@ -76,10 +76,13 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="SapPeopleTests.cs" />
+    <Compile Include="SapPositionTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="Resources\example.xlsx" />
+    <None Include="Resources\sap_people_example.xlsx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ExcelWorker\ExcelWorker.csproj">
