@@ -21,22 +21,22 @@ namespace ExcelWorkerTests
         public void SetUp()
         {
             _worker = new AmSpaceExcelWorker();
-            _filepath = AppDomain.CurrentDomain.BaseDirectory + "..//..//Resources/sap_people_example.xlsx";
+            _filepath = AppDomain.CurrentDomain.BaseDirectory + "..//..//Resources/ImportPeople_template.xlsx";
             _worker.OpenFile(_filepath);
         }
         // to be updated after separating worker from repository
         [Test]
         public void ExtractData_WhenCalledWithSapPerson_ReturnListFromAllXlsRows()
         {
-            var data = _worker.ExctractData<SapPersonExcelRow>("EXAMPLE");
+            var data = _worker.ExctractData<SapPersonExcelRow>("Sheet1");
 
             CollectionAssert.AllItemsAreNotNull(data);
         }
 
         [Test]
-        public void GetWorkSheet_WhenCalled_ReturnExcelTable()
+        public void GetWorkSheet_WhenCalled_ReturnDataTable()
         {
-            var data = _worker.GetWorkSheet("EXAMPLE");
+            var data = _worker.GetWorkSheet("Sheet1");
 
             Assert.IsInstanceOf<DataTable>(data);
         }

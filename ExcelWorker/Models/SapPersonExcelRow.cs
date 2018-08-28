@@ -9,68 +9,56 @@ namespace ExcelWorker.Models
 {
     public class SapPersonExcelRow
     {
-        [ExcelTableColumn("Validity_date ")]
-        public DateTime ValidityDate { get; set; }
-
-        [ExcelTableColumn("Export_date ")]
-        public DateTime ExportDate { get; set; }
-
-        [ExcelTableColumn("MPK")]
-        public int Mpk { get; set; }
-
-        [ExcelTableColumn("Emp_code  ")]
-        public string EmployeeCode { get; set; }
-
         [ExcelTableColumn("Name")]
         public string Name { get; set; }
 
-        [ExcelTableColumn("Surname ")]
+        [ExcelTableColumn("Surname")]
         public string Surname { get; set; }
 
-        [ExcelTableColumn("Emp_date ")]
-        public DateTime EmployementDate { get; set; }
-
-        [ExcelTableColumn("Position")]
-        public string PositionCode { get; set; }
-
-        [ExcelTableColumn("Position_Type")]
-        public int Level { get; set; }
-
-        [ExcelTableColumn("Phone ")]
-        public string Phone { get; set; }
-
-        [ExcelTableColumn("email")]
-        public string Email { get; set; }
-
-        [ExcelTableColumn("empl_id")]
-        public int EmployeeId { get; set; }
-
-        [ExcelTableColumn("sex")]
-        public Sex Sex { get; set; }
-
-        [ExcelTableColumn("date of birth ")]
-        public DateTime BirthDate { get; set; }
-
-        [ExcelTableColumn("identity number ")]
+        [ExcelTableColumn("IdentityNumber")]
         public string IdentityNumber { get; set; }
 
-        [ExcelTableColumn("nationality ")]
+        [ExcelTableColumn("Mpk")]
+        public int Mpk { get; set; }
+
+        [ExcelTableColumn("Email")]
+        public string Email { get; set; }
+
+        [ExcelTableColumn("Phone")]
+        public string Phone { get; set; }
+
+        [ExcelTableColumn("DateOfBirth")]
+        public DateTime? BirthDate { get; set; }
+
+        [ExcelTableColumn("Nationality")]
         public string Nationality { get; set; }
 
-        [ExcelTableColumn("country_z  ")]
+        [ExcelTableColumn("Country")]
         public string Country { get; set; }
 
-        [ExcelTableColumn("contract_number ")]
+        [ExcelTableColumn("Sex")]
+        public Sex Sex { get; set; }
+
+        [ExcelTableColumn("EmployeeId")]
+        public int EmployeeId { get; set; }
+
+        [ExcelTableColumn("ManagerId")]
+        public int ManagerId { get; set; }
+
+        [ExcelTableColumn("ContractNumber")]
         public int ContractNumber { get; set; }
 
-        [ExcelTableColumn("contract_valid_from ")]
+        [ExcelTableColumn("Position")]
+        public string Position { get; set; }
+
+        [ExcelTableColumn("Level")]
+        public int Level { get; set; }
+
+        [ExcelTableColumn("StartDate")]
         public DateTime ContractStartDate { get; set; }
 
-        [ExcelTableColumn("contract_valid_to ")]
-        public DateTime ContractEndDate { get; set; }
-
-        [ExcelTableColumn("termination_date ")]
-        public DateTime TerminationDate { get; set; }
+        [ExcelTableColumn("EndDate")]
+        public DateTime? ContractEndDate { get; set; }
     }
     public enum Sex
     {
