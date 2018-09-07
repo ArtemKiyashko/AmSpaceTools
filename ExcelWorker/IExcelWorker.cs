@@ -18,8 +18,9 @@ namespace ExcelWorker
         IEnumerable<IdpExcelRow> GetAllRows(IEnumerable<IdpColumn> columnDefinitions, bool ignoreFirstRow = true);
         void SaveData<T>(string fileName, IEnumerable<T> data, string sheetName) where T : class;
         IEnumerable<T> ExctractData<T>(string sheetName) where T : class, new();
-        IEnumerable<string> GetWroksheets();
+        IEnumerable<string> GetWorksheets();
         DataTable GetWorkSheet(string sheetName);
+        DataTable GetWorkSheet(int index);
         void OpenFile(string fileName);
     }
 }

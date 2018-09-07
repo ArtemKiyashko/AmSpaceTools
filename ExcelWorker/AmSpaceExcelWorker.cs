@@ -86,7 +86,7 @@ namespace ExcelWorker
             return ws.ToList<T>(options => options.SkipCastingErrors());
         }
 
-        public IEnumerable<string> GetWroksheets()
+        public IEnumerable<string> GetWorksheets()
         {
             return _ePackage.Workbook.Worksheets.Select(_ => _.Name);
         }
@@ -94,6 +94,11 @@ namespace ExcelWorker
         public DataTable GetWorkSheet(string sheetName)
         {
             return _ePackage.Workbook.Worksheets[sheetName].ToDataTable();
+        }
+
+        public DataTable GetWorkSheet(int index)
+        {
+            return _ePackage.Workbook.Worksheets[index].ToDataTable();
         }
 
         public void OpenFile(string fileName)

@@ -39,11 +39,8 @@ namespace ExcelWorker.Models
         [ExcelTableColumn("Sex")]
         public Sex Sex { get; set; }
 
-        [ExcelTableColumn("EmployeeId")]
-        public int EmployeeId { get; set; }
-
         [ExcelTableColumn("ManagerId")]
-        public int ManagerId { get; set; }
+        public string ManagerId { get; set; }
 
         [ExcelTableColumn("ContractNumber")]
         public int ContractNumber { get; set; }
@@ -59,6 +56,16 @@ namespace ExcelWorker.Models
 
         [ExcelTableColumn("EndDate")]
         public DateTime? ContractEndDate { get; set; }
+
+        [ExcelTableColumn("Status")]
+        public ContractStatus Status { get; set; }
+    }
+
+    public enum ContractStatus
+    {
+        Terminated = 0,
+        Active = 3,
+        Suspended = 4
     }
     public enum Sex
     {

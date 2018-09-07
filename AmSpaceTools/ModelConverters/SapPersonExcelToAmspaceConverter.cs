@@ -15,7 +15,7 @@ namespace AmSpaceTools.ModelConverters
         public IEnumerable<SapUser> Convert(IEnumerable<SapPersonExcelRow> source, IEnumerable<SapUser> destination, ResolutionContext context)
         {
             var result = new List<SapUser>();
-            foreach(var key in source.GroupBy(_ => _.EmployeeId))
+            foreach(var key in source.GroupBy(_ => _.IdentityNumber))
             {
                 foreach (var contract in key)
                 {
@@ -30,12 +30,13 @@ namespace AmSpaceTools.ModelConverters
                     sapUser.DateOfBirth = contract.BirthDate;
                     sapUser.Nationality = contract.Nationality;
                     sapUser.Sex = (AmSpaceModels.Sap.Sex)contract.Sex;
-                    sapUser.MainEmployeeId = key.First(_ => _.ContractNumber == 1).EmployeeId;
-                    sapUser.EmployeeId = contract.EmployeeId;
+                    //sapUser.MainEmployeeId = key.First(_ => _.ContractNumber == 1).EmployeeId;
+                    //sapUser.EmployeeId = contract.EmployeeId;
+                    //sapUser.ManagerEmployeeId = contract.ManagerId;
                     sapUser.StartDate = contract.ContractStartDate;
                     sapUser.EndDate = contract.ContractEndDate;
                     sapUser.Level = contract.Level;
-                    sapUser.Status = 3; // dont know exact logic how to set it correctly
+                    sapUser.Status = (int)contract.Status;
                     sapUser.DomainId = contract.Mpk;
                     sapUser.CountryCode = contract.Country;
                     result.Add(sapUser);

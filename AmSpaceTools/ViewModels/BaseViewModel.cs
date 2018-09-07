@@ -65,8 +65,11 @@ namespace AmSpaceTools.ViewModels
             {
                 _isLoading = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(UIEnabled));
             }
         }
+
+        public bool UIEnabled { get { return !IsLoading; } }
 
         public MainWindowViewModel MainViewModel
         {
@@ -94,6 +97,7 @@ namespace AmSpaceTools.ViewModels
             MainViewModel.MenuItems.Clear();
             MainViewModel.MenuItems.Add(new MenuItem("IDP Translation", startupViewModel));
             MainViewModel.MenuItems.Add(new MenuItem("Org. Structure", Services.Container.GetInstance<OrgStructureViewModel>()));
+            MainViewModel.MenuItems.Add(new MenuItem("People Batch Upload", Services.Container.GetInstance<PeopleUploadViewModel>()));
             MainViewModel.SelectedMenuItem = MainViewModel.MenuItems.FirstOrDefault(item => item.Content == startupViewModel);
         }
 

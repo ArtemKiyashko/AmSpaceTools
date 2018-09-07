@@ -68,6 +68,7 @@ namespace AmSpaceModels.Organization
     {
         ACTIVE,
         SUSPENDED,
-        TERMINATED
+        TERMINATED,
+        ANY
     }
 }

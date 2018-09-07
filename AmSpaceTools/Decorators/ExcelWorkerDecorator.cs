@@ -81,9 +81,9 @@ namespace AmSpaceTools.Decorators
             }
         }
 
-        public IEnumerable<string> GetWroksheets()
+        public IEnumerable<string> GetWorksheets()
         {
-           return _decoratee.GetWroksheets();
+           return _decoratee.GetWorksheets();
         }
 
         public DataTable GetWorkSheet(string sheetName)
@@ -101,6 +101,11 @@ namespace AmSpaceTools.Decorators
         {
             _logger.Info($"Disposing excel worker for {FileName}");
             _decoratee.Dispose();
+        }
+
+        public DataTable GetWorkSheet(int index)
+        {
+            return _decoratee.GetWorkSheet(index);
         }
     }
 }

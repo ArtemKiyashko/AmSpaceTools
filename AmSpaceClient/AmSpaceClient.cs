@@ -286,7 +286,7 @@ namespace AmSpaceClient
 
         public async Task<IEnumerable<SearchUserResult>> FindUser(string query, Brand brand, OrganizationGroup orgGroup, UserStatus status, string domain)
         {
-            var url = string.Format(Endpoints.SearchUsersEndpoint, query, brand.Id, orgGroup.Id, (int)status, domain);
+            var url = string.Format(Endpoints.SearchUsersEndpoint, query, brand?.Id, orgGroup?.Id, status == UserStatus.ANY ? (object)string.Empty : (int)status, domain);
             var pager = await RequestWrapper.GetAsyncWrapper<SearchUsers>(url);
             var result = new List<SearchUserResult>();
             result.AddRange(pager.Results);
