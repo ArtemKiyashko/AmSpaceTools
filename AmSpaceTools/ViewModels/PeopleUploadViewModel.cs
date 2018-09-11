@@ -10,6 +10,7 @@ using MaterialDesignThemes.Wpf;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data;
 using System.Linq;
 using System.Text;
@@ -70,13 +71,21 @@ namespace AmSpaceTools.ViewModels
             };
             var result = (bool)await DialogHost.Show(view, "RootDialog");
             if (!result) return;
-            throw new NotImplementedException();
+            var topLvlManager = _searchVm.SelectedUser;
             IsLoading = true;
             var domainTree = await _client.GetOrganizationStructureAsync();
             var flatDomains = domainTree.Descendants(_ => _.Children);
             var inputSapUsers = _mapper.Map<IEnumerable<SapUser>>(InputRows);
-            //upload top level managers first (no ManagerId in input)
-            var tree = InputRows.Where(_ => _.ContractNumber == 1).GenerateTree(c => c.IdentityNumber, c => c.ManagerId ?? string.Empty, string.Empty);
+            var inputRowsGroupedByContracts = InputRows.GroupBy(_ => new { _.IdentityNumber, _.ManagerId }, v => v);
+            var tree = inputRowsGroupedByContracts.GenerateTree(c => c.Key.IdentityNumber, c => c.Key.ManagerId ?? string.Empty, string.Empty);
+            foreach (var account in tree.Descendants(_ => _.Children))
+            {
+                foreach(var contract in account.Item)
+                {
+                    //TODO: convert to temp account model (using auto mapper). upload to AmSpace
+                }
+            }
+            //below code useless
             foreach(var inputRow in InputRows.Where(_ => string.IsNullOrEmpty(_.ManagerId)).GroupBy(_ => _.IdentityNumber))
             {
                 foreach (var inputContract in inputRow)
