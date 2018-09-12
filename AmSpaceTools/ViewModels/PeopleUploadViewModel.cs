@@ -26,19 +26,13 @@ namespace AmSpaceTools.ViewModels
         private readonly IExcelWorker _excelWorker;
         private string _fileName;
         private DataTable _workSheet;
-        private IEnumerable<SapPersonExcelRow> _inputRows;
+        private ObservableCollection<SapPersonExcelRow> _inputRows;
         private readonly SearchPeopleViewModel _searchVm;
 
-        public DataTable WorkSheet
-        {
-            get { return _workSheet; }
-            set { _workSheet = value; OnPropertyChanged(); }
-        }
-
-        public IEnumerable<SapPersonExcelRow> InputRows
+        public ObservableCollection<SapPersonExcelRow> InputRows
         {
             get { return _inputRows; }
-            set { _inputRows = value; OnPropertyChanged(nameof(IsUploadVisible)); }
+            set { _inputRows = value; OnPropertyChanged(); OnPropertyChanged(nameof(IsUploadVisible)); }
         }
         public ICommand OpenFileCommand { get; set; }
 
@@ -48,7 +42,7 @@ namespace AmSpaceTools.ViewModels
         {
             get
             {
-                if (InputRows == null) return false;
+                if (!InputRows.Any()) return false;
                 return true;
             }
         }
@@ -61,6 +55,13 @@ namespace AmSpaceTools.ViewModels
             OpenFileCommand = new RelayCommand(OpenFile);
             UploadDataCommand = new RelayCommand(UploadData);
             _searchVm = searchVm;
+            InputRows = new ObservableCollection<SapPersonExcelRow>();
+            InputRows.CollectionChanged += InputRows_CollectionChanged;
+        }
+
+        private void InputRows_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            OnPropertyChanged(nameof(IsUploadVisible));
         }
 
         private async void UploadData(object obj)
@@ -83,6 +84,7 @@ namespace AmSpaceTools.ViewModels
                 foreach(var contract in account.Item)
                 {
                     //TODO: convert to temp account model (using auto mapper). upload to AmSpace
+                    throw new NotImplementedException();
                 }
             }
             //below code useless
@@ -114,8 +116,8 @@ namespace AmSpaceTools.ViewModels
             {
                 _fileName = dialog.FileName;
                 _excelWorker.OpenFile(_fileName);
-                WorkSheet = _excelWorker.GetWorkSheet(1);
-                InputRows = _excelWorker.ExctractData<SapPersonExcelRow>(WorkSheet.TableName);
+                _workSheet = _excelWorker.GetWorkSheet(1);
+                _excelWorker.ExctractData<SapPersonExcelRow>(_workSheet.TableName).ForEach(_ => InputRows.Add(_));
             }
             IsLoading = false;
         }

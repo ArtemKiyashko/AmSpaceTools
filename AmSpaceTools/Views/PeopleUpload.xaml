@@ -66,10 +66,10 @@
             Grid.ColumnSpan="3">
                 <DataGrid
                   Margin="0 8 0 0"
-                  ItemsSource="{Binding WorkSheet}"
+                  ItemsSource="{Binding InputRows}"
                   CanUserSortColumns="True"
-                  CanUserDeleteRows="False"
-                  CanUserAddRows="False" />
+                  CanUserDeleteRows="True"
+                  CanUserAddRows="True" />
         </ScrollViewer>
         <ProgressBar IsIndeterminate="True" Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"
                      Grid.Column="0"
