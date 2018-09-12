@@ -58,19 +58,17 @@
                             Width="24" />
             </StackPanel>
         </Button>
-        <ScrollViewer 
-            HorizontalScrollBarVisibility="Auto" 
-            VerticalScrollBarVisibility="Auto"
+
+        <DataGrid
             Grid.Column="0"
             Grid.Row="1"
-            Grid.ColumnSpan="3">
-                <DataGrid
-                  Margin="0 8 0 0"
-                  ItemsSource="{Binding InputRows}"
-                  CanUserSortColumns="True"
-                  CanUserDeleteRows="True"
-                  CanUserAddRows="True" />
-        </ScrollViewer>
+            Grid.ColumnSpan="3"
+            Margin="0 8 0 0"
+            ItemsSource="{Binding InputRows}"
+            CanUserSortColumns="True"
+            CanUserDeleteRows="True"
+            CanUserAddRows="True" />
+
         <ProgressBar IsIndeterminate="True" Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"
                      Grid.Column="0"
                      Grid.Row="1"

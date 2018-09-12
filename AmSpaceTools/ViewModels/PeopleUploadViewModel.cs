@@ -92,9 +92,9 @@ namespace AmSpaceTools.ViewModels
             {
                 foreach (var inputContract in inputRow)
                 {
-                    var currentUserDomainName = flatDomains.FirstOrDefault(_ => _.Id == inputContract.Mpk);
-                    if (currentUserDomainName == null) throw new Exception($"Cannot find domain with MPK {inputContract.Mpk} for User {inputContract.Name} {inputContract.Surname}");
-                    var existingUsersInDomain = await _client.FindUser($"{inputContract.Name} {inputContract.Surname}", null, null, UserStatus.ANY, currentUserDomainName.Name);
+                    var currentUserDomain = flatDomains.FirstOrDefault(_ => _.Id == inputContract.Mpk);
+                    if (currentUserDomain == null) throw new Exception($"Cannot find domain with MPK {inputContract.Mpk} for User {inputContract.Name} {inputContract.Surname}");
+                    var existingUsersInDomain = await _client.FindUser($"{inputContract.Name} {inputContract.Surname}", null, null, UserStatus.ANY, currentUserDomain.Name);
                     if (existingUsersInDomain.Count() > 1) throw new Exception($"More than one {inputContract.Name} {inputContract.Surname} in domain {inputContract.Mpk}");
                     //var sapUser = inputSapUsers.Single(_ => _.PersonLegalId == inputContract.IdentityNumber);
                     //sapUser.MainEmployeeId = inputRow.Single(_ => _.ContractNumber == 1).EmployeeId;

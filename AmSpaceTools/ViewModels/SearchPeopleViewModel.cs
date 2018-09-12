@@ -5,6 +5,7 @@ using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,10 +25,11 @@ namespace AmSpaceTools.ViewModels
         public RelayCommand ClearCommand { get; }
         public RelayCommand ApplyCommand { get; }
 
+        [Required(ErrorMessage = "Please specify manager name")]
         public string ManagerName
         {
             get { return _managerName; }
-            set { _managerName = value; OnPropertyChanged(); }
+            set { _managerName = value; OnPropertyChanged(); ValidateModelProperty(); }
         }
         public string ManagerDomain
         {

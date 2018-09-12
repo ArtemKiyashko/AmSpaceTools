@@ -55,16 +55,8 @@
           Grid.ColumnSpan="3"
           x:Name="NameTextBox"
           Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-          materialDesign:HintAssist.Hint="Name">
-            <TextBox.Text>
-                <Binding
-                  Path="ManagerName"
-                  UpdateSourceTrigger="PropertyChanged">
-                    <Binding.ValidationRules>
-                        <infrastructure:NotEmptyValidationRule ValidatesOnTargetUpdated="True" />
-                    </Binding.ValidationRules>
-                </Binding>
-            </TextBox.Text>
+          materialDesign:HintAssist.Hint="Name"
+          Text="{Binding ManagerName, UpdateSourceTrigger=PropertyChanged}">
         </TextBox>
         <TextBox
               Grid.Row="2"
@@ -95,7 +87,8 @@
             Visibility="{Binding SearchButtonVisible, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"
             ToolTip="Search users"
             Command="{Binding SearchCommand}"
-            IsDefault="True">
+            IsDefault="True"
+            IsEnabled="{Binding DefaultButtonIsEnabled}">
             SEARCH
         </Button>
         <Button
