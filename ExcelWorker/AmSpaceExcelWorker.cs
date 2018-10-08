@@ -119,18 +119,15 @@ namespace ExcelWorker
 
         public void SaveData<T>(string fileName, IEnumerable<T> data, string sheetName) where T : class
         {
-            using (var file = new FileStream(FileName, FileMode.Open, FileAccess.Write, FileShare.ReadWrite))
-            using (var excel = new ExcelPackage(file))
+            using (var file = new FileStream(fileName, FileMode.OpenOrCreate, FileAccess.Write, FileShare.ReadWrite))
             {
-                var ws = string.IsNullOrEmpty(sheetName) ?
-                excel.Workbook.Worksheets[1] :
-                excel.Workbook.Worksheets.Add(sheetName);
-                ws.Cells["A1"].LoadFromCollectionFiltered(data, true);
-                var header = ws.Cells[ws.Dimension.Start.Row, ws.Dimension.Start.Column, ws.Dimension.Start.Row, ws.Dimension.End.Column];
-                header.AutoFilter = true;
-                header.AutoFitColumns();
-                ws.View.FreezePanes(2, 1);
-                excel.Save();
+                data.ToWorksheet(sheetName)
+                       .WithConfiguration(c =>
+                       {
+                           c.WithColumnConfiguration(_ => _.AutoFit(10, 150));
+                           c.WithHeaderRowConfiguration(h => { h.AutoFilter = true; h.Worksheet.View.FreezePanes(2, 1); });
+                       })
+                       .ToExcelPackage().SaveAs(file);
             }
         }
     }
