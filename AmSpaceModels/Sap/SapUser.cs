@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using AmSpaceModels.Enums;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -94,11 +95,5 @@ namespace AmSpaceModels.Sap
 
         [JsonProperty("dosplus")]
         public string Dosplus { get; set; }
-    }
-
-    public enum Sex
-    {
-        Make = 1,
-        Female = 2
     }
 }

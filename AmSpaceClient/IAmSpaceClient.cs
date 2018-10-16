@@ -1,4 +1,5 @@
 ﻿using AmSpaceModels;
+using AmSpaceModels.Enums;
 using AmSpaceModels.Idp;
 using AmSpaceModels.Organization;
 using AmSpaceModels.Performance;
@@ -66,5 +67,6 @@ namespace AmSpaceClient
         Task<IEnumerable<OrganizationGroup>> GetOrganizationGroupsAsync();
         Task<IEnumerable<GoalWeight>> UpdateGoalsWeight(IEnumerable<GoalWeight> weights, ContractSearch userContract, Roadmap roadmap);
         Task<TemporaryAccount> CreateTemporaryAccount(TemporaryAccount accountInfo);
+        Task<ExternalAccount> CreateExternalAccount(ExternalAccount accountInfo);
     }
 }

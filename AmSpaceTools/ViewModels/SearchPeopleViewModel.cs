@@ -1,4 +1,5 @@
 ﻿using AmSpaceClient;
+using AmSpaceModels.Enums;
 using AmSpaceModels.Organization;
 using AmSpaceTools.Infrastructure;
 using MaterialDesignThemes.Wpf;

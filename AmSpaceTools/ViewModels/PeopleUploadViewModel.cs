@@ -1,4 +1,5 @@
 ﻿using AmSpaceClient;
+using AmSpaceModels.Enums;
 using AmSpaceModels.Organization;
 using AmSpaceModels.Sap;
 using AmSpaceTools.Infrastructure;

@@ -121,5 +121,12 @@ namespace AmSpaceClient
             var result = await AmSpaceHttpClient.SendAsync(request);
             return await result.ValidateAsync<TOutput>();
         }
+
+        public async Task<TOutput> PutAsyncWrapper<TInput, TOutput>(TInput model, string endpoint) where TOutput : class
+        {
+            var httpcontent = PrepareContent(model);
+            var result = await AmSpaceHttpClient.PutAsync(endpoint, httpcontent);
+            return await result.ValidateAsync<TOutput>();
+        }
     }
 }

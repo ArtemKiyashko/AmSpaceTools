@@ -26,5 +26,6 @@ namespace AmSpaceClient
         Task<TOutput> PostAsyncWrapper<TOutput>(string endpoint, FormUrlEncodedContent content) where TOutput : class;
         Task<HttpResponseMessage> PostAsyncWrapper(string endpoint, FormUrlEncodedContent content);
         Task<TOutput> PatchAsyncWrapper<TInput, TOutput>(TInput model, string endpoint) where TOutput : class;
+        Task<TOutput> PutAsyncWrapper<TInput, TOutput>(TInput model, string endpoint) where TOutput : class;
     }
 }

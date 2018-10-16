@@ -1,4 +1,5 @@
 ﻿using AmSpaceModels;
+using AmSpaceModels.Enums;
 using AmSpaceModels.Idp;
 using AmSpaceModels.Organization;
 using AmSpaceModels.Performance;
@@ -319,6 +320,11 @@ namespace AmSpaceClient
         public async Task<TemporaryAccount> CreateTemporaryAccount(TemporaryAccount accountInfo)
         {
             return await RequestWrapper.PostAsyncWrapper<TemporaryAccount, TemporaryAccount>(accountInfo, Endpoints.TemporaryAccountAdminEndpoint);
+        }
+
+        public Task<ExternalAccount> CreateExternalAccount(ExternalAccount accountInfo)
+        {
+            throw new NotImplementedException();
         }
     }
 }

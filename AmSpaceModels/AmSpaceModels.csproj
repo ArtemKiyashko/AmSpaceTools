@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Enums\Enums.cs" />
     <Compile Include="Idp\ActionType.cs" />
     <Compile Include="AmSpaceError.cs" />
     <Compile Include="Organization\AmspaceStructureData.cs" />
@@ -52,6 +53,7 @@
     <Compile Include="Idp\CompetencyAction.cs" />
     <Compile Include="Organization\Brand.cs" />
     <Compile Include="Organization\Country.cs" />
+    <Compile Include="Organization\ExternalAccount.cs" />
     <Compile Include="Organization\OrganizationGroup.cs" />
     <Compile Include="Organization\SearchUsers.cs" />
     <Compile Include="Organization\TemporaryAccount.cs" />

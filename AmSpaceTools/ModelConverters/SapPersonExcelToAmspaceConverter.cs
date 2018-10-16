@@ -29,7 +29,7 @@ namespace AmSpaceTools.ModelConverters
                     sapUser.PersonLegalId = contract.IdentityNumber;
                     sapUser.DateOfBirth = contract.BirthDate;
                     sapUser.Nationality = contract.Nationality;
-                    sapUser.Sex = (AmSpaceModels.Sap.Sex)contract.Sex;
+                    sapUser.Sex = (AmSpaceModels.Enums.Sex)contract.Sex;
                     //sapUser.MainEmployeeId = key.First(_ => _.ContractNumber == 1).EmployeeId;
                     //sapUser.EmployeeId = contract.EmployeeId;
                     //sapUser.ManagerEmployeeId = contract.ManagerId;
