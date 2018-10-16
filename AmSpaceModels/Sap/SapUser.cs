@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using AmSpaceModels.Enums;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,13 +52,13 @@ namespace AmSpaceModels.Sap
         public string PersonLegalId { get; set; }
 
         [JsonProperty("date_of_birth")]
-        public string DateOfBirth { get; set; }
+        public DateTime? DateOfBirth { get; set; }
 
         [JsonProperty("nationality")]
         public string Nationality { get; set; }
 
         [JsonProperty("sex")]
-        public int Sex { get; set; }
+        public Sex Sex { get; set; }
 
         [JsonProperty("main_employee_id")]
         public int MainEmployeeId { get; set; }
@@ -66,10 +67,10 @@ namespace AmSpaceModels.Sap
         public int EmployeeId { get; set; }
 
         [JsonProperty("start_date")]
-        public string StartDate { get; set; }
+        public DateTime? StartDate { get; set; }
 
         [JsonProperty("end_date")]
-        public string EndDate { get; set; }
+        public DateTime? EndDate { get; set; }
 
         [JsonProperty("level")]
         public int Level { get; set; }

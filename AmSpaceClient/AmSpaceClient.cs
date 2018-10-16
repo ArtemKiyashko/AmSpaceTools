@@ -1,4 +1,5 @@
 ﻿using AmSpaceModels;
+using AmSpaceModels.Enums;
 using AmSpaceModels.Idp;
 using AmSpaceModels.Organization;
 using AmSpaceModels.Performance;
@@ -286,7 +287,7 @@ namespace AmSpaceClient
 
         public async Task<IEnumerable<SearchUserResult>> FindUser(string query, Brand brand, OrganizationGroup orgGroup, UserStatus status, string domain)
         {
-            var url = string.Format(Endpoints.SearchUsersEndpoint, query, brand.Id, orgGroup.Id, (int)status, domain);
+            var url = string.Format(Endpoints.SearchUsersEndpoint, query, brand?.Id, orgGroup?.Id, status == UserStatus.ANY ? (object)string.Empty : (int)status, domain);
             var pager = await RequestWrapper.GetAsyncWrapper<SearchUsers>(url);
             var result = new List<SearchUserResult>();
             result.AddRange(pager.Results);
@@ -314,6 +315,16 @@ namespace AmSpaceClient
             var url = string.Format(Endpoints.RoadmapUpdateAdminEndpoint, userContract.Id, roadmap.Year);
             roadmap.Year = null;
             return await RequestWrapper.PatchAsyncWrapper<Roadmap, Roadmap>(roadmap, url);
+        }
+
+        public async Task<TemporaryAccount> CreateTemporaryAccount(TemporaryAccount accountInfo)
+        {
+            return await RequestWrapper.PostAsyncWrapper<TemporaryAccount, TemporaryAccount>(accountInfo, Endpoints.TemporaryAccountAdminEndpoint);
+        }
+
+        public Task<ExternalAccount> CreateExternalAccount(ExternalAccount accountInfo)
+        {
+            throw new NotImplementedException();
         }
     }
 }

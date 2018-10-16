@@ -1,6 +1,7 @@
 ﻿using AmSpaceClient;
 using AmSpaceModels;
 using AmSpaceModels.Idp;
+using AmSpaceModels.Sap;
 using AmSpaceTools.Decorators;
 using AmSpaceTools.ModelConverters;
 using AmSpaceTools.ViewModels;
@@ -27,6 +28,7 @@ namespace AmSpaceTools.Infrastructure
                 return new MapperConfiguration(cfg => {
                     cfg.CreateMap<CompetencyAction, UpdateAction>().ConvertUsing(new ActionToUpdateConverter());
                     cfg.CreateMap<IDictionary<Competency, List<IdpAction>>, IEnumerable<IdpExcelRow>>().ConvertUsing(new CompetencyActionsToExcelRowConverter());
+                    cfg.CreateMap<IEnumerable<SapPersonExcelRow>, IEnumerable<SapUser>>().ConvertUsing(new SapPersonExcelToAmspaceConverter());
                 });
             }
         }
@@ -40,12 +42,12 @@ namespace AmSpaceTools.Infrastructure
         static Services()
         {
             _container = new Container(_ => {
-                _.For<IAmSpaceClient>().Use<AmSpaceClient.AmSpaceHttpClient>().Singleton();
+                _.For<IAmSpaceClient>().Use<AmSpaceHttpClient>().Singleton();
                 _.For<MainWindowViewModel>().Use<MainWindowViewModel>().Singleton();
                 _.For<IExcelWorker>().Use<AmSpaceExcelWorker>().Transient();
                 _.For<IExcelWorker>().DecorateAllWith<ExcelWorkerDecorator>();
                 _.For<ILog>().Use(a => LogManager.GetLogger(typeof(App)));
-                _.For<IMapper>().Use(a => new Mapper(_mapperConfiguration)).Singleton();
+                _.For<IMapper>().Use(a => new Mapper(_mapperConfiguration)).Transient();
                 _.For<IAmSpaceEnvironmentsProvider>().Use<AmSpaceEnvironmentsProvider>().Singleton();
                 _.Scan(scanner => {
                     scanner.TheCallingAssembly();

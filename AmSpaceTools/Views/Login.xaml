@@ -28,16 +28,8 @@
           Grid.Column="0"
           x:Name="NameTextBox"
           Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-          materialDesign:HintAssist.Hint="Name">
-            <TextBox.Text>
-                <Binding
-                  Path="Name"
-                  UpdateSourceTrigger="PropertyChanged">
-                    <Binding.ValidationRules>
-                        <infrastructure:NotEmptyValidationRule ValidatesOnTargetUpdated="True" />
-                    </Binding.ValidationRules>
-                </Binding>
-            </TextBox.Text>
+          materialDesign:HintAssist.Hint="Name"
+          Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}">
         </TextBox>
         <PasswordBox
             Grid.Row="2"
@@ -70,6 +62,7 @@
           x:Name="LoginButton"
             ToolTip="Login using Your AmSpace credentials"
           IsDefault="True"
+          IsEnabled="{Binding DefaultButtonIsEnabled}"
           Grid.Row="6"
           Grid.Column="0"
           Command="{Binding LoginCommand}"

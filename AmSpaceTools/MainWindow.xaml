@@ -23,6 +23,9 @@
         <DataTemplate DataType="{x:Type vm:OrgStructureViewModel}">
             <views:OrgStructure/>
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:PeopleUploadViewModel}">
+            <views:PeopleUpload/>
+        </DataTemplate>
         <infrastructure:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </Window.Resources>
     <materialDesign:DialogHost Identifier="RootDialog">

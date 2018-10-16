@@ -69,6 +69,7 @@
       <HintPath>..\packages\System.AppContext.4.3.0\lib\net46\System.AppContext.dll</HintPath>
     </Reference>
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Console, Version=4.0.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Console.4.3.1\lib\net46\System.Console.dll</HintPath>
     </Reference>
@@ -152,16 +153,22 @@
     <Compile Include="Infrastructure\NotEmptyValidationRule.cs" />
     <Compile Include="Infrastructure\RelayCommand.cs" />
     <Compile Include="Infrastructure\Services.cs" />
+    <Compile Include="Infrastructure\StringExtensions.cs" />
     <Compile Include="Infrastructure\TreeExtensions.cs" />
+    <Compile Include="Infrastructure\TreeItem.cs" />
     <Compile Include="ModelConverters\ActionToUpdateConverter.cs" />
     <Compile Include="ModelConverters\CompetencyActionsToExcelRowConverter.cs" />
+    <Compile Include="ModelConverters\SapPersonExcelToAmspaceConverter.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="ViewModels\ErrorViewModel.cs" />
     <Compile Include="ViewModels\IdpTranslationsPreviewViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\OrgStructureViewModel.cs" />
+    <Compile Include="ViewModels\PeopleUploadViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModel.cs" />
+    <Compile Include="ViewModels\SearchPeopleViewModel.cs" />
+    <Compile Include="ViewModels\SearchUserResultWithContractViewModel.cs" />
     <Compile Include="Views\ConfirmUnitDelete.xaml.cs">
       <DependentUpon>ConfirmUnitDelete.xaml</DependentUpon>
     </Compile>
@@ -180,8 +187,14 @@
     <Compile Include="Views\OrgStructure.xaml.cs">
       <DependentUpon>OrgStructure.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\PeopleUpload.xaml.cs">
+      <DependentUpon>PeopleUpload.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Profile.xaml.cs">
       <DependentUpon>Profile.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SearchPeople.xaml.cs">
+      <DependentUpon>SearchPeople.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -219,7 +232,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\PeopleUpload.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Profile.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SearchPeople.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

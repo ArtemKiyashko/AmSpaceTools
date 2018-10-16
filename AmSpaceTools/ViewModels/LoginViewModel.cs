@@ -5,6 +5,7 @@ using AmSpaceTools.Views;
 using StructureMap.Pipeline;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Configuration;
 using System.Linq;
 using System.Security;
@@ -50,11 +51,13 @@ namespace AmSpaceTools.ViewModels
             }
         }
 
+        [Required]
         public string Name
         {
             get { return _name; }
-            set { _name = value; }
+            set { _name = value; ValidateModelProperty(); }
         }
+
         public SecureString Password
         {
             get { return _password; }

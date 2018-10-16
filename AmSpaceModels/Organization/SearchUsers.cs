@@ -63,11 +63,4 @@ namespace AmSpaceModels.Organization
         [JsonProperty("position_name")]
         public string PositionName { get; set; }
     }
-
-    public enum UserStatus
-    {
-        ACTIVE,
-        SUSPENDED,
-        TERMINATED
-    }
 }

@@ -19,12 +19,13 @@ namespace ExcelWorkerTests
         {
             _worker = new AmSpaceExcelWorker();
             _filepath = AppDomain.CurrentDomain.BaseDirectory + "..//..//Resources/example.xlsx";
+            _worker.OpenFile(_filepath);
         }
         // to be updated after separating worker from repository
         [Test]
         public void ExtractData_WhenCalledWithGoalsType_ReturnListFromAllXlsRows()
         {
-            var data = _worker.ExctractData<GoalExcelRow>(_filepath, "Goals");
+            var data = _worker.ExctractData<GoalExcelRow>("Goals");
 
             Assert.IsNotNull(data);
             Assert.That(data.Count() == 4);
@@ -33,11 +34,10 @@ namespace ExcelWorkerTests
         [Test]
         public void ExtractData_WhenCalledWithIdpType_ReturnListFromAllXlsRows()
         {
-            var data = _worker.ExctractData<KpiExcelRow>(_filepath, "KPIs");
+            var data = _worker.ExctractData<KpiExcelRow>("KPIs");
 
             Assert.IsNotNull(data);
             Assert.That(data.Count() == 4);
         }
-
     }
 }
