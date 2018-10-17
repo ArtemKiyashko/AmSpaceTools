@@ -63,6 +63,15 @@ namespace AmSpaceClient
         public string GoalsWeightAdminEndpoint { get { return $"{BaseAddress}/api/v1/performance/goals/admin/{{0}}/roadmaps/{{1}}/goals/manager/"; } }
         public string TemporaryAccountAdminEndpoint { get { return $"{BaseAddress}/api/v1/accounts/create_temporary/"; } }
         public string ExternalAccountEndpoint { get { return $"{BaseAddress}/api/v1/accounts/create_external/"; } }
+        /// <summary>
+        /// Required query string parameters to add: page, query and domain for OPS or tag for RST
+        /// </summary>
+        public string JobMapSearchEndpoint { get { return $"{BaseAddress}/api/v1/search/succession/admin/"; } }
+        /// <summary>
+        /// PATCH only
+        /// </summary>
+        public string JobDescriptionEndpoint { get { return $"{BaseAddress}/api/v1/organization/jobs/{{0}}/description/"; } }
+        public string JobResponsibilitiesEndpoint { get { return $"{BaseAddress}/api/v1/organization/jobs/{{0}}/responsibilities/{{1}}"; } }
 
         public string BaseAddress { get; private set; }
 
