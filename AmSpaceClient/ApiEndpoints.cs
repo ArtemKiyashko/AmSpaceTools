@@ -50,10 +50,10 @@ namespace AmSpaceClient
         public string CountriesEndpoint { get { return $"{BaseAddress}/api/v1/organization/brands/{{0}}/countries/"; } }
         /// <summary>
         /// <remarks>
-        /// User name, Brand ID, Organizational group (crew, managers), User status (active, suspended, terminated), domain name (PL, CZ, etc)
+        /// User name, Brand ID, Organizational group (crew, managers), User status (active, suspended, terminated), domain name (PL, CZ, etc), identity number (like passport number, unique)
         /// </remarks>
         /// </summary>
-        public string SearchUsersEndpoint { get { return $"{BaseAddress}/api/v1/search/users/?query={{0}}&brand={{1}}&organization_group={{2}}&status={{3}}&domain={{4}}"; } }
+        public string SearchUsersEndpoint { get { return $"{BaseAddress}/api/v1/search/users/?query={{0}}&brand={{1}}&organization_group={{2}}&status={{3}}&domain={{4}}&person_legal_id={{5}}"; } }
         public string OrganizationGroupsEndpoint { get { return $"{BaseAddress}/api/v1/organization/organization_groups/"; } }
         /// <summary>
         /// <remarks>
@@ -62,7 +62,13 @@ namespace AmSpaceClient
         /// </summary>
         public string GoalsWeightAdminEndpoint { get { return $"{BaseAddress}/api/v1/performance/goals/admin/{{0}}/roadmaps/{{1}}/goals/manager/"; } }
         public string TemporaryAccountAdminEndpoint { get { return $"{BaseAddress}/api/v1/accounts/create_temporary/"; } }
-        public string ExternalAccountEndpoint { get { return $"{BaseAddress}/api/v1/accounts/create_external/"; } }
+        public string ExternalAccountCreateEndpoint { get { return $"{BaseAddress}/api/v1/accounts/create_external/"; } }
+        /// <summary>
+        /// <remarks>
+        /// ContractId
+        /// </remarks>
+        /// </summary>
+        public string ExternalAccountUpdateEndpoint { get { return $"{BaseAddress}/api/v1/accounts/create_external/{{0}}/"; } }
 
         public string BaseAddress { get; private set; }
 

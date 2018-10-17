@@ -77,31 +77,52 @@ namespace AmSpaceTools.ViewModels
             IsLoading = true;
             var domainTree = await _client.GetOrganizationStructureAsync();
             var flatDomains = domainTree.Descendants(_ => _.Children);
-            var inputSapUsers = _mapper.Map<IEnumerable<SapUser>>(InputRows);
             var inputRowsGroupedByContracts = InputRows.GroupBy(_ => new { _.IdentityNumber, _.ManagerId }, v => v);
+            if (inputRowsGroupedByContracts.Count(_ => string.IsNullOrEmpty(_.Key.ManagerId)) > 1)
+                throw new ArgumentException($"More than one person has empty {nameof(SapPersonExcelRow.ManagerId)}", nameof(SapPersonExcelRow.ManagerId));
             var tree = inputRowsGroupedByContracts.GenerateTree(c => c.Key.IdentityNumber, c => c.Key.ManagerId ?? string.Empty, string.Empty);
             foreach (var account in tree.Descendants(_ => _.Children))
             {
                 foreach(var contract in account.Item)
                 {
-                    //TODO: convert to temp account model (using auto mapper). upload to AmSpace
-                    throw new NotImplementedException();
-                }
-            }
-            //below code useless
-            foreach(var inputRow in InputRows.Where(_ => string.IsNullOrEmpty(_.ManagerId)).GroupBy(_ => _.IdentityNumber))
-            {
-                foreach (var inputContract in inputRow)
-                {
-                    var currentUserDomain = flatDomains.FirstOrDefault(_ => _.Id == inputContract.Mpk);
-                    if (currentUserDomain == null) throw new Exception($"Cannot find domain with MPK {inputContract.Mpk} for User {inputContract.Name} {inputContract.Surname}");
-                    var existingUsersInDomain = await _client.FindUser($"{inputContract.Name} {inputContract.Surname}", null, null, UserStatus.ANY, currentUserDomain.Name);
-                    if (existingUsersInDomain.Count() > 1) throw new Exception($"More than one {inputContract.Name} {inputContract.Surname} in domain {inputContract.Mpk}");
-                    //var sapUser = inputSapUsers.Single(_ => _.PersonLegalId == inputContract.IdentityNumber);
-                    //sapUser.MainEmployeeId = inputRow.Single(_ => _.ContractNumber == 1).EmployeeId;
+                    var currentUserDomain = GetUserDomain(flatDomains, contract);
+                    var externalAccount = FillAccount(topLvlManager, contract, currentUserDomain);
+                    var accountResult = await UploadAccount(contract, externalAccount);
                 }
             }
             IsLoading = false;
+        }
+
+        private AmspaceDomain GetUserDomain(IEnumerable<AmspaceDomain> flatDomains, SapPersonExcelRow contract)
+        {
+            var currentUserDomain = flatDomains.FirstOrDefault(_ => _.Mpk == contract.Mpk);
+            if (currentUserDomain == null) throw new ArgumentNullException(nameof(SapPersonExcelRow.Mpk), $"Cannot find domain with MPK {contract.Mpk} for User {contract.Name} {contract.Surname}");
+            return currentUserDomain;
+        }
+
+        private async Task<ExternalAccount> UploadAccount(SapPersonExcelRow contract, ExternalAccount externalAccount)
+        {
+            var accountResult = new ExternalAccount();
+            var existingUser = await _client.FindUserByIdentityNumber(contract.IdentityNumber);
+            if (existingUser == null)
+                accountResult = await _client.CreateExternalAccount(externalAccount);
+            else
+            {
+                var existingContract = existingUser.Contracts.Find(_ => _.ContractNumber == contract.ContractNumber);
+                if (existingContract == null)
+                    accountResult = await _client.CreateExternalAccount(externalAccount);
+                else
+                    accountResult = await _client.UpdateExternalAccount(existingContract.Id, externalAccount);
+            }
+            return accountResult;
+        }
+
+        private ExternalAccount FillAccount(SearchUserResultWithContractViewModel topLvlManager, SapPersonExcelRow contract, AmspaceDomain currentUserDomain)
+        {
+            var externalAccount = _mapper.Map<ExternalAccount>(contract);
+            externalAccount.DomainId = currentUserDomain.Id;
+            if (string.IsNullOrEmpty(externalAccount.ManagerLegalId)) externalAccount.ManagerLegalId = topLvlManager.User.PersonLegalId;
+            return externalAccount;
         }
 
         private void OpenFile(object obj)

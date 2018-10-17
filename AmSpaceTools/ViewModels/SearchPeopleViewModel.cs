@@ -92,7 +92,7 @@ namespace AmSpaceTools.ViewModels
         {
             IsLoading = true;
             SearchResultWithContract.Clear();
-            SearchResult = await _client.FindUser(ManagerName, null, null, UserStatus.ACTIVE, ManagerDomain);
+            SearchResult = await _client.FindUsers(ManagerName, null, null, UserStatus.ACTIVE, ManagerDomain, null);
             SearchResult.ForEach(_ => SearchResultWithContract.Add(new SearchUserResultWithContractViewModel {
                 User = _,
                 MainContract = _.Contracts.First()

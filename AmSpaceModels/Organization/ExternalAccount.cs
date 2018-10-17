@@ -41,7 +41,7 @@ namespace AmSpaceModels.Organization
         public long DomainId { get; set; }
 
         [JsonProperty("manager_legal_id")]
-        public long ManagerLegalId { get; set; }
+        public string ManagerLegalId { get; set; }
 
         [JsonProperty("contract_number")]
         public long ContractNumber { get; set; }

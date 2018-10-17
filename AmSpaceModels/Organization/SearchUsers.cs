@@ -44,6 +44,9 @@ namespace AmSpaceModels.Organization
 
         [JsonProperty("roles")]
         public List<string> Roles { get; set; }
+
+        [JsonProperty("person_legal_id")]
+        public string PersonLegalId { get; set; }
     }
 
     public partial class ContractSearch
@@ -62,5 +65,8 @@ namespace AmSpaceModels.Organization
 
         [JsonProperty("position_name")]
         public string PositionName { get; set; }
+
+        [JsonProperty("contract_number")]
+        public int ContractNumber { get; set; }
     }
 }

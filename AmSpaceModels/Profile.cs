@@ -42,6 +42,9 @@ namespace AmSpaceModels
         [JsonProperty("phone_number")]
         public string PhoneNumber { get; set; }
 
+        [JsonProperty("person_legal_id")]
+        public string PersonLegalId { get; set; }
+
         [JsonProperty("date_of_birth")]
         public System.DateTimeOffset DateOfBirth { get; set; }
 
@@ -154,7 +157,10 @@ namespace AmSpaceModels
         public Domain Domain { get; set; }
 
         [JsonProperty("brand_name")]
-        public object BrandName { get; set; }
+        public string BrandName { get; set; }
+
+        [JsonProperty("contract_number")]
+        public int ContractNumber { get; set; }
     }
 
     public partial class Domain
