@@ -46,6 +46,8 @@
     <Compile Include="Enums\Enums.cs" />
     <Compile Include="Idp\ActionType.cs" />
     <Compile Include="AmSpaceError.cs" />
+    <Compile Include="JobMap\JobDescription.cs" />
+    <Compile Include="JobMap\JobResponsibilities.cs" />
     <Compile Include="Organization\AmspaceStructureData.cs" />
     <Compile Include="AmSpaceEnvironment.cs" />
     <Compile Include="BaseModel.cs" />
