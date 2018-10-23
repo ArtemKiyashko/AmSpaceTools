@@ -160,7 +160,7 @@ namespace AmSpaceModels
         public string BrandName { get; set; }
 
         [JsonProperty("contract_number")]
-        public int ContractNumber { get; set; }
+        public int? ContractNumber { get; set; }
     }
 
     public partial class Domain

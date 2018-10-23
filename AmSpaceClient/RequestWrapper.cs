@@ -112,14 +112,19 @@ namespace AmSpaceClient
 
         public async Task<TOutput> PatchAsyncWrapper<TInput, TOutput>(TInput model, string endpoint) where TOutput : class
         {
-            var request = new HttpRequestMessage
+            var request = CreateHttpMessage(model, endpoint, "PATCH");
+            var result = await AmSpaceHttpClient.SendAsync(request);
+            return await result.ValidateAsync<TOutput>();
+        }
+
+        private HttpRequestMessage CreateHttpMessage<TInput>(TInput model, string endpoint, string method)
+        {
+            return new HttpRequestMessage
             {
-                Method = new HttpMethod("PATCH"),
+                Method = new HttpMethod(method),
                 RequestUri = new Uri(endpoint),
                 Content = PrepareContent(model)
             };
-            var result = await AmSpaceHttpClient.SendAsync(request);
-            return await result.ValidateAsync<TOutput>();
         }
 
         public async Task<TOutput> PutAsyncWrapper<TInput, TOutput>(TInput model, string endpoint) where TOutput : class
@@ -127,6 +132,13 @@ namespace AmSpaceClient
             var httpcontent = PrepareContent(model);
             var result = await AmSpaceHttpClient.PutAsync(endpoint, httpcontent);
             return await result.ValidateAsync<TOutput>();
+        }
+
+        public async Task<bool> PatchAsyncWrapper<TInput>(TInput model, string endpoint)
+        {
+            var request = CreateHttpMessage(model, endpoint, "PATCH");
+            var result = await AmSpaceHttpClient.SendAsync(request);
+            return await result.ValidateAsync();
         }
     }
 }

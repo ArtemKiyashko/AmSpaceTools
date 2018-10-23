@@ -75,8 +75,6 @@ namespace AmSpaceTools.ViewModels
             if (!result) return;
             var topLvlManager = _searchVm.SelectedUser;
             IsLoading = true;
-            var domainTree = await _client.GetOrganizationStructureAsync();
-            var flatDomains = domainTree.Descendants(_ => _.Children);
             var inputRowsGroupedByContracts = InputRows.GroupBy(_ => new { _.IdentityNumber, _.ManagerId }, v => v);
             if (inputRowsGroupedByContracts.Count(_ => string.IsNullOrEmpty(_.Key.ManagerId)) > 1)
                 throw new ArgumentException($"More than one person has empty {nameof(SapPersonExcelRow.ManagerId)}", nameof(SapPersonExcelRow.ManagerId));
@@ -85,30 +83,35 @@ namespace AmSpaceTools.ViewModels
             {
                 foreach(var contract in account.Item)
                 {
-                    var currentUserDomain = GetUserDomain(flatDomains, contract);
-                    var externalAccount = FillAccount(topLvlManager, contract, currentUserDomain);
-                    var accountResult = await UploadAccount(contract, externalAccount);
+                    var externalAccount = FillAccount(topLvlManager, contract);
+                    var accountResult = await UploadAccount(externalAccount);
                 }
             }
             IsLoading = false;
         }
 
-        private AmspaceDomain GetUserDomain(IEnumerable<AmspaceDomain> flatDomains, SapPersonExcelRow contract)
+        protected async Task<bool> DeactivateContract(SapPersonExcelRow contract)
         {
-            var currentUserDomain = flatDomains.FirstOrDefault(_ => _.Mpk == contract.Mpk);
-            if (currentUserDomain == null) throw new ArgumentNullException(nameof(SapPersonExcelRow.Mpk), $"Cannot find domain with MPK {contract.Mpk} for User {contract.Name} {contract.Surname}");
-            return currentUserDomain;
+            var existingUser = await _client.FindUserByIdentityNumber(contract.IdentityNumber.ToLower());
+            if (existingUser == null)
+                throw new ArgumentNullException(nameof(SapPersonExcelRow.IdentityNumber), $"User with {nameof(SapPersonExcelRow.IdentityNumber)} [{contract.IdentityNumber}] marked for deactivation not found.");
+            var targetContract = existingUser.Contracts.Find(_ => _.ContractNumber == contract.ContractNumber);
+            if (targetContract == null)
+                throw new ArgumentNullException(nameof(SapPersonExcelRow.ContractNumber), 
+                    $"Contract for user with {nameof(SapPersonExcelRow.IdentityNumber)} [{contract.IdentityNumber}] " +
+                    $"with {nameof(SapPersonExcelRow.ContractNumber)} [{contract.ContractNumber}] marked for deactivation not found.");
+            return await _client.DeactivateExternalAccount(targetContract.Id, new ExternalAccount { EndDate = contract.ContractEndDate, Status = UserStatus.TERMINATED });
         }
 
-        private async Task<ExternalAccount> UploadAccount(SapPersonExcelRow contract, ExternalAccount externalAccount)
+        protected async Task<ExternalAccount> UploadAccount(ExternalAccount externalAccount)
         {
             var accountResult = new ExternalAccount();
-            var existingUser = await _client.FindUserByIdentityNumber(contract.IdentityNumber);
+            var existingUser = await _client.FindUserByIdentityNumber(externalAccount.PersonLegalId.ToLower());
             if (existingUser == null)
                 accountResult = await _client.CreateExternalAccount(externalAccount);
             else
             {
-                var existingContract = existingUser.Contracts.Find(_ => _.ContractNumber == contract.ContractNumber);
+                var existingContract = existingUser.Contracts.Find(_ => _.ContractNumber == externalAccount.ContractNumber);
                 if (existingContract == null)
                     accountResult = await _client.CreateExternalAccount(externalAccount);
                 else
@@ -117,11 +120,11 @@ namespace AmSpaceTools.ViewModels
             return accountResult;
         }
 
-        private ExternalAccount FillAccount(SearchUserResultWithContractViewModel topLvlManager, SapPersonExcelRow contract, AmspaceDomain currentUserDomain)
+        protected ExternalAccount FillAccount(SearchUserResultWithContractViewModel topLvlManager, SapPersonExcelRow contract)
         {
+            //TODO: Make after map action (IMappingAction) to fill manager id from amspace 
             var externalAccount = _mapper.Map<ExternalAccount>(contract);
-            externalAccount.DomainId = currentUserDomain.Id;
-            if (string.IsNullOrEmpty(externalAccount.ManagerLegalId)) externalAccount.ManagerLegalId = topLvlManager.User.PersonLegalId;
+            //if (string.IsNullOrEmpty(externalAccount.ManagerId)) externalAccount.ManagerId = topLvlManager.User.Id;
             return externalAccount;
         }
 

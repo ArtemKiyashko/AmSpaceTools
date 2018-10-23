@@ -338,5 +338,11 @@ namespace AmSpaceClient
             var result = await FindUsers(null, null, null, UserStatus.ANY, null, identityNumber);
             return result.FirstOrDefault();
         }
+
+        public Task<bool> DeactivateExternalAccount(long? contractId, ExternalAccount accountInfo)
+        {
+            var url = string.Format(Endpoints.ExternalAccountUpdateEndpoint, contractId);
+            return RequestWrapper.PatchAsyncWrapper<ExternalAccount>(accountInfo, url);
+        }
     }
 }

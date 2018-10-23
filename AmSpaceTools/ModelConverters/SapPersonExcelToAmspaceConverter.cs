@@ -29,9 +29,8 @@ namespace AmSpaceTools.ModelConverters
             externalUser.EndDate = source.ContractEndDate;
             externalUser.Level = source.Level;
             externalUser.Status = (AmSpaceModels.Enums.UserStatus)source.Status;
-            externalUser.DomainId = source.Mpk;
+            externalUser.Mpk = source.Mpk;
             externalUser.CountryCode = source.Country;
-            externalUser.ManagerLegalId = source.ManagerId;
             externalUser.ContractNumber = source.ContractNumber;
             return externalUser;
         }

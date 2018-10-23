@@ -10,6 +10,9 @@ namespace AmSpaceModels.Organization
 {
     public partial class ExternalAccount
     {
+        [JsonProperty("id")]
+        public long? Id { get; set; }
+
         [JsonProperty("first_name")]
         public string FirstName { get; set; }
 
@@ -37,11 +40,11 @@ namespace AmSpaceModels.Organization
         [JsonProperty("sex")]
         public Sex Sex { get; set; }
 
-        [JsonProperty("domain_id")]
-        public long DomainId { get; set; }
+        [JsonProperty("mpk")]
+        public long Mpk { get; set; }
 
-        [JsonProperty("manager_legal_id")]
-        public string ManagerLegalId { get; set; }
+        [JsonProperty("manager_id")]
+        public long ManagerId { get; set; }
 
         [JsonProperty("contract_number")]
         public long ContractNumber { get; set; }

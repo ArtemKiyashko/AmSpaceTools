@@ -70,5 +70,6 @@ namespace AmSpaceClient
         Task<TemporaryAccount> CreateTemporaryAccount(TemporaryAccount accountInfo);
         Task<ExternalAccount> CreateExternalAccount(ExternalAccount accountInfo);
         Task<ExternalAccount> UpdateExternalAccount(long? contractId, ExternalAccount accountInfo);
+        Task<bool> DeactivateExternalAccount(long? contractId, ExternalAccount accountInfo);
     }
 }

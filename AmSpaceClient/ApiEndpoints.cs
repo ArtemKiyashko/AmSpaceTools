@@ -62,13 +62,13 @@ namespace AmSpaceClient
         /// </summary>
         public string GoalsWeightAdminEndpoint { get { return $"{BaseAddress}/api/v1/performance/goals/admin/{{0}}/roadmaps/{{1}}/goals/manager/"; } }
         public string TemporaryAccountAdminEndpoint { get { return $"{BaseAddress}/api/v1/accounts/create_temporary/"; } }
-        public string ExternalAccountCreateEndpoint { get { return $"{BaseAddress}/api/v1/accounts/create_external/"; } }
+        public string ExternalAccountCreateEndpoint { get { return $"{BaseAddress}/api/v1/accounts/external/"; } }
         /// <summary>
         /// <remarks>
         /// ContractId
         /// </remarks>
         /// </summary>
-        public string ExternalAccountUpdateEndpoint { get { return $"{BaseAddress}/api/v1/accounts/create_external/{{0}}/"; } }
+        public string ExternalAccountUpdateEndpoint { get { return $"{BaseAddress}/api/v1/accounts/external/{{0}}/"; } }
 
         public string BaseAddress { get; private set; }
 
