@@ -13,10 +13,10 @@ namespace AmSpaceModels.JobMap
         public long Count { get; set; }
 
         [JsonProperty("next")]
-        public object Next { get; set; }
+        public string Next { get; set; }
 
         [JsonProperty("previous")]
-        public object Previous { get; set; }
+        public string Previous { get; set; }
 
         [JsonProperty("results")]
         public List<JobMap> Results { get; set; }
@@ -40,13 +40,13 @@ namespace AmSpaceModels.JobMap
         public long Level { get; set; }
 
         [JsonProperty("translations")]
-        public ResultTranslation[] Translations { get; set; }
+        public List<JobDescriptionTranslation> JobDescriptionsTranslations { get; set; }
 
         [JsonProperty("employee_comments")]
         public List<EmployeeComment> EmployeeComments { get; set; }
 
         [JsonProperty("responsibilities")]
-        public List<JobResponsibilities> Responsibilities { get; set; }
+        public List<JobResponsibilities> JobResponsibilities { get; set; }
     }
 
     public partial class EmployeeComment
@@ -68,24 +68,6 @@ namespace AmSpaceModels.JobMap
 
         [JsonProperty("text")]
         public string Text { get; set; }
-
-        [JsonProperty("language")]
-        public string Language { get; set; }
-    }
-
-    public partial class ResultTranslation
-    {
-        [JsonProperty("id")]
-        public long Id { get; set; }
-
-        [JsonProperty("name")]
-        public string Name { get; set; }
-
-        [JsonProperty("description")]
-        public string Description { get; set; }
-
-        [JsonProperty("additional_requirements")]
-        public string AdditionalRequirements { get; set; }
 
         [JsonProperty("language")]
         public string Language { get; set; }

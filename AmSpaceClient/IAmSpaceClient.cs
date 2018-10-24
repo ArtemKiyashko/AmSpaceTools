@@ -1,6 +1,7 @@
 ﻿using AmSpaceModels;
 using AmSpaceModels.Enums;
 using AmSpaceModels.Idp;
+using AmSpaceModels.JobMap;
 using AmSpaceModels.Organization;
 using AmSpaceModels.Performance;
 using AmSpaceModels.Sap;
@@ -68,5 +69,6 @@ namespace AmSpaceClient
         Task<IEnumerable<GoalWeight>> UpdateGoalsWeight(IEnumerable<GoalWeight> weights, ContractSearch userContract, Roadmap roadmap);
         Task<TemporaryAccount> CreateTemporaryAccount(TemporaryAccount accountInfo);
         Task<ExternalAccount> CreateExternalAccount(ExternalAccount accountInfo);
+        Task<IEnumerable<JobMap>> FindJobMap(string country, string brand, int level, string position);
     }
 }

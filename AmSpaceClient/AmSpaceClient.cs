@@ -1,6 +1,7 @@
 ﻿using AmSpaceModels;
 using AmSpaceModels.Enums;
 using AmSpaceModels.Idp;
+using AmSpaceModels.JobMap;
 using AmSpaceModels.Organization;
 using AmSpaceModels.Performance;
 using AmSpaceModels.Sap;
@@ -325,6 +326,37 @@ namespace AmSpaceClient
         public Task<ExternalAccount> CreateExternalAccount(ExternalAccount accountInfo)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<JobMap>> FindJobMap(string country, string brand, int level, string position)
+        {
+            var queryString = await BuildJobMapQueryString(country, brand, level, position);
+            var pager = await RequestWrapper.GetAsyncWrapper<JobSearchPager>($"{Endpoints.JobMapSearchEndpoint}{queryString}");
+            var result = new List<JobMap>();
+            result.AddRange(pager.Results);
+            while (!string.IsNullOrEmpty(pager.Next))
+            {
+                pager = await RequestWrapper.GetAsyncWrapper<JobSearchPager>(pager.Next);
+                result.AddRange(pager.Results);
+            }
+            return result;
+        }
+
+        private async Task<string> BuildJobMapQueryString(string country, string brand, int level, string position)
+        {
+            var queryString = $"?query={position}&level={level}&";
+            var currentBrand = (await GetBrandsAsync()).FirstOrDefault(item => item.Name == brand);
+            if (currentBrand == null)
+            {
+                queryString = queryString + "tag=rst";
+            }
+            else
+            {
+                var countries = await GetCountriesAsync(currentBrand);
+                var currentCountry = countries.FirstOrDefault(item => item.Name.Contains(country));
+                queryString = $"{queryString}domain={currentCountry.Id}";
+            }
+            return queryString;
         }
     }
 }

@@ -7,16 +7,16 @@ using System.Threading.Tasks;
 
 namespace AmSpaceModels.JobMap
 {
-    class JobDescription
+    public class JobDescription
     {
         [JsonProperty("id")]
         public long Id { get; set; }
         [JsonProperty("translations")]
-        public List<DescriptionTranslation> Translations { get; set; }
+        public List<JobDescriptionTranslation> Translations { get; set; }
 
     }
 
-    public class DescriptionTranslation
+    public class JobDescriptionTranslation
     {
         [JsonProperty("id")]
         public long Id { get; set; }
