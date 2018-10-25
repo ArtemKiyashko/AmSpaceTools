@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AmSpaceModels.JobMap
 {
-    public class JobResponsibilities
+    public class JobResponsibility
     {
         [JsonProperty("id")]
         public long Id { get; set; }

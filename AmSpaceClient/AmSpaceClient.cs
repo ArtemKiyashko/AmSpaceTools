@@ -13,6 +13,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -358,5 +359,30 @@ namespace AmSpaceClient
             }
             return queryString;
         }
+
+        public async Task<JobDescription> UpdateJobDescriptionAsync(JobDescription jobDescription)
+        {
+            var url = string.Format(Endpoints.JobDescriptionEndpoint, jobDescription.Id);
+            return await RequestWrapper.PatchAsyncWrapper<JobDescription, JobDescription>(jobDescription, url);
+        }
+
+        public async Task<List<JobResponsibility>> GetJobResponsibilities(JobMap jobMap)
+        {
+            var url = string.Format(Endpoints.JobResponsibilitiesEndpoint, jobMap.Id);
+            return await RequestWrapper.GetAsyncWrapper<List<JobResponsibility>>(url);
+        }
+
+        public async Task<bool> DeleteJobResponsibility(JobResponsibility responsibility)
+        {
+            var url = string.Format(Endpoints.JobResponsibilitiesEndpoint, responsibility.Job) + $"{responsibility.Id}/";
+            return await RequestWrapper.DeleteAsyncWrapper(url);
+        }
+
+        public async Task<JobResponsibility> CreateJobResponsibility(JobResponsibility responsibility)
+        {
+            var url = string.Format(Endpoints.JobResponsibilitiesEndpoint, responsibility.Job);
+            return await RequestWrapper.PostAsyncWrapper<JobResponsibility, JobResponsibility>(responsibility, url);
+        }
+
     }
 }

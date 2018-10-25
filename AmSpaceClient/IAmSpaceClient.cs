@@ -70,5 +70,9 @@ namespace AmSpaceClient
         Task<TemporaryAccount> CreateTemporaryAccount(TemporaryAccount accountInfo);
         Task<ExternalAccount> CreateExternalAccount(ExternalAccount accountInfo);
         Task<IEnumerable<JobMap>> FindJobMap(string country, string brand, int level, string position);
+        Task<JobDescription> UpdateJobDescriptionAsync(JobDescription jobDescription);
+        Task<bool> DeleteJobResponsibility(JobResponsibility responsibility);
+        Task<List<JobResponsibility>> GetJobResponsibilities(JobMap jobMap);
+        Task<JobResponsibility> CreateJobResponsibility(JobResponsibility responsibility);
     }
 }

@@ -25,7 +25,7 @@ namespace AmSpaceModels.JobMap
     public class JobMap
     {
         [JsonProperty("id")]
-        public long Id { get; set; }
+        public int Id { get; set; }
 
         [JsonProperty("brand")]
         public string Brand { get; set; }
@@ -46,7 +46,7 @@ namespace AmSpaceModels.JobMap
         public List<EmployeeComment> EmployeeComments { get; set; }
 
         [JsonProperty("responsibilities")]
-        public List<JobResponsibilities> JobResponsibilities { get; set; }
+        public List<JobResponsibility> JobResponsibilities { get; set; }
     }
 
     public partial class EmployeeComment

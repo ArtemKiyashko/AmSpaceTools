@@ -71,7 +71,7 @@ namespace AmSpaceClient
         /// PATCH only
         /// </summary>
         public string JobDescriptionEndpoint { get { return $"{BaseAddress}/api/v1/organization/jobs/{{0}}/description/"; } }
-        public string JobResponsibilitiesEndpoint { get { return $"{BaseAddress}/api/v1/organization/jobs/{{0}}/responsibilities/{{1}}"; } }
+        public string JobResponsibilitiesEndpoint { get { return $"{BaseAddress}/api/v1/organization/jobs/{{0}}/responsibilities/"; } }
 
         public string BaseAddress { get; private set; }
 

@@ -10,7 +10,7 @@ namespace AmSpaceModels.JobMap
     public class JobDescription
     {
         [JsonProperty("id")]
-        public long Id { get; set; }
+        public long? Id { get; set; }
         [JsonProperty("translations")]
         public List<JobDescriptionTranslation> Translations { get; set; }
 
@@ -19,7 +19,7 @@ namespace AmSpaceModels.JobMap
     public class JobDescriptionTranslation
     {
         [JsonProperty("id")]
-        public long Id { get; set; }
+        public int? Id { get; set; }
 
         [JsonProperty("name")]
         public string Name { get; set; }
