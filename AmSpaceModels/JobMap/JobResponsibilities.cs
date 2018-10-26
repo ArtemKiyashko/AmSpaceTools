@@ -10,13 +10,13 @@ namespace AmSpaceModels.JobMap
     public class JobResponsibility
     {
         [JsonProperty("id")]
-        public long Id { get; set; }
+        public long? Id { get; set; }
 
         [JsonProperty("job")]
         public long Job { get; set; }
 
         [JsonProperty("translations")]
-        public List<ResponsibilityTranslation> Translations { get; set; }
+        public IEnumerable<ResponsibilityTranslation> Translations { get; set; }
     }
 
     public class ResponsibilityTranslation

@@ -12,14 +12,14 @@ namespace AmSpaceModels.JobMap
         [JsonProperty("id")]
         public long? Id { get; set; }
         [JsonProperty("translations")]
-        public List<JobDescriptionTranslation> Translations { get; set; }
+        public IEnumerable<JobDescriptionTranslation> Translations { get; set; }
 
     }
 
     public class JobDescriptionTranslation
     {
         [JsonProperty("id")]
-        public int? Id { get; set; }
+        public long? Id { get; set; }
 
         [JsonProperty("name")]
         public string Name { get; set; }

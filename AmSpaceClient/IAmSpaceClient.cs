@@ -69,10 +69,10 @@ namespace AmSpaceClient
         Task<IEnumerable<GoalWeight>> UpdateGoalsWeight(IEnumerable<GoalWeight> weights, ContractSearch userContract, Roadmap roadmap);
         Task<TemporaryAccount> CreateTemporaryAccount(TemporaryAccount accountInfo);
         Task<ExternalAccount> CreateExternalAccount(ExternalAccount accountInfo);
-        Task<IEnumerable<JobMap>> FindJobMap(string country, string brand, int level, string position);
+        Task<IEnumerable<JobMap>> FindJobMapAsync(string country, string brand, int level, string position);
         Task<JobDescription> UpdateJobDescriptionAsync(JobDescription jobDescription);
-        Task<bool> DeleteJobResponsibility(JobResponsibility responsibility);
-        Task<List<JobResponsibility>> GetJobResponsibilities(JobMap jobMap);
-        Task<JobResponsibility> CreateJobResponsibility(JobResponsibility responsibility);
+        Task<bool> DeleteJobResponsibilityAsync(JobResponsibility responsibility);
+        Task<List<JobResponsibility>> GetJobResponsibilitiesAsync(JobMap jobMap);
+        Task<JobResponsibility> CreateJobResponsibilityAsync(JobResponsibility responsibility);
     }
 }

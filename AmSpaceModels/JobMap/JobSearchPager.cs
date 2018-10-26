@@ -19,13 +19,13 @@ namespace AmSpaceModels.JobMap
         public string Previous { get; set; }
 
         [JsonProperty("results")]
-        public List<JobMap> Results { get; set; }
+        public IEnumerable<JobMap> Results { get; set; }
     }
 
     public class JobMap
     {
         [JsonProperty("id")]
-        public int Id { get; set; }
+        public long? Id { get; set; }
 
         [JsonProperty("brand")]
         public string Brand { get; set; }
@@ -40,19 +40,19 @@ namespace AmSpaceModels.JobMap
         public long Level { get; set; }
 
         [JsonProperty("translations")]
-        public List<JobDescriptionTranslation> JobDescriptionsTranslations { get; set; }
+        public IEnumerable<JobDescriptionTranslation> JobDescriptionsTranslations { get; set; }
 
         [JsonProperty("employee_comments")]
-        public List<EmployeeComment> EmployeeComments { get; set; }
+        public IEnumerable<EmployeeComment> EmployeeComments { get; set; }
 
         [JsonProperty("responsibilities")]
-        public List<JobResponsibility> JobResponsibilities { get; set; }
+        public IEnumerable<JobResponsibility> JobResponsibilities { get; set; }
     }
 
     public partial class EmployeeComment
     {
         [JsonProperty("id")]
-        public long Id { get; set; }
+        public long? Id { get; set; }
 
         [JsonProperty("job_id")]
         public long JobId { get; set; }

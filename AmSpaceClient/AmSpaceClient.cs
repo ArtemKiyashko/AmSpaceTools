@@ -329,7 +329,7 @@ namespace AmSpaceClient
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<JobMap>> FindJobMap(string country, string brand, int level, string position)
+        public async Task<IEnumerable<JobMap>> FindJobMapAsync(string country, string brand, int level, string position)
         {
             var queryString = await BuildJobMapQueryString(country, brand, level, position);
             var pager = await RequestWrapper.GetAsyncWrapper<JobSearchPager>($"{Endpoints.JobMapSearchEndpoint}{queryString}");
@@ -366,19 +366,19 @@ namespace AmSpaceClient
             return await RequestWrapper.PatchAsyncWrapper<JobDescription, JobDescription>(jobDescription, url);
         }
 
-        public async Task<List<JobResponsibility>> GetJobResponsibilities(JobMap jobMap)
+        public async Task<List<JobResponsibility>> GetJobResponsibilitiesAsync(JobMap jobMap)
         {
             var url = string.Format(Endpoints.JobResponsibilitiesEndpoint, jobMap.Id);
             return await RequestWrapper.GetAsyncWrapper<List<JobResponsibility>>(url);
         }
 
-        public async Task<bool> DeleteJobResponsibility(JobResponsibility responsibility)
+        public async Task<bool> DeleteJobResponsibilityAsync(JobResponsibility responsibility)
         {
             var url = string.Format(Endpoints.JobResponsibilitiesEndpoint, responsibility.Job) + $"{responsibility.Id}/";
             return await RequestWrapper.DeleteAsyncWrapper(url);
         }
 
-        public async Task<JobResponsibility> CreateJobResponsibility(JobResponsibility responsibility)
+        public async Task<JobResponsibility> CreateJobResponsibilityAsync(JobResponsibility responsibility)
         {
             var url = string.Format(Endpoints.JobResponsibilitiesEndpoint, responsibility.Job);
             return await RequestWrapper.PostAsyncWrapper<JobResponsibility, JobResponsibility>(responsibility, url);
