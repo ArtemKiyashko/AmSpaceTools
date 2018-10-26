@@ -1,6 +1,7 @@
 ﻿using AmSpaceModels;
 using AmSpaceModels.Enums;
 using AmSpaceModels.Idp;
+using AmSpaceModels.JobMap;
 using AmSpaceModels.Organization;
 using AmSpaceModels.Performance;
 using AmSpaceModels.Sap;
@@ -68,5 +69,10 @@ namespace AmSpaceClient
         Task<IEnumerable<GoalWeight>> UpdateGoalsWeight(IEnumerable<GoalWeight> weights, ContractSearch userContract, Roadmap roadmap);
         Task<TemporaryAccount> CreateTemporaryAccount(TemporaryAccount accountInfo);
         Task<ExternalAccount> CreateExternalAccount(ExternalAccount accountInfo);
+        Task<IEnumerable<JobMap>> FindJobMapAsync(Country country, Level level, string positionName);
+        Task<JobDescription> UpdateJobDescriptionAsync(JobDescription jobDescription);
+        Task<bool> DeleteJobResponsibilityAsync(JobResponsibility responsibility);
+        Task<List<JobResponsibility>> GetJobResponsibilitiesAsync(JobMap jobMap);
+        Task<JobResponsibility> CreateJobResponsibilityAsync(JobResponsibility responsibility);
     }
 }

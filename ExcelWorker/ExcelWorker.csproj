@@ -50,6 +50,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -64,6 +65,7 @@
     <Compile Include="Models\EpplusIgnoreAttribute.cs" />
     <Compile Include="Models\GoalExcelRow.cs" />
     <Compile Include="Models\IdpExcelRow.cs" />
+    <Compile Include="Models\JobMapExcelRow.cs" />
     <Compile Include="Models\KpiExcelRow.cs" />
     <Compile Include="Models\SapPersonExcelRow.cs" />
     <Compile Include="Models\SapPositionExcel.cs" />

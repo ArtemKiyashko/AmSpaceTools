@@ -1,6 +1,7 @@
 ﻿using AmSpaceModels;
 using AmSpaceModels.Enums;
 using AmSpaceModels.Idp;
+using AmSpaceModels.JobMap;
 using AmSpaceModels.Organization;
 using AmSpaceModels.Performance;
 using AmSpaceModels.Sap;
@@ -12,6 +13,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -326,5 +328,44 @@ namespace AmSpaceClient
         {
             throw new NotImplementedException();
         }
+
+        public async Task<IEnumerable<JobMap>> FindJobMapAsync(Country country, Level level, string positionName)
+        {
+            var url = string.Format(Endpoints.JobMapSearchEndpoint, positionName, level.Name, country == null ? "rst" : "", country == null ? "" : country.Id.ToString());
+            var pager = await RequestWrapper.GetAsyncWrapper<JobSearchPager>(url);
+            var result = new List<JobMap>();
+            result.AddRange(pager.Results);
+            while (!string.IsNullOrEmpty(pager.Next))
+            {
+                pager = await RequestWrapper.GetAsyncWrapper<JobSearchPager>(pager.Next);
+                result.AddRange(pager.Results);
+            }
+            return result;
+        }
+
+        public async Task<JobDescription> UpdateJobDescriptionAsync(JobDescription jobDescription)
+        {
+            var url = string.Format(Endpoints.JobDescriptionEndpoint, jobDescription.Id);
+            return await RequestWrapper.PatchAsyncWrapper<JobDescription, JobDescription>(jobDescription, url);
+        }
+
+        public async Task<List<JobResponsibility>> GetJobResponsibilitiesAsync(JobMap jobMap)
+        {
+            var url = string.Format(Endpoints.JobResponsibilitiesEndpoint, jobMap.Id);
+            return await RequestWrapper.GetAsyncWrapper<List<JobResponsibility>>(url);
+        }
+
+        public async Task<bool> DeleteJobResponsibilityAsync(JobResponsibility responsibility)
+        {
+            var url = string.Format(Endpoints.JobResponsibilitiesEndpoint, responsibility.Job) + $"{responsibility.Id}/";
+            return await RequestWrapper.DeleteAsyncWrapper(url);
+        }
+
+        public async Task<JobResponsibility> CreateJobResponsibilityAsync(JobResponsibility responsibility)
+        {
+            var url = string.Format(Endpoints.JobResponsibilitiesEndpoint, responsibility.Job);
+            return await RequestWrapper.PostAsyncWrapper<JobResponsibility, JobResponsibility>(responsibility, url);
+        }
+
     }
 }
