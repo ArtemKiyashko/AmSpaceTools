@@ -66,7 +66,7 @@ namespace AmSpaceClient
         /// <summary>
         /// Required query string parameters to add: page, query and domain for OPS or tag for RST
         /// </summary>
-        public string JobMapSearchEndpoint { get { return $"{BaseAddress}/api/v1/search/succession/admin/"; } }
+        public string JobMapSearchEndpoint { get { return $"{BaseAddress}/api/v1/search/succession/admin/?query={{0}}&level={{1}}&tag={{2}}&domain={{3}}"; } }
         /// <summary>
         /// PATCH only
         /// </summary>
