@@ -43,7 +43,8 @@ namespace AmSpaceClient
         {
             var stringContent = JsonConvert.SerializeObject(model, Formatting.None, new JsonSerializerSettings
             {
-                NullValueHandling = NullValueHandling.Ignore
+                NullValueHandling = NullValueHandling.Ignore,
+                DateFormatString = "yyyy-MM-dd"
             });
             var httpcontent = new StringContent(stringContent);
             httpcontent.Headers.ContentType = new MediaTypeHeaderValue("application/json");

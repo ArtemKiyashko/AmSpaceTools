@@ -324,7 +324,7 @@ namespace AmSpaceClient
 
         public Task<ExternalAccount> CreateExternalAccount(ExternalAccount accountInfo)
         {
-            return RequestWrapper.PutAsyncWrapper<ExternalAccount, ExternalAccount>(accountInfo, Endpoints.ExternalAccountCreateEndpoint);
+            return RequestWrapper.PostAsyncWrapper<ExternalAccount, ExternalAccount>(accountInfo, Endpoints.ExternalAccountCreateEndpoint);
         }
 
         public Task<ExternalAccount> UpdateExternalAccount(long? contractId, ExternalAccount accountInfo)

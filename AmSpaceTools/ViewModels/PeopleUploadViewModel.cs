@@ -67,46 +67,66 @@ namespace AmSpaceTools.ViewModels
 
         private async void UploadData(object obj)
         {
-            var view = new SearchPeople()
-            {
-                DataContext = _searchVm
-            };
-            var result = (bool)await DialogHost.Show(view, "RootDialog");
-            if (!result) return;
-            var topLvlManager = _searchVm.SelectedUser;
             IsLoading = true;
             var inputRowsGroupedByContracts = InputRows.GroupBy(_ => new { _.IdentityNumber, _.ManagerId }, v => v);
-            if (inputRowsGroupedByContracts.Count(_ => string.IsNullOrEmpty(_.Key.ManagerId)) > 1)
-                throw new ArgumentException($"More than one person has empty {nameof(SapPersonExcelRow.ManagerId)}", nameof(SapPersonExcelRow.ManagerId));
             var tree = inputRowsGroupedByContracts.GenerateTree(c => c.Key.IdentityNumber, c => c.Key.ManagerId ?? string.Empty, string.Empty);
             foreach (var account in tree.Descendants(_ => _.Children))
             {
                 foreach(var contract in account.Item)
                 {
-                    var externalAccount = FillAccount(topLvlManager, contract);
+                    var externalAccount = await FillAccount(contract);
                     var accountResult = await UploadAccount(externalAccount);
                 }
             }
             IsLoading = false;
         }
 
-        protected async Task<bool> DeactivateContract(SapPersonExcelRow contract)
+        protected async Task<ExternalAccount> FillAccount(SapPersonExcelRow contract)
         {
-            var existingUser = await _client.FindUserByIdentityNumber(contract.IdentityNumber.ToLower());
-            if (existingUser == null)
-                throw new ArgumentNullException(nameof(SapPersonExcelRow.IdentityNumber), $"User with {nameof(SapPersonExcelRow.IdentityNumber)} [{contract.IdentityNumber}] marked for deactivation not found.");
-            var targetContract = existingUser.Contracts.Find(_ => _.ContractNumber == contract.ContractNumber);
-            if (targetContract == null)
-                throw new ArgumentNullException(nameof(SapPersonExcelRow.ContractNumber), 
-                    $"Contract for user with {nameof(SapPersonExcelRow.IdentityNumber)} [{contract.IdentityNumber}] " +
-                    $"with {nameof(SapPersonExcelRow.ContractNumber)} [{contract.ContractNumber}] marked for deactivation not found.");
-            return await _client.DeactivateExternalAccount(targetContract.Id, new ExternalAccount { EndDate = contract.ContractEndDate, Status = UserStatus.TERMINATED });
+            var externalAccount = _mapper.Map<ExternalAccount>(contract);
+            await FillPosition(contract, externalAccount);
+            await FillManager(contract, externalAccount);
+            return externalAccount;
+        }
+
+        protected async Task FillPosition(SapPersonExcelRow contract, ExternalAccount externalAccount)
+        {
+            var positions = await _client.GetPositionsAsync();
+            var existingPosition = positions
+                .FirstOrDefault(_ => string.Equals(_.Name, contract.Position, StringComparison.OrdinalIgnoreCase));
+            if (existingPosition == null)
+                externalAccount.PositionName = contract.Position;
+            else
+            {
+                externalAccount.PositionName = existingPosition.Name;
+                externalAccount.PositionId = existingPosition.Id;
+            }
+        }
+
+        protected async Task FillManager(SapPersonExcelRow contract, ExternalAccount externalAccount)
+        {
+            if (string.IsNullOrEmpty(contract.ManagerId))
+            {
+                _searchVm.Subordinate = contract;
+                var view = new SearchPeople()
+                {
+                    DataContext = _searchVm
+                };
+                var result = (bool)await DialogHost.Show(view, "RootDialog");
+                if (!result) throw new ArgumentNullException(nameof(contract.ManagerId), $"Manager for {contract.Name} {contract.Surname} not set");
+                externalAccount.ManagerId = _searchVm.SelectedUser.User.Id;
+            }
+            else
+            {
+                var manager = await _client.FindUserByIdentityNumber(contract.IdentityNumber);
+                externalAccount.ManagerId = manager == null ? throw new ArgumentException($"Manager for {contract.Name} {contract.Surname} not found!") : manager.Id;
+            }
         }
 
         protected async Task<ExternalAccount> UploadAccount(ExternalAccount externalAccount)
         {
             var accountResult = new ExternalAccount();
-            var existingUser = await _client.FindUserByIdentityNumber(externalAccount.PersonLegalId.ToLower());
+            var existingUser = await _client.FindUserByIdentityNumber(externalAccount.PersonLegalId);
             if (existingUser == null)
                 accountResult = await _client.CreateExternalAccount(externalAccount);
             else
@@ -120,14 +140,6 @@ namespace AmSpaceTools.ViewModels
             return accountResult;
         }
 
-        protected ExternalAccount FillAccount(SearchUserResultWithContractViewModel topLvlManager, SapPersonExcelRow contract)
-        {
-            //TODO: Make after map action (IMappingAction) to fill manager id from amspace 
-            var externalAccount = _mapper.Map<ExternalAccount>(contract);
-            //if (string.IsNullOrEmpty(externalAccount.ManagerId)) externalAccount.ManagerId = topLvlManager.User.Id;
-            return externalAccount;
-        }
-
         private void OpenFile(object obj)
         {
             IsLoading = true;
@@ -139,10 +151,13 @@ namespace AmSpaceTools.ViewModels
 
             if (dialog.ShowDialog() == true)
             {
-                _fileName = dialog.FileName;
-                _excelWorker.OpenFile(_fileName);
-                _workSheet = _excelWorker.GetWorkSheet(1);
-                _excelWorker.ExctractData<SapPersonExcelRow>(_workSheet.TableName).ForEach(_ => InputRows.Add(_));
+                using (_excelWorker)
+                {
+                    _fileName = dialog.FileName;
+                    _excelWorker.OpenFile(_fileName);
+                    _workSheet = _excelWorker.GetWorkSheet(1);
+                    _excelWorker.ExctractData<SapPersonExcelRow>(_workSheet.TableName).ForEach(_ => InputRows.Add(_));
+                }
             }
             IsLoading = false;
         }

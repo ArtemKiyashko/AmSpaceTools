@@ -28,10 +28,22 @@ namespace AmSpaceTools.ModelConverters
             externalUser.StartDate = source.ContractStartDate;
             externalUser.EndDate = source.ContractEndDate;
             externalUser.Level = source.Level;
-            externalUser.Status = (AmSpaceModels.Enums.UserStatus)source.Status;
             externalUser.Mpk = source.Mpk;
             externalUser.CountryCode = source.Country;
             externalUser.ContractNumber = source.ContractNumber;
+            switch (source.Status)
+            {
+                case ContractStatus.Active:
+                    externalUser.Status = AmSpaceModels.Enums.UserStatus.ACTIVE;
+                    break;
+                case ContractStatus.Terminated:
+                    externalUser.Status = AmSpaceModels.Enums.UserStatus.TERMINATED;
+                    break;
+                case ContractStatus.Suspended:
+                    externalUser.Status = AmSpaceModels.Enums.UserStatus.SUSPENDED;
+                    break;
+                default: throw new ArgumentOutOfRangeException(nameof(source.Status), $"Unrecognized {nameof(source.Status)} {source.Status}");
+            }
             return externalUser;
         }
     }

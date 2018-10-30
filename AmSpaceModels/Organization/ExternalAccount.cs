@@ -43,7 +43,7 @@ namespace AmSpaceModels.Organization
         [JsonProperty("mpk")]
         public long Mpk { get; set; }
 
-        [JsonProperty("manager_id")]
+        [JsonProperty("manager_user_id")]
         public long ManagerId { get; set; }
 
         [JsonProperty("contract_number")]
