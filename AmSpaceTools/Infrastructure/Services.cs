@@ -1,6 +1,7 @@
 ﻿using AmSpaceClient;
 using AmSpaceModels;
 using AmSpaceModels.Idp;
+using AmSpaceModels.Organization;
 using AmSpaceModels.Sap;
 using AmSpaceTools.Decorators;
 using AmSpaceTools.ModelConverters;
@@ -28,7 +29,7 @@ namespace AmSpaceTools.Infrastructure
                 return new MapperConfiguration(cfg => {
                     cfg.CreateMap<CompetencyAction, UpdateAction>().ConvertUsing(new ActionToUpdateConverter());
                     cfg.CreateMap<IDictionary<Competency, List<IdpAction>>, IEnumerable<IdpExcelRow>>().ConvertUsing(new CompetencyActionsToExcelRowConverter());
-                    cfg.CreateMap<IEnumerable<SapPersonExcelRow>, IEnumerable<SapUser>>().ConvertUsing(new SapPersonExcelToAmspaceConverter());
+                    cfg.CreateMap<SapPersonExcelRow, ExternalAccount>().ConvertUsing(new SapPersonExcelToAmspaceConverter());
                 });
             }
         }

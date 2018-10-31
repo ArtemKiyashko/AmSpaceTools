@@ -67,41 +67,77 @@ namespace AmSpaceTools.ViewModels
 
         private async void UploadData(object obj)
         {
-            var view = new SearchPeople()
-            {
-                DataContext = _searchVm
-            };
-            var result = (bool)await DialogHost.Show(view, "RootDialog");
-            if (!result) return;
-            var topLvlManager = _searchVm.SelectedUser;
             IsLoading = true;
-            var domainTree = await _client.GetOrganizationStructureAsync();
-            var flatDomains = domainTree.Descendants(_ => _.Children);
-            var inputSapUsers = _mapper.Map<IEnumerable<SapUser>>(InputRows);
             var inputRowsGroupedByContracts = InputRows.GroupBy(_ => new { _.IdentityNumber, _.ManagerId }, v => v);
             var tree = inputRowsGroupedByContracts.GenerateTree(c => c.Key.IdentityNumber, c => c.Key.ManagerId ?? string.Empty, string.Empty);
             foreach (var account in tree.Descendants(_ => _.Children))
             {
                 foreach(var contract in account.Item)
                 {
-                    //TODO: convert to temp account model (using auto mapper). upload to AmSpace
-                    throw new NotImplementedException();
-                }
-            }
-            //below code useless
-            foreach(var inputRow in InputRows.Where(_ => string.IsNullOrEmpty(_.ManagerId)).GroupBy(_ => _.IdentityNumber))
-            {
-                foreach (var inputContract in inputRow)
-                {
-                    var currentUserDomain = flatDomains.FirstOrDefault(_ => _.Id == inputContract.Mpk);
-                    if (currentUserDomain == null) throw new Exception($"Cannot find domain with MPK {inputContract.Mpk} for User {inputContract.Name} {inputContract.Surname}");
-                    var existingUsersInDomain = await _client.FindUser($"{inputContract.Name} {inputContract.Surname}", null, null, UserStatus.ANY, currentUserDomain.Name);
-                    if (existingUsersInDomain.Count() > 1) throw new Exception($"More than one {inputContract.Name} {inputContract.Surname} in domain {inputContract.Mpk}");
-                    //var sapUser = inputSapUsers.Single(_ => _.PersonLegalId == inputContract.IdentityNumber);
-                    //sapUser.MainEmployeeId = inputRow.Single(_ => _.ContractNumber == 1).EmployeeId;
+                    var externalAccount = await FillAccount(contract);
+                    var accountResult = await UploadAccount(externalAccount);
                 }
             }
             IsLoading = false;
+        }
+
+        protected async Task<ExternalAccount> FillAccount(SapPersonExcelRow contract)
+        {
+            var externalAccount = _mapper.Map<ExternalAccount>(contract);
+            await FillPosition(contract, externalAccount);
+            await FillManager(contract, externalAccount);
+            return externalAccount;
+        }
+
+        protected async Task FillPosition(SapPersonExcelRow contract, ExternalAccount externalAccount)
+        {
+            var positions = await _client.GetPositionsAsync();
+            var existingPosition = positions
+                .FirstOrDefault(_ => string.Equals(_.Name, contract.Position, StringComparison.OrdinalIgnoreCase));
+            if (existingPosition == null)
+                externalAccount.PositionName = contract.Position;
+            else
+            {
+                externalAccount.PositionName = existingPosition.Name;
+                externalAccount.PositionId = existingPosition.Id;
+            }
+        }
+
+        protected async Task FillManager(SapPersonExcelRow contract, ExternalAccount externalAccount)
+        {
+            if (string.IsNullOrEmpty(contract.ManagerId))
+            {
+                _searchVm.Subordinate = contract;
+                var view = new SearchPeople()
+                {
+                    DataContext = _searchVm
+                };
+                var result = (bool)await DialogHost.Show(view, "RootDialog");
+                if (!result) throw new ArgumentNullException(nameof(contract.ManagerId), $"Manager for {contract.Name} {contract.Surname} not set");
+                externalAccount.ManagerId = _searchVm.SelectedUser.User.Id;
+            }
+            else
+            {
+                var manager = await _client.FindUserByIdentityNumber(contract.ManagerId);
+                externalAccount.ManagerId = manager == null ? throw new ArgumentException($"Manager for {contract.Name} {contract.Surname} not found!") : manager.Id;
+            }
+        }
+
+        protected async Task<ExternalAccountResponse> UploadAccount(ExternalAccount externalAccount)
+        {
+            var accountResult = new ExternalAccountResponse();
+            var existingUser = await _client.FindUserByIdentityNumber(externalAccount.PersonLegalId);
+            if (existingUser == null)
+                accountResult = await _client.CreateExternalAccount(externalAccount);
+            else
+            {
+                var existingContract = existingUser.Contracts.Find(_ => _.ContractNumber == externalAccount.ContractNumber);
+                if (existingContract == null)
+                    accountResult = await _client.CreateExternalAccount(externalAccount);
+                else
+                    accountResult = await _client.UpdateExternalAccount(existingContract.Id, externalAccount);
+            }
+            return accountResult;
         }
 
         private void OpenFile(object obj)
@@ -115,10 +151,14 @@ namespace AmSpaceTools.ViewModels
 
             if (dialog.ShowDialog() == true)
             {
-                _fileName = dialog.FileName;
-                _excelWorker.OpenFile(_fileName);
-                _workSheet = _excelWorker.GetWorkSheet(1);
-                _excelWorker.ExctractData<SapPersonExcelRow>(_workSheet.TableName).ForEach(_ => InputRows.Add(_));
+                using (_excelWorker)
+                {
+                    _fileName = dialog.FileName;
+                    _excelWorker.OpenFile(_fileName);
+                    _workSheet = _excelWorker.GetWorkSheet(1);
+                    InputRows.Clear();
+                    _excelWorker.ExctractData<SapPersonExcelRow>(_workSheet.TableName).ForEach(_ => InputRows.Add(_));
+                }
             }
             IsLoading = false;
         }

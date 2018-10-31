@@ -2,6 +2,7 @@
 using AmSpaceModels.Enums;
 using AmSpaceModels.Organization;
 using AmSpaceTools.Infrastructure;
+using ExcelWorker.Models;
 using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.Generic;
@@ -20,11 +21,23 @@ namespace AmSpaceTools.ViewModels
         private SearchUserResultWithContractViewModel _selectedUser;
         private string _managerName;
         private string _managerDomain;
+        private SapPersonExcelRow _subordinate;
+
         public ObservableCollection<SearchUserResultWithContractViewModel> SearchResultWithContract { get; set; }
 
         public RelayCommand SearchCommand { get; }
         public RelayCommand ClearCommand { get; }
         public RelayCommand ApplyCommand { get; }
+
+        public SapPersonExcelRow Subordinate
+        {
+            get { return _subordinate; }
+            set { _subordinate = value; }
+        }
+
+        public string SubordinateText => $"For {Subordinate?.Name} {Subordinate?.Surname} [{Subordinate?.IdentityNumber}]";
+
+        public bool SubordinateVisible => Subordinate != null;
 
         [Required(ErrorMessage = "Please specify manager name")]
         public string ManagerName
@@ -92,7 +105,7 @@ namespace AmSpaceTools.ViewModels
         {
             IsLoading = true;
             SearchResultWithContract.Clear();
-            SearchResult = await _client.FindUser(ManagerName, null, null, UserStatus.ACTIVE, ManagerDomain);
+            SearchResult = await _client.FindUsers(ManagerName, null, null, AmSpaceUserStatus.ACTIVE, ManagerDomain, null);
             SearchResult.ForEach(_ => SearchResultWithContract.Add(new SearchUserResultWithContractViewModel {
                 User = _,
                 MainContract = _.Contracts.First()

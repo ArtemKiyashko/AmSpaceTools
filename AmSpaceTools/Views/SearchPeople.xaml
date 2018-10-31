@@ -27,13 +27,22 @@
             <RowDefinition/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <TextBlock
+        <StackPanel 
+            Orientation="Vertical"
             Grid.Row="0"
-            Grid.Column="0"
-            Margin="0 5 5 5"
-            Style="{StaticResource MaterialDesignHeadlineTextBlock}">
-            Choose AmRest Manager
-        </TextBlock>
+            Grid.Column="0">
+            <TextBlock
+                Margin="0 5 5 2"
+                Style="{StaticResource MaterialDesignHeadlineTextBlock}">
+                Choose AmRest Manager
+            </TextBlock>
+            <TextBlock
+                Margin="0 0 5 5"
+                Visibility="{Binding SubordinateVisible, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"
+                Text="{Binding SubordinateText}"
+                Style="{StaticResource MaterialDesignBody1TextBlock}" />
+        </StackPanel>
+        
         <Button
             Grid.Row="0"
             Grid.Column="2"

@@ -62,5 +62,8 @@ namespace AmSpaceModels.Organization
 
         [JsonProperty("position_name")]
         public string PositionName { get; set; }
+
+        [JsonProperty("contract_number")]
+        public int? ContractNumber { get; set; }
     }
 }

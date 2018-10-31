@@ -1,4 +1,5 @@
-﻿using AmSpaceModels.Sap;
+﻿using AmSpaceModels.Organization;
+using AmSpaceModels.Sap;
 using AmSpaceTools.Infrastructure;
 using AutoMapper;
 using ExcelWorker.Models;
@@ -10,39 +11,40 @@ using System.Threading.Tasks;
 
 namespace AmSpaceTools.ModelConverters
 {
-    public class SapPersonExcelToAmspaceConverter : ITypeConverter<IEnumerable<SapPersonExcelRow>, IEnumerable<SapUser>>
+    public class SapPersonExcelToAmspaceConverter : ITypeConverter<SapPersonExcelRow, ExternalAccount>
     {
-        public IEnumerable<SapUser> Convert(IEnumerable<SapPersonExcelRow> source, IEnumerable<SapUser> destination, ResolutionContext context)
+        public ExternalAccount Convert(SapPersonExcelRow source, ExternalAccount destination, ResolutionContext context)
         {
-            var result = new List<SapUser>();
-            foreach(var key in source.GroupBy(_ => _.IdentityNumber))
+
+            var externalUser = new ExternalAccount();
+            externalUser.FirstName = source.Name;
+            externalUser.LastName = source.Surname;
+            externalUser.Email = source.Email;
+            externalUser.PhoneNumber = source.Phone;
+            externalUser.PersonLegalId = source.IdentityNumber;
+            externalUser.DateOfBirth = source.BirthDate;
+            externalUser.Nationality = source.Nationality;
+            externalUser.Sex = (AmSpaceModels.Enums.SapSex)source.Sex;
+            externalUser.StartDate = source.ContractStartDate;
+            externalUser.EndDate = source.ContractEndDate;
+            externalUser.Level = source.Level;
+            externalUser.Mpk = source.Mpk;
+            externalUser.CountryCode = source.Country;
+            externalUser.ContractNumber = source.ContractNumber;
+            switch (source.Status)
             {
-                foreach (var contract in key)
-                {
-                    var sapUser = new SapUser();
-                    sapUser.LdapName = string.Empty;
-                    sapUser.Hash = contract.IdentityNumber.ToSha1();
-                    sapUser.FirstName = contract.Name;
-                    sapUser.LastName = contract.Surname;
-                    sapUser.Email = contract.Email;
-                    sapUser.PhoneNumber = contract.Phone;
-                    sapUser.PersonLegalId = contract.IdentityNumber;
-                    sapUser.DateOfBirth = contract.BirthDate;
-                    sapUser.Nationality = contract.Nationality;
-                    sapUser.Sex = (AmSpaceModels.Enums.Sex)contract.Sex;
-                    //sapUser.MainEmployeeId = key.First(_ => _.ContractNumber == 1).EmployeeId;
-                    //sapUser.EmployeeId = contract.EmployeeId;
-                    //sapUser.ManagerEmployeeId = contract.ManagerId;
-                    sapUser.StartDate = contract.ContractStartDate;
-                    sapUser.EndDate = contract.ContractEndDate;
-                    sapUser.Level = contract.Level;
-                    sapUser.Status = (int)contract.Status;
-                    sapUser.DomainId = contract.Mpk;
-                    sapUser.CountryCode = contract.Country;
-                    result.Add(sapUser);
-                }
+                case ContractStatus.Active:
+                    externalUser.Status = AmSpaceModels.Enums.SapUserStatus.ACTIVE;
+                    break;
+                case ContractStatus.Terminated:
+                    externalUser.Status = AmSpaceModels.Enums.SapUserStatus.TERMINATED;
+                    break;
+                case ContractStatus.Suspended:
+                    externalUser.Status = AmSpaceModels.Enums.SapUserStatus.SUSPENDED;
+                    break;
+                default: throw new ArgumentOutOfRangeException(nameof(source.Status), $"Unrecognized {nameof(source.Status)} {source.Status}");
             }
-            return result;
+            return externalUser;
         }
     }
 }
