@@ -63,13 +63,13 @@ namespace AmSpaceClient
         Task<bool> DeleteNonFinancialKpiAsync(ContractSearch userContract, Kpi kpi);
         Task<IEnumerable<Brand>> GetBrandsAsync();
         Task<IEnumerable<Country>> GetCountriesAsync(Brand brand);
-        Task<IEnumerable<SearchUserResult>> FindUsers(string query, Brand brand, OrganizationGroup orgGroup, UserStatus status, string domain, string identityNumber);
+        Task<IEnumerable<SearchUserResult>> FindUsers(string query, Brand brand, OrganizationGroup orgGroup, AmSpaceUserStatus status, string domain, string identityNumber);
         Task<SearchUserResult> FindUserByIdentityNumber(string identityNumber);
         Task<IEnumerable<OrganizationGroup>> GetOrganizationGroupsAsync();
         Task<IEnumerable<GoalWeight>> UpdateGoalsWeight(IEnumerable<GoalWeight> weights, ContractSearch userContract, Roadmap roadmap);
         Task<TemporaryAccount> CreateTemporaryAccount(TemporaryAccount accountInfo);
-        Task<ExternalAccount> CreateExternalAccount(ExternalAccount accountInfo);
-        Task<ExternalAccount> UpdateExternalAccount(long? contractId, ExternalAccount accountInfo);
+        Task<ExternalAccountResponse> CreateExternalAccount(ExternalAccount accountInfo);
+        Task<ExternalAccountResponse> UpdateExternalAccount(long? contractId, ExternalAccount accountInfo);
         Task<bool> DeactivateExternalAccount(long? contractId, ExternalAccount accountInfo);
     }
 }

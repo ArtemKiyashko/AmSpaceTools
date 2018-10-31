@@ -58,7 +58,7 @@ namespace AmSpaceModels.Sap
         public string Nationality { get; set; }
 
         [JsonProperty("sex")]
-        public Sex Sex { get; set; }
+        public SapSex Sex { get; set; }
 
         [JsonProperty("main_employee_id")]
         public int MainEmployeeId { get; set; }

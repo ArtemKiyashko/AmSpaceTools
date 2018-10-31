@@ -118,14 +118,14 @@ namespace AmSpaceTools.ViewModels
             }
             else
             {
-                var manager = await _client.FindUserByIdentityNumber(contract.IdentityNumber);
+                var manager = await _client.FindUserByIdentityNumber(contract.ManagerId);
                 externalAccount.ManagerId = manager == null ? throw new ArgumentException($"Manager for {contract.Name} {contract.Surname} not found!") : manager.Id;
             }
         }
 
-        protected async Task<ExternalAccount> UploadAccount(ExternalAccount externalAccount)
+        protected async Task<ExternalAccountResponse> UploadAccount(ExternalAccount externalAccount)
         {
-            var accountResult = new ExternalAccount();
+            var accountResult = new ExternalAccountResponse();
             var existingUser = await _client.FindUserByIdentityNumber(externalAccount.PersonLegalId);
             if (existingUser == null)
                 accountResult = await _client.CreateExternalAccount(externalAccount);
@@ -156,6 +156,7 @@ namespace AmSpaceTools.ViewModels
                     _fileName = dialog.FileName;
                     _excelWorker.OpenFile(_fileName);
                     _workSheet = _excelWorker.GetWorkSheet(1);
+                    InputRows.Clear();
                     _excelWorker.ExctractData<SapPersonExcelRow>(_workSheet.TableName).ForEach(_ => InputRows.Add(_));
                 }
             }

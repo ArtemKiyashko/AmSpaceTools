@@ -24,7 +24,7 @@ namespace AmSpaceTools.ModelConverters
             externalUser.PersonLegalId = source.IdentityNumber;
             externalUser.DateOfBirth = source.BirthDate;
             externalUser.Nationality = source.Nationality;
-            externalUser.Sex = (AmSpaceModels.Enums.Sex)source.Sex;
+            externalUser.Sex = (AmSpaceModels.Enums.SapSex)source.Sex;
             externalUser.StartDate = source.ContractStartDate;
             externalUser.EndDate = source.ContractEndDate;
             externalUser.Level = source.Level;
@@ -34,13 +34,13 @@ namespace AmSpaceTools.ModelConverters
             switch (source.Status)
             {
                 case ContractStatus.Active:
-                    externalUser.Status = AmSpaceModels.Enums.UserStatus.ACTIVE;
+                    externalUser.Status = AmSpaceModels.Enums.SapUserStatus.ACTIVE;
                     break;
                 case ContractStatus.Terminated:
-                    externalUser.Status = AmSpaceModels.Enums.UserStatus.TERMINATED;
+                    externalUser.Status = AmSpaceModels.Enums.SapUserStatus.TERMINATED;
                     break;
                 case ContractStatus.Suspended:
-                    externalUser.Status = AmSpaceModels.Enums.UserStatus.SUSPENDED;
+                    externalUser.Status = AmSpaceModels.Enums.SapUserStatus.SUSPENDED;
                     break;
                 default: throw new ArgumentOutOfRangeException(nameof(source.Status), $"Unrecognized {nameof(source.Status)} {source.Status}");
             }

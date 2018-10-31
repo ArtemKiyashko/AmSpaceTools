@@ -285,9 +285,9 @@ namespace AmSpaceClient
             return await RequestWrapper.GetAsyncWrapper<IEnumerable<Country>>(url);
         }
 
-        public async Task<IEnumerable<SearchUserResult>> FindUsers(string query, Brand brand, OrganizationGroup orgGroup, UserStatus status, string domain, string identityNumber)
+        public async Task<IEnumerable<SearchUserResult>> FindUsers(string query, Brand brand, OrganizationGroup orgGroup, AmSpaceUserStatus status, string domain, string identityNumber)
         {
-            var url = string.Format(Endpoints.SearchUsersEndpoint, query, brand?.Id, orgGroup?.Id, status == UserStatus.ANY ? (object)string.Empty : (int)status, domain, identityNumber);
+            var url = string.Format(Endpoints.SearchUsersEndpoint, query, brand?.Id, orgGroup?.Id, status == AmSpaceUserStatus.ANY ? (object)string.Empty : (int)status, domain, identityNumber);
             var pager = await RequestWrapper.GetAsyncWrapper<SearchUsers>(url);
             var result = new List<SearchUserResult>();
             result.AddRange(pager.Results);
@@ -322,20 +322,20 @@ namespace AmSpaceClient
             return await RequestWrapper.PostAsyncWrapper<TemporaryAccount, TemporaryAccount>(accountInfo, Endpoints.TemporaryAccountAdminEndpoint);
         }
 
-        public Task<ExternalAccount> CreateExternalAccount(ExternalAccount accountInfo)
+        public Task<ExternalAccountResponse> CreateExternalAccount(ExternalAccount accountInfo)
         {
-            return RequestWrapper.PostAsyncWrapper<ExternalAccount, ExternalAccount>(accountInfo, Endpoints.ExternalAccountCreateEndpoint);
+            return RequestWrapper.PostAsyncWrapper<ExternalAccount, ExternalAccountResponse>(accountInfo, Endpoints.ExternalAccountCreateEndpoint);
         }
 
-        public Task<ExternalAccount> UpdateExternalAccount(long? contractId, ExternalAccount accountInfo)
+        public Task<ExternalAccountResponse> UpdateExternalAccount(long? contractId, ExternalAccount accountInfo)
         {
             var url = string.Format(Endpoints.ExternalAccountUpdateEndpoint, contractId);
-            return RequestWrapper.PutAsyncWrapper<ExternalAccount, ExternalAccount>(accountInfo, url);
+            return RequestWrapper.PutAsyncWrapper<ExternalAccount, ExternalAccountResponse>(accountInfo, url);
         }
 
         public async Task<SearchUserResult> FindUserByIdentityNumber(string identityNumber)
         {
-            var result = await FindUsers(null, null, null, UserStatus.ANY, null, identityNumber);
+            var result = await FindUsers(null, null, null, AmSpaceUserStatus.ANY, null, identityNumber);
             return result.FirstOrDefault();
         }
 
