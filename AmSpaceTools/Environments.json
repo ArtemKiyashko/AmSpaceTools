@@ -1,5 +1,11 @@
 ﻿[
   {
+    "Name": "Dev",
+    "ClientId": "o6V5rMReyX5t4AIfbMpZkYrY3G3wvGrKqnpprnbq",
+    "BaseAddress": "https://amspacedev.amrest.eu",
+    "GrantPermissionType": "password"
+  },
+  {
     "Name": "Test",
     "ClientId": "o6V5rMReyX5t4AIfbMpZkYrY3G3wvGrKqnpprnbq",
     "BaseAddress": "https://amspacetest.amrest.eu",

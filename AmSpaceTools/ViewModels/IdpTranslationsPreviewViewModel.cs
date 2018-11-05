@@ -1,9 +1,10 @@
 ﻿using AmSpaceClient;
-using AmSpaceModels;
+using AmSpaceModels.Idp;
 using AmSpaceTools.Infrastructure;
 using AmSpaceTools.ModelConverters;
 using AutoMapper;
 using ExcelWorker;
+using ExcelWorker.Models;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,7 @@ namespace AmSpaceTools.ViewModels
 {
     public class IdpTranslationsPreviewViewModel : BaseViewModel
     {
-        private IEnumerable<IdpExcelColumn> _excelColumnsPreview;
+        private IEnumerable<IdpColumn> _excelColumnsPreview;
         private IExcelWorker _excelWorker;
         private ICommand _openFileCommand;
         private IEnumerable<IdpExcelRow> _allRows;
@@ -27,6 +28,7 @@ namespace AmSpaceTools.ViewModels
         private IMapper _mapper;
         private IAmSpaceClient _client;
         private ObservableCollection<ColumnDefinitionError> _errors;
+        private int _similarityPercent;
 
         public ObservableCollection<ColumnDefinitionError> Errors { get => _errors; set => _errors = value; }
 
@@ -61,28 +63,23 @@ namespace AmSpaceTools.ViewModels
             }
         }
 
+        public int SimilarityPercent
+        {
+            get { return _similarityPercent; }
+            set { _similarityPercent = value; }
+        }
 
-        public IEnumerable<IdpExcelColumn> ExcelColumnsPreview
+        public IEnumerable<IdpColumn> ExcelColumnsPreview
         {
             get
             {
-                if (_excelColumnsPreview == null) _excelColumnsPreview = new List<IdpExcelColumn>();
+                if (_excelColumnsPreview == null) _excelColumnsPreview = new List<IdpColumn>();
                 return _excelColumnsPreview;
             }
             set
             {
                 _excelColumnsPreview = value;
                 OnPropertyChanged();
-            }
-        }
-
-        public IEnumerable<IdpExcelRow> AllRows
-        {
-            get
-            {
-                if (_allRows == null)
-                    _allRows = _excelWorker.GetAllRows(CurrentFilePath, ExcelColumnsPreview);
-                return _allRows;
             }
         }
 
@@ -113,25 +110,29 @@ namespace AmSpaceTools.ViewModels
             OpenFileCommand = new RelayCommand(OpenFile);
             UploadDataCommand = new RelayCommand(UploadData);
             Errors = new ObservableCollection<ColumnDefinitionError>();
+            _similarityPercent = 100;
         }
 
         private async void UploadData(object obj)
         {
             IsLoading = true;
             var competencies = await _client.GetCompetenciesAsync();
-            var allAmSpaceActions = new List<IdpAction>();
-            var uniqueActions = AllRows.NormalizeTranslations();
+            var allAmSpaceActions = new Dictionary<Competency, List<IdpAction>>();
+            _allRows = _excelWorker.GetAllRows(ExcelColumnsPreview);
+            var uniqueActions = _allRows.NormalizeTranslations();
             foreach (var competency in competencies)
             {
                 if (competency.ActionCount == 0) continue;
                 var compActions = await _client.GetCompetencyActionsAsync(competency.Id.Value);
-                allAmSpaceActions.AddRange(compActions.Actions);
+                allAmSpaceActions.UpsertKey(competency).AddRange(compActions.Actions);
                 foreach (var action in compActions.Actions)
                 {
-                    if (!uniqueActions.ContainsKey(action.Name)) continue;
-                    var translationKey = uniqueActions[action.Name];
-                    foreach (var translation in translationKey)
+                    var translationKey = uniqueActions.FindSimilar(action.Name, SimilarityPercent);
+                    if (translationKey.Value == null) continue;
+                    foreach (var translation in translationKey.Value)
                         action.Translations.UpsertTranslation(translation);
+                    action.Updated = true;
+                    _allRows.Where(_ => _.ActionSourceDescription == translationKey.Key).ForEach(_ => _.Taken = true);
                 }
                 var transformedActions = _mapper.Map<UpdateAction>(compActions);
                 var result = await _client.UpdateActionAsync(transformedActions, competency.Id.Value);
@@ -140,18 +141,12 @@ namespace AmSpaceTools.ViewModels
             IsLoading = false;
         }
 
-        private void DetermineMissingMatchingActions(IEnumerable<IdpAction> compActions)
+        private void DetermineMissingMatchingActions(IDictionary<Competency, List<IdpAction>> compActions)
         {
-            var foundActions = from ca in compActions
-                               join rows in AllRows on ca.Name equals rows.ActionSourceDescription
-                               select new IdpExcelRow
-                               {
-                                   CompetencyName = rows.CompetencyName,
-                                   CompetencyLevel = rows.CompetencyLevel,
-                                   ActionPercentage = rows.ActionPercentage,
-                                   ActionSourceDescription = rows.ActionSourceDescription
-                               };
-            SaveUploadResults(AllRows.Except(foundActions, new ExcelRowEqualityComparer()), foundActions);
+            var targetActions = _mapper.Map<IEnumerable<IdpExcelRow>>(compActions);
+            SaveUploadResults(
+                _allRows.Where(_ => !_.Taken),
+                targetActions.Where(_ => _.Taken));
         }
 
         protected void SaveUploadResults(IEnumerable<IdpExcelRow> missingActions, IEnumerable<IdpExcelRow> matchingActions)
@@ -201,7 +196,8 @@ namespace AmSpaceTools.ViewModels
             if (dialog.ShowDialog() == true)
             {
                 CurrentFilePath = dialog.FileName;
-                ExcelColumnsPreview = _excelWorker.GetColumnDataPreview(CurrentFilePath, 10);
+                _excelWorker.OpenFile(CurrentFilePath);
+                ExcelColumnsPreview = _excelWorker.GetColumnDataPreview(10);
                 foreach(var excelColumn in ExcelColumnsPreview)
                     excelColumn.PropertyChanged += ExcelColumn_PropertyChanged;
             }

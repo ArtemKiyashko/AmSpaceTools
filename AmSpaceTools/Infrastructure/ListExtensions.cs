@@ -1,4 +1,6 @@
 ﻿using AmSpaceModels;
+using AmSpaceModels.Idp;
+using ExcelWorker.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +28,14 @@ namespace AmSpaceTools.Infrastructure
             }
         }
 
+        public static void ForEach<T>(this IEnumerable<T> enumeration, Action<T> action)
+        {
+            foreach (T item in enumeration)
+            {
+                action(item);
+            }
+        }
+
         public static Dictionary<string, List<Translation>> NormalizeTranslations(this IEnumerable<IdpExcelRow> source)
         {
             var uniqueActions = source.ToLookup(x => x.ActionSourceDescription, e => e.Translations);
@@ -49,6 +59,22 @@ namespace AmSpaceTools.Infrastructure
                 }
             }
             return shrinkedDictionary;
+        }
+
+        public static IEnumerable<TreeItem<T>> GenerateTree<T, K>(
+        this IEnumerable<T> collection,
+        Func<T, K> id_selector,
+        Func<T, K> parent_id_selector,
+        K root_id = default(K))
+        {
+            foreach (var c in collection.Where(c => parent_id_selector(c).Equals(root_id)))
+            {
+                yield return new TreeItem<T>
+                {
+                    Item = c,
+                    Children = collection.GenerateTree(id_selector, parent_id_selector, id_selector(c))
+                };
+            }
         }
     }
 }

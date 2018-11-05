@@ -1,0 +1,140 @@
+﻿<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:AmSpaceTools.Views"
+             xmlns:modelsSap="clr-namespace:AmSpaceModels.Sap;assembly=AmSpaceModels"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:infrastructure="clr-namespace:AmSpaceTools.Infrastructure"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             x:Class="AmSpaceTools.Views.SearchPeople"
+             mc:Ignorable="d" 
+             d:DesignHeight="800" d:DesignWidth="800">
+    <UserControl.Resources>
+        <infrastructure:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    </UserControl.Resources>
+    <Grid Margin="10" IsEnabled="{Binding UIEnabled}"  FocusManager.FocusedElement="{Binding ElementName=NameTextBox}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <StackPanel 
+            Orientation="Vertical"
+            Grid.Row="0"
+            Grid.Column="0">
+            <TextBlock
+                Margin="0 5 5 2"
+                Style="{StaticResource MaterialDesignHeadlineTextBlock}">
+                Choose AmRest Manager
+            </TextBlock>
+            <TextBlock
+                Margin="0 0 5 5"
+                Visibility="{Binding SubordinateVisible, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"
+                Text="{Binding SubordinateText}"
+                Style="{StaticResource MaterialDesignBody1TextBlock}" />
+        </StackPanel>
+        
+        <Button
+            Grid.Row="0"
+            Grid.Column="2"
+            HorizontalAlignment="Right"
+            Style="{StaticResource MaterialDesignFlatButton}"
+            ToolTip="Close"
+            Command="materialDesign:DialogHost.CloseDialogCommand">
+            <Button.CommandParameter>
+                <system:Boolean>False</system:Boolean>
+            </Button.CommandParameter>
+            <materialDesign:PackIcon
+                Kind="Close"
+                Height="24"
+                Width="24" />
+        </Button>
+        <TextBox
+          Grid.Row="1"
+          Grid.Column="0"
+          Grid.ColumnSpan="3"
+          x:Name="NameTextBox"
+          Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+          materialDesign:HintAssist.Hint="Name"
+          Text="{Binding ManagerName, UpdateSourceTrigger=PropertyChanged}">
+        </TextBox>
+        <TextBox
+              Grid.Row="2"
+              Grid.Column="0"
+              Grid.ColumnSpan="3"
+              x:Name="DomainTextBox"
+              Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+              materialDesign:HintAssist.Hint="Domain">
+                <TextBox.Text>
+                    <Binding
+                          Path="ManagerDomain"
+                          UpdateSourceTrigger="PropertyChanged">
+                    </Binding>
+                </TextBox.Text>
+        </TextBox>
+        <Button
+            Grid.Row="4"
+            Grid.Column="0"
+            Style="{StaticResource MaterialDesignFlatButton}"
+            ToolTip="Clear results"
+            Command="{Binding ClearCommand}">
+            CLEAR
+        </Button>
+        <Button
+            Grid.Row="4"
+            Grid.Column="2"
+            Style="{StaticResource MaterialDesignFlatButton}"
+            Visibility="{Binding SearchButtonVisible, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"
+            ToolTip="Search users"
+            Command="{Binding SearchCommand}"
+            IsDefault="True"
+            IsEnabled="{Binding DefaultButtonIsEnabled}">
+            SEARCH
+        </Button>
+        <Button
+            Grid.Row="4"
+            Grid.Column="2"
+            Visibility="{Binding ApplyButtonVisible, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"
+            Style="{StaticResource MaterialDesignFlatButton}"
+            ToolTip="Attach to that manager"
+            Command="{Binding ApplyCommand}">
+            APPLY
+        </Button>
+        <ListView
+            Grid.Row="3"
+            Grid.Column="0"
+            Grid.ColumnSpan="3"
+            ItemsSource="{Binding SearchResultWithContract}"
+            SelectedItem="{Binding SelectedUser}">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn
+                        DisplayMemberBinding="{Binding User.FirstName}"
+                        Header="Name" />
+                    <GridViewColumn
+                        DisplayMemberBinding="{Binding User.LastName}"
+                        Header="Surname" />
+                    <GridViewColumn
+                        DisplayMemberBinding="{Binding MainContract.DomainName}"
+                        Header="Department" />
+                    <GridViewColumn
+                        DisplayMemberBinding="{Binding MainContract.PositionName}"
+                        Header="Position" Width="Auto" />
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <ProgressBar IsIndeterminate="True" Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"
+                     Grid.Column="0"
+                     Grid.Row="3"
+                     Grid.ColumnSpan="3"/>
+    </Grid>
+</UserControl>

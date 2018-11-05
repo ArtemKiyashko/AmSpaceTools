@@ -10,11 +10,74 @@ namespace AmSpaceClient
     {
         public string TokenEndpoint { get { return $"{BaseAddress}/api/v1/auth/token/"; }  }
         public string ProfileEndpoint { get { return $"{BaseAddress}/api/v1/profile/"; } }
-        public string CompetencyEndpoint { get { return $"{BaseAddress}/api/v1/search/idp/admin/"; } }
+        public string CompetencyAdminEndpoint { get { return $"{BaseAddress}/api/v1/search/idp/admin/"; } }
         public string LevelsEndpoint { get { return $"{BaseAddress}/api/v1/organization/levels/"; } }
-        public string CompetecyActionEndpoint { get { return string.Format("{0}/api/v1/idp/admin/public/plans/{{0}}/", BaseAddress); } }
-        public string UpdateActionEndpoint { get { return string.Format("{0}/api/v1/idp/admin/public/plans/{{0}}/batch/", BaseAddress); } }
+        public string CompetecyActionAdminEndpoint { get { return $"{BaseAddress}/api/v1/idp/admin/public/plans/{{0}}/"; } }
+        public string UpdateActionEndpoint { get { return $"{BaseAddress}/api/v1/idp/admin/public/plans/{{0}}/batch/"; } }
         public string LogoutEndpoint { get { return $"{BaseAddress}/api/v1/o/revoke_token/"; } }
+        public string UserSapEndpoint { get { return $"{BaseAddress}/api/v1/sap/sync/user/"; } }
+        public string DomainSapEndpoint { get { return $"{BaseAddress}/api/v1/sap/sync/domain/"; } }
+        public string UsersInDomainEndpoint { get { return $"{BaseAddress}/api/v1/organization/people/?domains="; } }
+        public string DomainNodesEndpoint { get { return $"{BaseAddress}/api/v1/organization/tree/?with_mpk=1"; } }
+        public string PositionsEndpoint { get { return $"{BaseAddress}/api/v1/organization/positions/"; } }
+        public string PeopleEndpoint { get { return $"{BaseAddress}/api/v1/organization/people/"; } }
+        /// <summary>
+        /// <remarks>Contract ID</remarks>
+        /// </summary>
+        public string KpiFinancialCustomAdminEndpoint { get { return $"{BaseAddress}/api/v1/performance/kpi/admin/{{0}}/custom/financial/"; } }
+        /// <summary>
+        /// <remarks>Contract ID</remarks>
+        /// </summary>
+        public string KpiNonFinancialCustomAdminEndpoint { get { return $"{BaseAddress}/api/v1/performance/kpi/admin/{{0}}/custom/non_financial/"; } }
+        /// <summary>
+        /// <remarks>Contract ID</remarks>
+        /// </summary>
+        public string RoadmapsAdminEndpoint { get { return $"{BaseAddress}/api/v1/performance/goals/admin/{{0}}/roadmaps/"; } }
+        /// <summary>
+        /// <remarks>Contract ID, Year</remarks>
+        /// </summary>
+        public string RoadmapUpdateAdminEndpoint { get { return $"{BaseAddress}/api/v1/performance/goals/admin/{{0}}/roadmaps/{{1}}/"; } }
+        /// <summary>
+        /// <remarks>
+        /// Contract ID, Year
+        /// </remarks>
+        /// </summary>
+        public string GoalsAdminEndpoint { get { return $"{BaseAddress}/api/v1/performance/goals/admin/{{0}}/roadmaps/{{1}}/goals/"; } }
+        public string BrandsEndpoint { get { return $"{BaseAddress}/api/v1/organization/brands/"; } }
+        /// <summary>
+        /// <remarks>Brand ID</remarks>
+        /// </summary>
+        public string CountriesEndpoint { get { return $"{BaseAddress}/api/v1/organization/brands/{{0}}/countries/"; } }
+        /// <summary>
+        /// <remarks>
+        /// User name, Brand ID, Organizational group (crew, managers), User status (active, suspended, terminated), domain name (PL, CZ, etc), identity number (like passport number, unique)
+        /// </remarks>
+        /// </summary>
+        public string SearchUsersEndpoint { get { return $"{BaseAddress}/api/v1/search/users/?query={{0}}&brand={{1}}&organization_group={{2}}&status={{3}}&domain={{4}}&person_legal_id={{5}}"; } }
+        public string OrganizationGroupsEndpoint { get { return $"{BaseAddress}/api/v1/organization/organization_groups/"; } }
+        /// <summary>
+        /// <remarks>
+        /// Contract ID, Year
+        /// </remarks>
+        /// </summary>
+        public string GoalsWeightAdminEndpoint { get { return $"{BaseAddress}/api/v1/performance/goals/admin/{{0}}/roadmaps/{{1}}/goals/manager/"; } }
+        public string TemporaryAccountAdminEndpoint { get { return $"{BaseAddress}/api/v1/accounts/create_temporary/"; } }
+        /// <summary>
+        /// Required query string parameters to add: page, query and domain for OPS or tag for RST
+        /// </summary>
+        public string JobMapSearchEndpoint { get { return $"{BaseAddress}/api/v1/search/succession/admin/?query={{0}}&level={{1}}&tag={{2}}&domain={{3}}"; } }
+        /// <summary>
+        /// PATCH only
+        /// </summary>
+        public string JobDescriptionEndpoint { get { return $"{BaseAddress}/api/v1/organization/jobs/{{0}}/description/"; } }
+        public string JobResponsibilitiesEndpoint { get { return $"{BaseAddress}/api/v1/organization/jobs/{{0}}/responsibilities/"; } }
+        public string ExternalAccountCreateEndpoint { get { return $"{BaseAddress}/api/v1/accounts/external/"; } }
+        /// <summary>
+        /// <remarks>
+        /// ContractId
+        /// </remarks>
+        /// </summary>
+        public string ExternalAccountUpdateEndpoint { get { return $"{BaseAddress}/api/v1/accounts/external/{{0}}/"; } }
 
         public string BaseAddress { get; private set; }
 

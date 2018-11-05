@@ -42,6 +42,9 @@ namespace AmSpaceModels
         [JsonProperty("phone_number")]
         public string PhoneNumber { get; set; }
 
+        [JsonProperty("person_legal_id")]
+        public string PersonLegalId { get; set; }
+
         [JsonProperty("date_of_birth")]
         public System.DateTimeOffset DateOfBirth { get; set; }
 
@@ -73,7 +76,7 @@ namespace AmSpaceModels
         public string TumblrUsername { get; set; }
 
         [JsonProperty("contract_data")]
-        public ContractDatum[] ContractData { get; set; }
+        public List<ContractProfile> ContractData { get; set; }
 
         [JsonProperty("count_certificates")]
         public CountCertificates CountCertificates { get; set; }
@@ -133,13 +136,13 @@ namespace AmSpaceModels
         public bool? CanDevelop { get; set; }
     }
 
-    public partial class ContractDatum
+    public partial class ContractProfile
     {
         [JsonProperty("id")]
         public long? Id { get; set; }
 
         [JsonProperty("manager")]
-        public ContractDatumManager Manager { get; set; }
+        public ContractProfileManager Manager { get; set; }
 
         [JsonProperty("additional_approver")]
         public object AdditionalApprover { get; set; }
@@ -154,7 +157,10 @@ namespace AmSpaceModels
         public Domain Domain { get; set; }
 
         [JsonProperty("brand_name")]
-        public object BrandName { get; set; }
+        public string BrandName { get; set; }
+
+        [JsonProperty("contract_number")]
+        public int? ContractNumber { get; set; }
     }
 
     public partial class Domain
@@ -187,7 +193,7 @@ namespace AmSpaceModels
         public long? LevelLevel { get; set; }
     }
 
-    public partial class ContractDatumManager
+    public partial class ContractProfileManager
     {
         [JsonProperty("id")]
         public long? Id { get; set; }

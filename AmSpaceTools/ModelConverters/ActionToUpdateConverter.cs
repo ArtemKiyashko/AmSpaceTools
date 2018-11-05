@@ -1,4 +1,4 @@
-﻿using AmSpaceModels;
+﻿using AmSpaceModels.Idp;
 using AutoMapper;
 using System;
 using System.Collections.Generic;

@@ -1,5 +1,6 @@
 ﻿using AmSpaceClient;
 using AmSpaceModels;
+using AmSpaceModels.Performance;
 using AmSpaceTools.Infrastructure;
 using System;
 using System.Collections.Generic;
@@ -24,11 +25,7 @@ namespace AmSpaceTools.ViewModels
         public ProfileViewModel(IAmSpaceClient client)
         {
             _client = client;
-            _profile = _client.ProfileRequestAsync().Result;
-            _profileImageLink = _profile.Avatar;
-            Name = $"{_profile.FirstName} {_profile.LastName}";
-            JobTitle = _profile.ContractData.FirstOrDefault().Position.Name;
-            SetUpAvatar();
+            SetUpProfile();
             LogoutCommand = new RelayCommand(LogOut);
         }
 
@@ -42,8 +39,12 @@ namespace AmSpaceTools.ViewModels
             IsLoading = false;
         }
 
-        protected async void SetUpAvatar()
+        protected async void SetUpProfile()
         {
+            _profile = await _client.GetProfileAsync();
+            _profileImageLink = _profile.Avatar;
+            Name = $"{_profile.FirstName} {_profile.LastName}";
+            JobTitle = _profile.ContractData.FirstOrDefault().Position.Name;
             Avatar = await _client.GetAvatarAsync(_profileImageLink);
         }
         public BitmapSource Avatar
