@@ -65,9 +65,21 @@ namespace AmSpaceTools.ViewModels
             OnPropertyChanged(nameof(IsUploadVisible));
         }
 
+        private async Task ValidateDomainsAsync(IEnumerable<SapPersonExcelRow> inputRows)
+        {
+            var domains = await _client.GetOrganizationStructureAsync();
+            var flatDomains = domains.Descendants(_ => _.Children);
+            var inputMpks = inputRows.Select(_ => _.Mpk).Distinct();
+            var existingMpks = flatDomains.Select(_ => _.Mpk).Distinct();
+            var missingMpks = inputMpks.Except(existingMpks);
+            if (missingMpks.Any())
+                throw new ArgumentException($"Those MPKs are missing: {missingMpks.Select(_ => _.ToString()).Aggregate((c, n) => c + ", " + n)}", nameof(SapPersonExcelRow.Mpk));
+
+        }
         private async void UploadData(object obj)
         {
             IsLoading = true;
+            await ValidateDomainsAsync(InputRows);
             var inputRowsGroupedByContracts = InputRows.GroupBy(_ => new { _.IdentityNumber, _.ManagerId }, v => v);
             var tree = inputRowsGroupedByContracts.GenerateTree(c => c.Key.IdentityNumber, c => c.Key.ManagerId ?? string.Empty, string.Empty);
             foreach (var account in tree.Descendants(_ => _.Children))
@@ -108,6 +120,9 @@ namespace AmSpaceTools.ViewModels
             if (string.IsNullOrEmpty(contract.ManagerId))
             {
                 _searchVm.Subordinate = contract;
+                if (!string.IsNullOrEmpty(contract.AmRestManagerName))
+                    _searchVm.ManagerName = contract.AmRestManagerName;
+
                 var view = new SearchPeople()
                 {
                     DataContext = _searchVm

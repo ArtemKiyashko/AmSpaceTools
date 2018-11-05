@@ -86,7 +86,7 @@ namespace AmSpaceClient
         {
             var request = new HttpRequestMessage
             {
-                Method = new HttpMethod("Delete"),
+                Method = new HttpMethod("DELETE"),
                 RequestUri = new Uri(endpoint),
             };
             var result = await AmSpaceHttpClient.SendAsync(request);

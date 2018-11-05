@@ -43,7 +43,15 @@ namespace AmSpaceTools.ViewModels
         public string ManagerName
         {
             get { return _managerName; }
-            set { _managerName = value; OnPropertyChanged(); ValidateModelProperty(); }
+            set
+            {
+                _managerName = value;
+                SelectedUser = null;
+                OnPropertyChanged();
+                ValidateModelProperty();
+                OnPropertyChanged(nameof(SearchButtonVisible));
+                OnPropertyChanged(nameof(ApplyButtonVisible));
+            }
         }
         public string ManagerDomain
         {

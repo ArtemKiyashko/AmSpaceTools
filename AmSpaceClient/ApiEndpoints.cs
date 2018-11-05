@@ -18,7 +18,7 @@ namespace AmSpaceClient
         public string UserSapEndpoint { get { return $"{BaseAddress}/api/v1/sap/sync/user/"; } }
         public string DomainSapEndpoint { get { return $"{BaseAddress}/api/v1/sap/sync/domain/"; } }
         public string UsersInDomainEndpoint { get { return $"{BaseAddress}/api/v1/organization/people/?domains="; } }
-        public string DomainNodesEndpoint { get { return $"{BaseAddress}/api/v1/organization/tree/"; } }
+        public string DomainNodesEndpoint { get { return $"{BaseAddress}/api/v1/organization/tree/?with_mpk=1"; } }
         public string PositionsEndpoint { get { return $"{BaseAddress}/api/v1/organization/positions/"; } }
         public string PeopleEndpoint { get { return $"{BaseAddress}/api/v1/organization/people/"; } }
         /// <summary>

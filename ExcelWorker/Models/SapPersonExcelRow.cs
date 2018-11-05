@@ -24,7 +24,7 @@ namespace ExcelWorker.Models
 
         [ExcelTableColumn("Mpk")]
         [Required]
-        public int Mpk { get; set; }
+        public long Mpk { get; set; }
 
         [ExcelTableColumn("Email")]
         [Required]
@@ -72,6 +72,9 @@ namespace ExcelWorker.Models
         [ExcelTableColumn("Status")]
         [Required]
         public ContractStatus Status { get; set; }
+
+        [ExcelTableColumn("AmRest Manager Name")]
+        public string AmRestManagerName { get; set; }
     }
 
     public enum ContractStatus

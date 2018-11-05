@@ -13,6 +13,12 @@ namespace AmSpaceTools.ModelConverters
 {
     public class SapPersonExcelToAmspaceConverter : ITypeConverter<SapPersonExcelRow, ExternalAccount>
     {
+        private Dictionary<ContractStatus, AmSpaceModels.Enums.SapUserStatus> _statusMapping = new Dictionary<ContractStatus, AmSpaceModels.Enums.SapUserStatus>
+        {
+            { ContractStatus.Active, AmSpaceModels.Enums.SapUserStatus.ACTIVE },
+            { ContractStatus.Terminated, AmSpaceModels.Enums.SapUserStatus.TERMINATED },
+            { ContractStatus.Suspended, AmSpaceModels.Enums.SapUserStatus.SUSPENDED }
+        };
         public ExternalAccount Convert(SapPersonExcelRow source, ExternalAccount destination, ResolutionContext context)
         {
 
@@ -31,19 +37,7 @@ namespace AmSpaceTools.ModelConverters
             externalUser.Mpk = source.Mpk;
             externalUser.CountryCode = source.Country;
             externalUser.ContractNumber = source.ContractNumber;
-            switch (source.Status)
-            {
-                case ContractStatus.Active:
-                    externalUser.Status = AmSpaceModels.Enums.SapUserStatus.ACTIVE;
-                    break;
-                case ContractStatus.Terminated:
-                    externalUser.Status = AmSpaceModels.Enums.SapUserStatus.TERMINATED;
-                    break;
-                case ContractStatus.Suspended:
-                    externalUser.Status = AmSpaceModels.Enums.SapUserStatus.SUSPENDED;
-                    break;
-                default: throw new ArgumentOutOfRangeException(nameof(source.Status), $"Unrecognized {nameof(source.Status)} {source.Status}");
-            }
+            externalUser.Status = _statusMapping[source.Status];
             return externalUser;
         }
     }
