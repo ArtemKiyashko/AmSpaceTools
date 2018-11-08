@@ -32,6 +32,16 @@ namespace AmSpaceTools.ViewModels
         private int _similarityPercent;
         private ProgressIndicatorViewModel _progressVM;
 
+        public ProgressIndicatorViewModel ProgressVM
+        {
+            get => _progressVM;
+            private set
+            {
+                _progressVM = value;
+                OnPropertyChanged();
+            }
+        }
+
         public ObservableCollection<ColumnDefinitionError> Errors { get => _errors; set => _errors = value; }
 
         public bool IsUploadVisible
@@ -104,7 +114,7 @@ namespace AmSpaceTools.ViewModels
             }
         }
 
-        public IdpTranslationsPreviewViewModel(IExcelWorker excelWorker, IMapper mapper, IAmSpaceClient client, ProgressIndicatorViewModel progress)
+        public IdpTranslationsPreviewViewModel(IExcelWorker excelWorker, IMapper mapper, IAmSpaceClient client)
         {
             _excelWorker = excelWorker;
             _mapper = mapper;
@@ -113,22 +123,22 @@ namespace AmSpaceTools.ViewModels
             UploadDataCommand = new RelayCommand(UploadData);
             Errors = new ObservableCollection<ColumnDefinitionError>();
             _similarityPercent = 100;
-            _progressVM = progress;
+            //  TO-DO: make this construction via IoC
+            ProgressVM = new ProgressIndicatorViewModel();
         }
 
         private async void UploadData(object obj)
         {
             IsLoading = true;
-            
-                await Task.Run(() =>
-               {
-                   for (var i = 0; i < 100; i++)
-                   {
-                       IProgress<IProgressState> progress = new Progress<IProgressState>(_progressVM.ReportProgress);
-                       progress.Report(new ProgressState { ProgressStatus = Status.Preparations, ProgressTasksTotal = 100, ProgressTasksDone = i });
-                       Thread.Sleep(1000);
-                   }
-               });
+            IProgress<IProgressState> progress = new Progress<IProgressState>(ProgressVM.ReportProgress);
+            await Task.Run(() =>
+            {
+                for (var i = 0; i < 100; i++)
+                {
+                    progress.Report(new ProgressState { ProgressStatus = Status.Preparations, ProgressTasksTotal = 100, ProgressTasksDone = i });
+                    Thread.Sleep(100);
+                }
+            });
             var competencies = await _client.GetCompetenciesAsync();
             var allAmSpaceActions = new Dictionary<Competency, List<IdpAction>>();
             _allRows = _excelWorker.GetAllRows(ExcelColumnsPreview);

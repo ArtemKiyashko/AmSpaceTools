@@ -20,31 +20,35 @@
         </Grid.ColumnDefinitions>
         <StackPanel Grid.Row="0"
                     Grid.Column="0" 
-                    Orientation="Horizontal">
+                    Orientation="Horizontal"
+                    DataContext="{Binding Progress}">
             <TextBlock >Progress:</TextBlock>
-            <TextBlock Text = "{Binding Progress.Progress}">
+            <TextBlock Text = "{Binding ProgressPercent, Mode=OneWay}">
             </TextBlock>
         </StackPanel>
         <StackPanel Grid.Row="0"
                     Grid.Column="1"
-                    Orientation="Horizontal">
-            <TextBlock >Items processed:</TextBlock>
-            <TextBlock Text="{Binding Progress }">
+                    Orientation="Horizontal"
+                    DataContext="{Binding Progress}">
+            <TextBlock>Items processed:</TextBlock>
+            <TextBlock Text="{Binding ProgressTasksDone }">
             </TextBlock>
             <TextBlock> / </TextBlock>
-            <TextBlock Text="{Binding Progress.ProgressTasksTotal}">
+            <TextBlock Text="{Binding ProgressTasksTotal}">
             </TextBlock>
         </StackPanel>
         <StackPanel Grid.Row="0"
-                   Grid.Column="2">
+                    Grid.Column="2"
+                    DataContext="{Binding Progress}">
             <TextBlock >Status:</TextBlock>
-            <TextBlock Text="{Binding Progress.UploadStatus}">
+            <TextBlock Text="{Binding ProgressStatus}">
             </TextBlock>
         </StackPanel>
         <ProgressBar Grid.Column="0"
                      Grid.Row="1"
                      Grid.ColumnSpan="3"
-                     Value="{Binding Progress.Progress}"/>
-        <Button Grid.Row="2" Grid.Column="1" Command="{Binding CancelCommand}" Content="Cancel"/>
+                     Value="{Binding Progress.ProgressPercent, Mode=OneWay}"
+                     Margin="10"/>
+        <Button Grid.Row="2" Grid.Column="1" Command="{Binding CancelCommand, Mode=OneWay}" Content="Cancel"/>
     </Grid>
 </UserControl>

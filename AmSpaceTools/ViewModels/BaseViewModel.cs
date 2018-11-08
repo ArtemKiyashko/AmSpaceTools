@@ -20,6 +20,7 @@ namespace AmSpaceTools.ViewModels
         private bool _isLoading;
         private readonly Dictionary<string, ICollection<string>> _validationErrors = new Dictionary<string, ICollection<string>>();
 
+
         protected BaseViewModel()
         {
             ValidateModel();
