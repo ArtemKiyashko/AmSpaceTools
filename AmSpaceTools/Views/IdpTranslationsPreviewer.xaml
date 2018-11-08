@@ -180,9 +180,10 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </ScrollViewer>
-        <local:ProgressIndicator Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"
-                     Grid.Column="0"
-                     Grid.Row="3"
-                     Grid.ColumnSpan="2"/>
+        <local:ProgressIndicator Visibility="Visible"
+                    Grid.Column="0"
+                    Grid.Row="3"
+                    Grid.ColumnSpan="2"
+                    DataContext="{Binding ProgressVM}"/>
     </Grid>
 </UserControl>
