@@ -55,6 +55,7 @@
     <Compile Include="Idp\Competency.cs" />
     <Compile Include="Idp\CompetencyAction.cs" />
     <Compile Include="Organization\Brand.cs" />
+    <Compile Include="Organization\CompetencyModel.cs" />
     <Compile Include="Organization\Country.cs" />
     <Compile Include="Organization\ExternalAccount.cs" />
     <Compile Include="Organization\OrganizationGroup.cs" />
