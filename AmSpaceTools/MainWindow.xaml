@@ -26,6 +26,9 @@
         <DataTemplate DataType="{x:Type vm:PeopleUploadViewModel}">
             <views:PeopleUpload/>
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:ProgressIndicatorViewModel}">
+            <views:ProgressIndicator/>
+        </DataTemplate>
         <infrastructure:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </Window.Resources>
     <materialDesign:DialogHost Identifier="RootDialog">

@@ -12,6 +12,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -29,6 +30,7 @@ namespace AmSpaceTools.ViewModels
         private IAmSpaceClient _client;
         private ObservableCollection<ColumnDefinitionError> _errors;
         private int _similarityPercent;
+        private ProgressIndicatorViewModel _progressVM;
 
         public ObservableCollection<ColumnDefinitionError> Errors { get => _errors; set => _errors = value; }
 
@@ -102,7 +104,7 @@ namespace AmSpaceTools.ViewModels
             }
         }
 
-        public IdpTranslationsPreviewViewModel(IExcelWorker excelWorker, IMapper mapper, IAmSpaceClient client)
+        public IdpTranslationsPreviewViewModel(IExcelWorker excelWorker, IMapper mapper, IAmSpaceClient client, ProgressIndicatorViewModel progress)
         {
             _excelWorker = excelWorker;
             _mapper = mapper;
@@ -111,11 +113,22 @@ namespace AmSpaceTools.ViewModels
             UploadDataCommand = new RelayCommand(UploadData);
             Errors = new ObservableCollection<ColumnDefinitionError>();
             _similarityPercent = 100;
+            _progressVM = progress;
         }
 
         private async void UploadData(object obj)
         {
             IsLoading = true;
+            
+                await Task.Run(() =>
+               {
+                   for (var i = 0; i < 100; i++)
+                   {
+                       IProgress<IProgressState> progress = new Progress<IProgressState>(_progressVM.ReportProgress);
+                       progress.Report(new ProgressState { ProgressStatus = Status.Preparations, ProgressTasksTotal = 100, ProgressTasksDone = i });
+                       Thread.Sleep(1000);
+                   }
+               });
             var competencies = await _client.GetCompetenciesAsync();
             var allAmSpaceActions = new Dictionary<Competency, List<IdpAction>>();
             _allRows = _excelWorker.GetAllRows(ExcelColumnsPreview);

@@ -180,9 +180,9 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </ScrollViewer>
-        <ProgressBar IsIndeterminate="True" Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"
+        <local:ProgressIndicator Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"
                      Grid.Column="0"
-                     Grid.Row="1"
+                     Grid.Row="3"
                      Grid.ColumnSpan="2"/>
     </Grid>
 </UserControl>

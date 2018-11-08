@@ -101,7 +101,7 @@
                 <HierarchicalDataTemplate 
                     DataType="{x:Type modelsOrg:AmspaceDomain}"
                     ItemsSource="{Binding Children}">
-                    <Grid>
+                    <Grid >
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition/>
                             <ColumnDefinition Width="*"/>
