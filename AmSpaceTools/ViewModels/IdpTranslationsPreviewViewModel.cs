@@ -117,38 +117,43 @@ namespace AmSpaceTools.ViewModels
         private async void UploadData(object obj)
         {
             IsLoading = true;
-            // TO-DO: Implement progress reporting and cancelation handling
-            //await Task.Run(() =>
-            //{
-            //    for (var i = 0; i < 100; i++)
-            //    {
-            //        _progressReporter.Report(new ProgressState { ProgressStatus = Status.Preparations, ProgressTasksTotal = 100, ProgressTasksDone = i });
-            //        Thread.Sleep(100);
-            //    }
-            //});
-            var competencies = await _client.GetCompetenciesAsync();
-            var allAmSpaceActions = new Dictionary<Competency, List<IdpAction>>();
-            _allRows = _excelWorker.GetAllRows(ExcelColumnsPreview);
-            var uniqueActions = _allRows.NormalizeTranslations();
-            foreach (var competency in competencies)
+            await Task.Run(() =>
             {
-                if (competency.ActionCount == 0) continue;
-                var compActions = await _client.GetCompetencyActionsAsync(competency.Id.Value);
-                allAmSpaceActions.UpsertKey(competency).AddRange(compActions.Actions);
-                foreach (var action in compActions.Actions)
+                for (var i = 0; i < 101; i++)
                 {
-                    var translationKey = uniqueActions.FindSimilar(action.Name, SimilarityPercent);
-                    if (translationKey.Value == null) continue;
-                    foreach (var translation in translationKey.Value)
-                        action.Translations.UpsertTranslation(translation);
-                    action.Updated = true;
-                    _allRows.Where(_ => _.ActionSourceDescription == translationKey.Key).ForEach(_ => _.Taken = true);
+                    _progressReporter.Report(new ProgressState { ProgressStatus = Status.Preparations, ProgressTasksTotal = 100, ProgressTasksDone = i });
+                    Thread.Sleep(100);
+                    if (_cancellationTokenSource.Token.IsCancellationRequested)
+                    {
+                        _cancellationTokenSource = new CancellationTokenSource();
+                        return;
+                    }
                 }
-                var transformedActions = _mapper.Map<UpdateAction>(compActions);
-                var result = await _client.UpdateActionAsync(transformedActions, competency.Id.Value);
-            }
-            DetermineMissingMatchingActions(allAmSpaceActions);
+            });
+            //var competencies = await _client.GetCompetenciesAsync();
+            //var allAmSpaceActions = new Dictionary<Competency, List<IdpAction>>();
+            //_allRows = _excelWorker.GetAllRows(ExcelColumnsPreview);
+            //var uniqueActions = _allRows.NormalizeTranslations();
+            //foreach (var competency in competencies)
+            //{
+            //    if (competency.ActionCount == 0) continue;
+            //    var compActions = await _client.GetCompetencyActionsAsync(competency.Id.Value);
+            //    allAmSpaceActions.UpsertKey(competency).AddRange(compActions.Actions);
+            //    foreach (var action in compActions.Actions)
+            //    {
+            //        var translationKey = uniqueActions.FindSimilar(action.Name, SimilarityPercent);
+            //        if (translationKey.Value == null) continue;
+            //        foreach (var translation in translationKey.Value)
+            //            action.Translations.UpsertTranslation(translation);
+            //        action.Updated = true;
+            //        _allRows.Where(_ => _.ActionSourceDescription == translationKey.Key).ForEach(_ => _.Taken = true);
+            //    }
+            //    var transformedActions = _mapper.Map<UpdateAction>(compActions);
+            //    var result = await _client.UpdateActionAsync(transformedActions, competency.Id.Value);
+            //}
+            //DetermineMissingMatchingActions(allAmSpaceActions);
             IsLoading = false;
+
         }
 
         private void DetermineMissingMatchingActions(IDictionary<Competency, List<IdpAction>> compActions)
@@ -184,8 +189,12 @@ namespace AmSpaceTools.ViewModels
 
         public ICommand UploadDataCommand
         {
-            get { return _uploadDataCommand; }
-            set { _uploadDataCommand = value; }
+            get => _uploadDataCommand; 
+            set
+            {
+                _uploadDataCommand = value;
+                OnPropertyChanged();
+            }
         }
 
         public ICommand OpenFileCommand

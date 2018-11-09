@@ -34,10 +34,7 @@ namespace AmSpaceTools.ViewModels
 
         public void ReportProgress(IProgressState value)
         {
-            if (value.ProgressPercent > Progress?.ProgressPercent || value.ProgressStatus != Progress?.ProgressStatus)
-            {
-                Progress = value;
-            }
+            Progress = value;
         }
 
         public void CancelProcess(object tokenSource)

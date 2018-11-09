@@ -4,51 +4,68 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:AmSpaceTools.Views"
+             xmlns:infrastructure="clr-namespace:AmSpaceTools.Infrastructure"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="120" d:DesignWidth="800">
+    <UserControl.Resources>
+        <infrastructure:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    </UserControl.Resources>
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-        <StackPanel Grid.Row="0"
-                    Grid.Column="0" 
-                    Orientation="Horizontal"
-                    DataContext="{Binding ProgressVM.Progress}">
-            <TextBlock >Progress:</TextBlock>
-            <TextBlock Text = "{Binding ProgressPercent, Mode=OneWay}">
-            </TextBlock>
-        </StackPanel>
-        <StackPanel Grid.Row="0"
-                    Grid.Column="1"
-                    Orientation="Horizontal"
-                    DataContext="{Binding ProgressVM.Progress}">
-            <TextBlock>Items processed:</TextBlock>
-            <TextBlock Text="{Binding ProgressTasksDone }">
-            </TextBlock>
-            <TextBlock> / </TextBlock>
-            <TextBlock Text="{Binding ProgressTasksTotal}">
-            </TextBlock>
-        </StackPanel>
-        <StackPanel Grid.Row="0"
-                    Grid.Column="2"
-                    DataContext="{Binding ProgressVM.Progress}">
-            <TextBlock >Status:</TextBlock>
-            <TextBlock Text="{Binding ProgressStatus}">
-            </TextBlock>
-        </StackPanel>
-        <ProgressBar Grid.Column="0"
-                     Grid.Row="1"
-                     Grid.ColumnSpan="3"
-                     Value="{Binding ProgressVM.Progress.ProgressPercent, Mode=OneWay}"
-                     Margin="10"/>
-        <Button Grid.Row="2" Grid.Column="1" Command="{Binding ProgressVM.CancelCommand, Mode=OneWay}" Content="Cancel" Margin="10"/>
+        <Button
+            Style="{StaticResource MaterialDesignFloatingActionButton}"
+            Margin="8"
+            Command="{Binding UploadDataCommand}"
+            materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding IsLoading}"
+            materialDesign:ButtonProgressAssist.Value="{Binding ProgressVM.Progress.ProgressPercent, Mode=OneWay}"
+            IsEnabled="{Binding IsUploadVisible}"
+            Grid.Column="0"
+            Grid.Row="4">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock 
+                Grid.Row="0" 
+                Text="{Binding ProgressVM.Progress.ProgressPercent, Mode=OneWay}" 
+                HorizontalAlignment="Center"
+                Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                </TextBlock>
+                <materialDesign:PackIcon
+                Height="24"
+                Width="24"
+                Grid.Row="1">
+                    <materialDesign:PackIcon.Style>
+                        <Style
+                        TargetType="materialDesign:PackIcon">
+                            <Setter
+                            Property="Kind"
+                            Value="CloudSync" />
+                            <Style.Triggers>
+                                <DataTrigger
+                                Binding="{Binding IsLoading}"
+                                Value="True">
+                                    <Setter
+                                    Property="Kind"
+                                    Value="Close" />
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation
+                                                    Storyboard.TargetProperty="Opacity"
+                                                    From="0"
+                                                    To="1"
+                                                    Duration="0:0:0.8" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </materialDesign:PackIcon.Style>
+                </materialDesign:PackIcon>
+            </Grid>
+        </Button>
     </Grid>
 </UserControl>
