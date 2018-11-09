@@ -13,6 +13,7 @@ namespace AmSpaceTools.ViewModels
     {
         private IProgressState _progress;
         public ICommand CancelCommand { get; set; }
+        public event EventHandler OnCancelButtonClick;
         public IProgressState Progress
         {
             get
@@ -41,7 +42,7 @@ namespace AmSpaceTools.ViewModels
 
         public void CancelProcess(object tokenSource)
         {
-            (tokenSource as CancellationTokenSource)?.Cancel();
+            OnCancelButtonClick?.Invoke(this, EventArgs.Empty);
         }
     }
 }

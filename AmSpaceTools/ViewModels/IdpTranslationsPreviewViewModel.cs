@@ -18,7 +18,7 @@ using System.Windows.Input;
 
 namespace AmSpaceTools.ViewModels
 {
-    public class IdpTranslationsPreviewViewModel : BaseViewModel
+    public class IdpTranslationsPreviewViewModel : ProgressBaseViewModel
     {
         private IEnumerable<IdpColumn> _excelColumnsPreview;
         private IExcelWorker _excelWorker;
@@ -30,17 +30,6 @@ namespace AmSpaceTools.ViewModels
         private IAmSpaceClient _client;
         private ObservableCollection<ColumnDefinitionError> _errors;
         private int _similarityPercent;
-        private ProgressIndicatorViewModel _progressVM;
-
-        public ProgressIndicatorViewModel ProgressVM
-        {
-            get => _progressVM;
-            private set
-            {
-                _progressVM = value;
-                OnPropertyChanged();
-            }
-        }
 
         public ObservableCollection<ColumnDefinitionError> Errors { get => _errors; set => _errors = value; }
 
@@ -123,22 +112,20 @@ namespace AmSpaceTools.ViewModels
             UploadDataCommand = new RelayCommand(UploadData);
             Errors = new ObservableCollection<ColumnDefinitionError>();
             _similarityPercent = 100;
-            //  TO-DO: make this construction via IoC
-            ProgressVM = new ProgressIndicatorViewModel();
         }
 
         private async void UploadData(object obj)
         {
             IsLoading = true;
-            IProgress<IProgressState> progress = new Progress<IProgressState>(ProgressVM.ReportProgress);
-            await Task.Run(() =>
-            {
-                for (var i = 0; i < 100; i++)
-                {
-                    progress.Report(new ProgressState { ProgressStatus = Status.Preparations, ProgressTasksTotal = 100, ProgressTasksDone = i });
-                    Thread.Sleep(100);
-                }
-            });
+            // TO-DO: Implement progress reporting and cancelation handling
+            //await Task.Run(() =>
+            //{
+            //    for (var i = 0; i < 100; i++)
+            //    {
+            //        _progressReporter.Report(new ProgressState { ProgressStatus = Status.Preparations, ProgressTasksTotal = 100, ProgressTasksDone = i });
+            //        Thread.Sleep(100);
+            //    }
+            //});
             var competencies = await _client.GetCompetenciesAsync();
             var allAmSpaceActions = new Dictionary<Competency, List<IdpAction>>();
             _allRows = _excelWorker.GetAllRows(ExcelColumnsPreview);
@@ -231,5 +218,6 @@ namespace AmSpaceTools.ViewModels
         {
             OnPropertyChanged(nameof(IsUploadVisible));
         }
+        
     }
 }

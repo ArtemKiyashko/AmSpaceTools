@@ -47,6 +47,7 @@ namespace AmSpaceTools.Infrastructure
                 _.For<MainWindowViewModel>().Use<MainWindowViewModel>().Singleton();
                 _.For<IExcelWorker>().Use<AmSpaceExcelWorker>().Transient();
                 _.For<IExcelWorker>().DecorateAllWith<ExcelWorkerDecorator>();
+                _.For<ProgressIndicatorViewModel>().Use<ProgressIndicatorViewModel>().Transient();
                 _.For<ILog>().Use(a => LogManager.GetLogger(typeof(App)));
                 _.For<IMapper>().Use(a => new Mapper(_mapperConfiguration)).Transient();
                 _.For<IAmSpaceEnvironmentsProvider>().Use<AmSpaceEnvironmentsProvider>().Singleton();
