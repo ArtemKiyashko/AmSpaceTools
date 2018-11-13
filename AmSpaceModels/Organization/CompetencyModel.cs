@@ -16,7 +16,7 @@ namespace AmSpaceModels.Organization
     public partial class CompetencyModel
     {
         [JsonProperty("domain")]
-        public long Domain { get; set; }
+        public string Domain { get; set; }
 
         [JsonProperty("level")]
         public long Level { get; set; }
