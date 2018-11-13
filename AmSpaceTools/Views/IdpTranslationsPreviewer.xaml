@@ -21,57 +21,63 @@
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
     </UserControl.Resources>
-    <Grid IsEnabled="{Binding UIEnabled}">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="Auto"/>
-        </Grid.ColumnDefinitions>
+    <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <StackPanel
-            Grid.Column="0"
-            Grid.Row="0">
-            <TextBlock
-                Style="{StaticResource MaterialDesignHeadlineTextBlock}"
-                Margin="0 5 0 10">
-                IDP Translation uploader
-            </TextBlock>
-            <ItemsControl ItemsSource="{Binding Errors}"
-                      Margin="0 0 12 0">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate DataType="{x:Type infrastructure:ColumnDefinitionError}">
-                        <TextBlock Text="{Binding ErrorMsg}" Grid.Column="0"
-                                   Style="{StaticResource MaterialDesignBody1TextBlock}"
-                                   Foreground="{DynamicResource PrimaryError}"/>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </StackPanel>
-
-        <Grid
-            Grid.Column="1"
-            Grid.Row="0">
+        <Grid IsEnabled="{Binding UIEnabled}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <StackPanel Orientation="Vertical" 
+            <StackPanel
+            Grid.Column="0"
+            Grid.Row="0">
+                <TextBlock
+                Style="{StaticResource MaterialDesignHeadlineTextBlock}"
+                Margin="0 5 0 10">
+                IDP Translation uploader
+                </TextBlock>
+                <ItemsControl ItemsSource="{Binding Errors}"
+                      Margin="0 0 12 0">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type infrastructure:ColumnDefinitionError}">
+                            <TextBlock Text="{Binding ErrorMsg}" Grid.Column="0"
+                                   Style="{StaticResource MaterialDesignBody1TextBlock}"
+                                   Foreground="{DynamicResource PrimaryError}"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+
+            <Grid
+            Grid.Column="1"
+            Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <StackPanel Orientation="Vertical" 
                         Grid.Column="0"
                         Grid.Row="0">
-                <TextBlock
+                    <TextBlock
                     Style="{StaticResource MaterialDesignBody1TextBlock}"
                     VerticalAlignment="Bottom"
                     Margin="7 0 0 -35"
                     Text="Similarity %"/>
-                <Slider
+                    <Slider
                       TickPlacement="Both"
                       Minimum="95"
                       Maximum="100"
@@ -79,37 +85,37 @@
                       Style="{StaticResource MaterialDesignDiscreteSlider}"
                       Width="260"
                       ToolTip="Use it to ignore mismatching between AmSpace and source file" />
-            </StackPanel>
+                </StackPanel>
 
-            <Button Command="{Binding OpenFileCommand}"
+                <Button Command="{Binding OpenFileCommand}"
                     Grid.Column="1"
                     Grid.Row="0"
                     Margin="0 5 10 10"
                     Style="{StaticResource MaterialDesignFloatingActionButton}"
                     ToolTip="Open translations">
-                <StackPanel Orientation="Horizontal">
-                    <materialDesign:PackIcon
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon
                         Kind="FileExcel"
                         Height="24"
                         Width="24" />
-                </StackPanel>
-            </Button>
-            <Button Command="{Binding UploadDataCommand}"
+                    </StackPanel>
+                </Button>
+                <Button Command="{Binding UploadDataCommand}"
                     IsEnabled="{Binding IsUploadVisible}"
                     Grid.Column="2"
                     Grid.Row="0"
                     Margin="0 5 5 10"
                     Style="{StaticResource MaterialDesignFloatingActionButton}"
                     ToolTip="Upload to AmSpace">
-                <StackPanel Orientation="Horizontal">
-                    <materialDesign:PackIcon
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon
                         Kind="CloudSync"
                         Height="24"
                         Width="24" />
-                </StackPanel>
-            </Button>
-        </Grid>
-        <Image
+                    </StackPanel>
+                </Button>
+            </Grid>
+            <Image
             Source="/Resources/idp-background_29492334.png"
             Stretch="Uniform"
             Grid.Column="0"
@@ -118,45 +124,45 @@
             Opacity="0.6"
             Visibility="{Binding PreviewIsNotLoaded, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"
             />
-        <ScrollViewer 
+            <ScrollViewer 
             HorizontalScrollBarVisibility="Auto" 
             VerticalScrollBarVisibility="Auto"
             Grid.Column="0"
             Grid.Row="1"
             Grid.ColumnSpan="2">
-            <ItemsControl 
+                <ItemsControl 
                     x:Name="itemsControl"
                     ItemsSource="{Binding ExcelColumnsPreview}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel Orientation="Horizontal" />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" MaxWidth="200" />
-                                <ColumnDefinition Width="Auto" MaxWidth="200" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <ComboBox
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" MaxWidth="200" />
+                                    <ColumnDefinition Width="Auto" MaxWidth="200" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <ComboBox
                                 Width="Auto"
                                 Grid.Column="0"
                                 Margin="15 0 0 0"
                                 ItemsSource="{Binding Source={StaticResource ColumnActionFromEnum}}"
                                 SelectedItem="{Binding ColumnType}"
                                 Grid.Row="0">
-                                <ComboBox.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <VirtualizingStackPanel />
-                                    </ItemsPanelTemplate>
-                                </ComboBox.ItemsPanel>
-                            </ComboBox>
-                            <ComboBox
+                                    <ComboBox.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <VirtualizingStackPanel />
+                                        </ItemsPanelTemplate>
+                                    </ComboBox.ItemsPanel>
+                                </ComboBox>
+                                <ComboBox
                                 Width="Auto"
                                 Grid.Column="1"
                                 Margin="15 0 0 0"
@@ -164,25 +170,22 @@
                                 SelectedItem="{Binding Language}"
                                 Visibility="{Binding IsLanguageVisible, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"
                                 Grid.Row="0">
-                                <ComboBox.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <VirtualizingStackPanel />
-                                    </ItemsPanelTemplate>
-                                </ComboBox.ItemsPanel>
-                            </ComboBox>
-                            <ListBox
+                                    <ComboBox.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <VirtualizingStackPanel />
+                                        </ItemsPanelTemplate>
+                                    </ComboBox.ItemsPanel>
+                                </ComboBox>
+                                <ListBox
                                 Grid.Column="0"
                                 Margin="10 0 0 0"
                                 Grid.Row="1"
                                 ItemsSource="{Binding ColumnData}"/>
-                        </Grid>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </ScrollViewer>
-        <ProgressBar IsIndeterminate="True" Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"
-                     Grid.Column="0"
-                     Grid.Row="1"
-                     Grid.ColumnSpan="2"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Grid>
     </Grid>
 </UserControl>

@@ -2,9 +2,11 @@
 using AmSpaceModels.Idp;
 using AmSpaceTools.Infrastructure;
 using AmSpaceTools.ModelConverters;
+using AmSpaceTools.Views;
 using AutoMapper;
 using ExcelWorker;
 using ExcelWorker.Models;
+using MaterialDesignThemes.Wpf;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -12,12 +14,13 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace AmSpaceTools.ViewModels
 {
-    public class IdpTranslationsPreviewViewModel : BaseViewModel
+    public class IdpTranslationsPreviewViewModel : BaseViewModel, IProgressReporter
     {
         private IEnumerable<IdpColumn> _excelColumnsPreview;
         private IExcelWorker _excelWorker;
@@ -29,6 +32,8 @@ namespace AmSpaceTools.ViewModels
         private IAmSpaceClient _client;
         private ObservableCollection<ColumnDefinitionError> _errors;
         private int _similarityPercent;
+        public ProgressIndicatorViewModel ProgressVM { get; private set; }
+
 
         public ObservableCollection<ColumnDefinitionError> Errors { get => _errors; set => _errors = value; }
 
@@ -102,7 +107,7 @@ namespace AmSpaceTools.ViewModels
             }
         }
 
-        public IdpTranslationsPreviewViewModel(IExcelWorker excelWorker, IMapper mapper, IAmSpaceClient client)
+        public IdpTranslationsPreviewViewModel(IExcelWorker excelWorker, IMapper mapper, IAmSpaceClient client, ProgressIndicatorViewModel vm)
         {
             _excelWorker = excelWorker;
             _mapper = mapper;
@@ -111,6 +116,7 @@ namespace AmSpaceTools.ViewModels
             UploadDataCommand = new RelayCommand(UploadData);
             Errors = new ObservableCollection<ColumnDefinitionError>();
             _similarityPercent = 100;
+            ProgressVM = vm;
         }
 
         private async void UploadData(object obj)
@@ -139,6 +145,7 @@ namespace AmSpaceTools.ViewModels
             }
             DetermineMissingMatchingActions(allAmSpaceActions);
             IsLoading = false;
+
         }
 
         private void DetermineMissingMatchingActions(IDictionary<Competency, List<IdpAction>> compActions)
@@ -174,8 +181,12 @@ namespace AmSpaceTools.ViewModels
 
         public ICommand UploadDataCommand
         {
-            get { return _uploadDataCommand; }
-            set { _uploadDataCommand = value; }
+            get => _uploadDataCommand; 
+            set
+            {
+                _uploadDataCommand = value;
+                OnPropertyChanged();
+            }
         }
 
         public ICommand OpenFileCommand
@@ -208,5 +219,6 @@ namespace AmSpaceTools.ViewModels
         {
             OnPropertyChanged(nameof(IsUploadVisible));
         }
+        
     }
 }
