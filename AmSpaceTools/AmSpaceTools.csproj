@@ -143,6 +143,7 @@
     <Compile Include="Decorators\ExcelWorkerDecorator.cs" />
     <Compile Include="Infrastructure\AmSpaceEnvironmentsProvider.cs" />
     <Compile Include="Infrastructure\ColumnDefinitionError.cs" />
+    <Compile Include="Infrastructure\Converters\IntToStringPercentConverter.cs" />
     <Compile Include="Infrastructure\CsvLogAppender.cs" />
     <Compile Include="Infrastructure\DictionaryExtensions.cs" />
     <Compile Include="Infrastructure\IAmSpaceEnvironmentsProvider.cs" />
@@ -169,7 +170,7 @@
     <Compile Include="ViewModels\OrgStructureViewModel.cs" />
     <Compile Include="ViewModels\PeopleUploadViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModel.cs" />
-    <Compile Include="ViewModels\ProgressBaseViewModel.cs" />
+    <Compile Include="ViewModels\IProgressReporter.cs" />
     <Compile Include="ViewModels\ProgressIndicatorViewModel.cs" />
     <Compile Include="ViewModels\SearchPeopleViewModel.cs" />
     <Compile Include="ViewModels\SearchUserResultWithContractViewModel.cs" />

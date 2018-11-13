@@ -2,9 +2,11 @@
 using AmSpaceModels.Idp;
 using AmSpaceTools.Infrastructure;
 using AmSpaceTools.ModelConverters;
+using AmSpaceTools.Views;
 using AutoMapper;
 using ExcelWorker;
 using ExcelWorker.Models;
+using MaterialDesignThemes.Wpf;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -18,7 +20,7 @@ using System.Windows.Input;
 
 namespace AmSpaceTools.ViewModels
 {
-    public class IdpTranslationsPreviewViewModel : ProgressBaseViewModel
+    public class IdpTranslationsPreviewViewModel : BaseViewModel, IProgressReporter
     {
         private IEnumerable<IdpColumn> _excelColumnsPreview;
         private IExcelWorker _excelWorker;
@@ -30,6 +32,8 @@ namespace AmSpaceTools.ViewModels
         private IAmSpaceClient _client;
         private ObservableCollection<ColumnDefinitionError> _errors;
         private int _similarityPercent;
+        public ProgressIndicatorViewModel ProgressVM { get; private set; }
+
 
         public ObservableCollection<ColumnDefinitionError> Errors { get => _errors; set => _errors = value; }
 
@@ -103,7 +107,7 @@ namespace AmSpaceTools.ViewModels
             }
         }
 
-        public IdpTranslationsPreviewViewModel(IExcelWorker excelWorker, IMapper mapper, IAmSpaceClient client)
+        public IdpTranslationsPreviewViewModel(IExcelWorker excelWorker, IMapper mapper, IAmSpaceClient client, ProgressIndicatorViewModel vm)
         {
             _excelWorker = excelWorker;
             _mapper = mapper;
@@ -112,46 +116,34 @@ namespace AmSpaceTools.ViewModels
             UploadDataCommand = new RelayCommand(UploadData);
             Errors = new ObservableCollection<ColumnDefinitionError>();
             _similarityPercent = 100;
+            ProgressVM = vm;
         }
 
         private async void UploadData(object obj)
         {
             IsLoading = true;
-            await Task.Run(() =>
+            var competencies = await _client.GetCompetenciesAsync();
+            var allAmSpaceActions = new Dictionary<Competency, List<IdpAction>>();
+            _allRows = _excelWorker.GetAllRows(ExcelColumnsPreview);
+            var uniqueActions = _allRows.NormalizeTranslations();
+            foreach (var competency in competencies)
             {
-                for (var i = 0; i < 101; i++)
+                if (competency.ActionCount == 0) continue;
+                var compActions = await _client.GetCompetencyActionsAsync(competency.Id.Value);
+                allAmSpaceActions.UpsertKey(competency).AddRange(compActions.Actions);
+                foreach (var action in compActions.Actions)
                 {
-                    _progressReporter.Report(new ProgressState { ProgressStatus = Status.Preparations, ProgressTasksTotal = 100, ProgressTasksDone = i });
-                    Thread.Sleep(100);
-                    if (_cancellationTokenSource.Token.IsCancellationRequested)
-                    {
-                        _cancellationTokenSource = new CancellationTokenSource();
-                        return;
-                    }
+                    var translationKey = uniqueActions.FindSimilar(action.Name, SimilarityPercent);
+                    if (translationKey.Value == null) continue;
+                    foreach (var translation in translationKey.Value)
+                        action.Translations.UpsertTranslation(translation);
+                    action.Updated = true;
+                    _allRows.Where(_ => _.ActionSourceDescription == translationKey.Key).ForEach(_ => _.Taken = true);
                 }
-            });
-            //var competencies = await _client.GetCompetenciesAsync();
-            //var allAmSpaceActions = new Dictionary<Competency, List<IdpAction>>();
-            //_allRows = _excelWorker.GetAllRows(ExcelColumnsPreview);
-            //var uniqueActions = _allRows.NormalizeTranslations();
-            //foreach (var competency in competencies)
-            //{
-            //    if (competency.ActionCount == 0) continue;
-            //    var compActions = await _client.GetCompetencyActionsAsync(competency.Id.Value);
-            //    allAmSpaceActions.UpsertKey(competency).AddRange(compActions.Actions);
-            //    foreach (var action in compActions.Actions)
-            //    {
-            //        var translationKey = uniqueActions.FindSimilar(action.Name, SimilarityPercent);
-            //        if (translationKey.Value == null) continue;
-            //        foreach (var translation in translationKey.Value)
-            //            action.Translations.UpsertTranslation(translation);
-            //        action.Updated = true;
-            //        _allRows.Where(_ => _.ActionSourceDescription == translationKey.Key).ForEach(_ => _.Taken = true);
-            //    }
-            //    var transformedActions = _mapper.Map<UpdateAction>(compActions);
-            //    var result = await _client.UpdateActionAsync(transformedActions, competency.Id.Value);
-            //}
-            //DetermineMissingMatchingActions(allAmSpaceActions);
+                var transformedActions = _mapper.Map<UpdateAction>(compActions);
+                var result = await _client.UpdateActionAsync(transformedActions, competency.Id.Value);
+            }
+            DetermineMissingMatchingActions(allAmSpaceActions);
             IsLoading = false;
 
         }

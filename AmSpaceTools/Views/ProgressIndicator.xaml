@@ -4,68 +4,52 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:AmSpaceTools.Views"
-             xmlns:infrastructure="clr-namespace:AmSpaceTools.Infrastructure"
+             xmlns:converters="clr-namespace:AmSpaceTools.Infrastructure.Converters"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" 
-             d:DesignHeight="120" d:DesignWidth="800">
+             d:DesignHeight="240" d:DesignWidth="240">
     <UserControl.Resources>
-        <infrastructure:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <converters:IntToStringPercentConverter x:Key="IntToStringPercentConverter"/>
     </UserControl.Resources>
-    <Grid>
-        <Button
-            Style="{StaticResource MaterialDesignFloatingActionButton}"
-            Margin="8"
-            Command="{Binding UploadDataCommand}"
-            materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding IsLoading}"
-            materialDesign:ButtonProgressAssist.Value="{Binding ProgressVM.Progress.ProgressPercent, Mode=OneWay}"
-            IsEnabled="{Binding IsUploadVisible}"
-            Grid.Column="0"
-            Grid.Row="4">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <TextBlock 
-                Grid.Row="0" 
-                Text="{Binding ProgressVM.Progress.ProgressPercent, Mode=OneWay}" 
+    <StackPanel>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <ProgressBar
+            Style="{DynamicResource MaterialDesignCircularProgressBar}"
+            HorizontalAlignment="Center"
+            Height="200"
+            Width="200"
+            Margin="16"
+            IsIndeterminate="False"
+            Value="{Binding Progress.ProgressPercent, Mode=OneWay}"
+            Grid.Row="0"
+            Grid.RowSpan="5"/>
+            <TextBlock 
+                Text="{Binding Progress.ProgressPercent, Converter={StaticResource IntToStringPercentConverter}, Mode=OneWay}"
+                Style="{StaticResource MaterialDesignDisplay1TextBlock}"
                 HorizontalAlignment="Center"
-                Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
-                </TextBlock>
-                <materialDesign:PackIcon
-                Height="24"
-                Width="24"
-                Grid.Row="1">
-                    <materialDesign:PackIcon.Style>
-                        <Style
-                        TargetType="materialDesign:PackIcon">
-                            <Setter
-                            Property="Kind"
-                            Value="CloudSync" />
-                            <Style.Triggers>
-                                <DataTrigger
-                                Binding="{Binding IsLoading}"
-                                Value="True">
-                                    <Setter
-                                    Property="Kind"
-                                    Value="Close" />
-                                    <DataTrigger.EnterActions>
-                                        <BeginStoryboard>
-                                            <Storyboard>
-                                                <DoubleAnimation
-                                                    Storyboard.TargetProperty="Opacity"
-                                                    From="0"
-                                                    To="1"
-                                                    Duration="0:0:0.8" />
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </DataTrigger.EnterActions>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </materialDesign:PackIcon.Style>
-                </materialDesign:PackIcon>
-            </Grid>
-        </Button>
-    </Grid>
+                VerticalAlignment="Center"
+                Grid.Row="2">
+            </TextBlock>
+            <Button
+            Style="{StaticResource MaterialDesignFlatButton}"
+            IsCancel="True"
+            Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
+            HorizontalAlignment="Center"
+            Margin="10"
+            Grid.Row="3">
+                <Button.CommandParameter>
+                    <system:Boolean>False</system:Boolean>
+                </Button.CommandParameter>
+                Cancel
+            </Button>
+        </Grid>
+    </StackPanel>
 </UserControl>
