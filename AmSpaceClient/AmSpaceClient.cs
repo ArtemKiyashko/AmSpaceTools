@@ -410,5 +410,17 @@ namespace AmSpaceClient
                 .Append($"{competency.Id}/");
             return await RequestWrapper.DeleteAsyncWrapper(c.ToString());
         }
+
+        public async Task<CoreValues> GetCoreValuesAsync(Brand brand, Level level)
+        {
+            var url = string.Format(Endpoints.CoreValuesEndpoint, brand.Id == 0 ? "rst" : brand.Id.ToString(), level.Id);
+            return await RequestWrapper.GetAsyncWrapper<CoreValues>(url);
+        }
+
+        public async Task<CoreValues> SaveCoreValuesAsync(Brand brand, Level level, CoreValues values)
+        {
+            var url = string.Format(Endpoints.CoreValuesEndpoint, brand.Id == 0 ? "rst" : brand.Id.ToString(), level.Id);
+            return await RequestWrapper.PutAsyncWrapper<CoreValues, CoreValues>(values, url);
+        }
     }
 }

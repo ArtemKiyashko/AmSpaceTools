@@ -93,6 +93,13 @@ namespace AmSpaceClient
         /// </summary>
         public string CompetencielsModelEndpoint { get { return $"{BaseAddress}/api/v1/organization/domains/{{0}}/levels/{{1}}/level_competencies/"; } }
 
+        /// <summary>
+        /// <remarks>
+        /// BrandId (in case of RST = "rst"); LevelId
+        /// </remarks>
+        /// </summary>
+        public string CoreValuesEndpoint { get { return $"{BaseAddress}/api/v1/organization/domains/{{0}}/levels/{{1}}/core_values/"; } }
+
         public string BaseAddress { get; private set; }
 
         public ApiEndpoints(string baseAddress)
