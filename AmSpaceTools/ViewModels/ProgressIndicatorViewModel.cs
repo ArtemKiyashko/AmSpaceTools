@@ -55,7 +55,8 @@ namespace AmSpaceTools.ViewModels
 
         public void CloseLoading()
         {
-            _session.Close(true);
+            if(!_session.IsEnded)
+                _session.Close(true);
         }
 
         public bool IsProgressCancelled => _dialogTask.IsCompleted ? !(bool)_dialogTask.GetAwaiter().GetResult() : false;
