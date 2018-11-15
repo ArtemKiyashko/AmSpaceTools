@@ -14,11 +14,17 @@
     </UserControl.Resources>
     <StackPanel>
         <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto" MaxWidth="160"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="AUto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <ProgressBar
@@ -27,28 +33,47 @@
             Height="200"
             Width="200"
             Margin="16"
-            IsIndeterminate="False"
+            IsIndeterminate="True"
             Value="{Binding Progress.ProgressPercent, Mode=OneWay}"
             Grid.Row="0"
-            Grid.RowSpan="5"/>
+            Grid.RowSpan="5"
+            Grid.ColumnSpan="3"/>
             <TextBlock 
-                Text="{Binding Progress.ProgressPercent, Converter={StaticResource IntToStringPercentConverter}, Mode=OneWay}"
+                Text="{Binding Progress.ProgressPercent, Mode=OneWay, Converter={StaticResource IntToStringPercentConverter}}"
                 Style="{StaticResource MaterialDesignDisplay1TextBlock}"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
-                Grid.Row="2">
+                TextAlignment="Center"
+                Grid.Row="2"
+                Grid.Column="1">
+            </TextBlock>
+            <TextBlock 
+                Text="{Binding Progress.ProgressDescriptionText, Mode=OneWay}"
+                Style="{StaticResource MaterialDesignBody1TextBlock}"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                TextWrapping="Wrap"
+                Grid.Row="3"
+                Width="160"
+                TextAlignment="Center"
+                Grid.Column="1">
             </TextBlock>
             <Button
-            Style="{StaticResource MaterialDesignFlatButton}"
+            Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}"
             IsCancel="True"
             Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
             HorizontalAlignment="Center"
             Margin="10"
-            Grid.Row="3">
+            materialDesign:HintAssist.Hint="Cancel"
+            Grid.Row="4"
+                Grid.Column="1">
                 <Button.CommandParameter>
                     <system:Boolean>False</system:Boolean>
                 </Button.CommandParameter>
-                Cancel
+                <materialDesign:PackIcon
+                    Kind="Close"
+                    Height="24"
+                    Width="24" />
             </Button>
         </Grid>
     </StackPanel>
