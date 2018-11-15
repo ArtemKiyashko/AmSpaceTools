@@ -121,13 +121,16 @@ namespace AmSpaceTools.ViewModels
 
         private async void UploadData(object obj)
         {
-            IsLoading = true;
+            ProgressVM.ShowLoading();
+            ProgressVM.ReportProgress(new ProgressState { ProgressTasksDone = 0, ProgressDescriptionText = "Collecting information..." });
             var competencies = await _client.GetCompetenciesAsync();
             var allAmSpaceActions = new Dictionary<Competency, List<IdpAction>>();
             _allRows = _excelWorker.GetAllRows(ExcelColumnsPreview);
             var uniqueActions = _allRows.NormalizeTranslations();
+            int i = 0;
             foreach (var competency in competencies)
             {
+                if (ProgressVM.IsProgressCancelled) break;
                 if (competency.ActionCount == 0) continue;
                 var compActions = await _client.GetCompetencyActionsAsync(competency.Id.Value);
                 allAmSpaceActions.UpsertKey(competency).AddRange(compActions.Actions);
@@ -142,10 +145,10 @@ namespace AmSpaceTools.ViewModels
                 }
                 var transformedActions = _mapper.Map<UpdateAction>(compActions);
                 var result = await _client.UpdateActionAsync(transformedActions, competency.Id.Value);
+                ProgressVM.ReportProgress(new ProgressState { ProgressTasksDone = ++i, ProgressTasksTotal = competencies.Count(), ProgressDescriptionText = $"{competency.Name} lvl {competency.Level.Name} updated" });
             }
             DetermineMissingMatchingActions(allAmSpaceActions);
-            IsLoading = false;
-
+            ProgressVM.CloseLoading();
         }
 
         private void DetermineMissingMatchingActions(IDictionary<Competency, List<IdpAction>> compActions)

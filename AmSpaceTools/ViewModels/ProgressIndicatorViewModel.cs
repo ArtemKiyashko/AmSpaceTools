@@ -44,11 +44,12 @@ namespace AmSpaceTools.ViewModels
 
         public void ShowLoading(string rootDialogName = null)
         {
+            _progress = new ProgressState { ProgressTasksDone = 0 };
             var view = new ProgressIndicator()
             {
                 DataContext = this
             };
-            _dialogTask = DialogHost.Show(view, string.IsNullOrEmpty(rootDialogName) ? rootDialogName : "RootDialog");
+            _dialogTask = DialogHost.Show(view, string.IsNullOrEmpty(rootDialogName) ? "RootDialog" : rootDialogName);
         }
 
         public void CloseLoading()
