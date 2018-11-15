@@ -17,6 +17,7 @@ namespace AmSpaceTools.ViewModels
         private IProgress<IProgressState> _progressReporter;
         public ICommand CancelCommand { get; set; }
         public event EventHandler OnCancelButtonClick;
+        private DialogSession _session;
         private Task<object> _dialogTask;
         public IProgressState Progress
         {
@@ -42,19 +43,19 @@ namespace AmSpaceTools.ViewModels
             _progressReporter.Report(value);
         }
 
-        public void ShowLoading(string rootDialogName = null)
+        public void ShowLoading(string rootDialogName = "RootDialog")
         {
             _progress = default(ProgressState);
             var view = new ProgressIndicator()
             {
                 DataContext = this
             };
-            _dialogTask = DialogHost.Show(view, string.IsNullOrEmpty(rootDialogName) ? "RootDialog" : rootDialogName);
+            _dialogTask = DialogHost.Show(view, rootDialogName, (sender, session) => _session = session.Session, null);
         }
 
         public void CloseLoading()
         {
-            DialogHost.CloseDialogCommand.Execute(true, null);
+            _session.Close(true);
         }
 
         public bool IsProgressCancelled => _dialogTask.IsCompleted ? !(bool)_dialogTask.GetAwaiter().GetResult() : false;
