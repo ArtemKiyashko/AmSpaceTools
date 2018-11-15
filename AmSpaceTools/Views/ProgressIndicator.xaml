@@ -16,7 +16,7 @@
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="140"/>
+                <ColumnDefinition Width="Auto" MaxWidth="160"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
@@ -43,6 +43,7 @@
                 Style="{StaticResource MaterialDesignDisplay1TextBlock}"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
+                TextAlignment="Center"
                 Grid.Row="2"
                 Grid.Column="1">
             </TextBlock>
@@ -51,16 +52,19 @@
                 Style="{StaticResource MaterialDesignBody1TextBlock}"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
-                
+                TextWrapping="Wrap"
                 Grid.Row="3"
+                Width="160"
+                TextAlignment="Center"
                 Grid.Column="1">
             </TextBlock>
             <Button
-            Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}"
+            Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}"
             IsCancel="True"
             Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
             HorizontalAlignment="Center"
             Margin="10"
+            materialDesign:HintAssist.Hint="Cancel"
             Grid.Row="4"
                 Grid.Column="1">
                 <Button.CommandParameter>
