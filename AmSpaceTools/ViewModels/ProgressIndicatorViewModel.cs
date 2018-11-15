@@ -44,7 +44,7 @@ namespace AmSpaceTools.ViewModels
 
         public void ShowLoading(string rootDialogName = null)
         {
-            _progress = new ProgressState { ProgressTasksDone = 0 };
+            _progress = default;
             var view = new ProgressIndicator()
             {
                 DataContext = this

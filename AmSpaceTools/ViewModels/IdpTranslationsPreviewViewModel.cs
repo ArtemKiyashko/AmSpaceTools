@@ -130,6 +130,7 @@ namespace AmSpaceTools.ViewModels
             int i = 0;
             foreach (var competency in competencies)
             {
+                ProgressVM.ReportProgress(new ProgressState { ProgressTasksDone = ++i, ProgressTasksTotal = competencies.Count(), ProgressDescriptionText = $"{competency.Name} lvl {competency.Level.Name} processing" });
                 if (ProgressVM.IsProgressCancelled) break;
                 if (competency.ActionCount == 0) continue;
                 var compActions = await _client.GetCompetencyActionsAsync(competency.Id.Value);
@@ -145,7 +146,6 @@ namespace AmSpaceTools.ViewModels
                 }
                 var transformedActions = _mapper.Map<UpdateAction>(compActions);
                 var result = await _client.UpdateActionAsync(transformedActions, competency.Id.Value);
-                ProgressVM.ReportProgress(new ProgressState { ProgressTasksDone = ++i, ProgressTasksTotal = competencies.Count(), ProgressDescriptionText = $"{competency.Name} lvl {competency.Level.Name} updated" });
             }
             DetermineMissingMatchingActions(allAmSpaceActions);
             ProgressVM.CloseLoading();
