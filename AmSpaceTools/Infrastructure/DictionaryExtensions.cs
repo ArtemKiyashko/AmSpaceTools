@@ -17,13 +17,16 @@ namespace AmSpaceTools.Infrastructure
             return dict[key];
         }
 
-        public static KeyValuePair<TKey, TValue> FindSimilar<TKey, TValue>(this IDictionary<TKey, TValue> dict, string key, double similarityPercent)
+        public static KeyValuePair<string, TValue> FindSimilar<TValue>(this IDictionary<string, TValue> dict, string key, double similarityPercent)
         {
+            if (similarityPercent == 100)
+                return new KeyValuePair<string, TValue>(key, dict.ContainsKey(key) ? dict[key] : default);
+
             var cosine = new Cosine();
             var similarityValue = similarityPercent / 100;
-            var similarityDictionary = new List<KeyValuePair<double, KeyValuePair<TKey, TValue>>>();
+            var similarityDictionary = new List<KeyValuePair<double, KeyValuePair<string, TValue>>>();
             foreach (var val in dict)
-                similarityDictionary.Add(new KeyValuePair<double, KeyValuePair<TKey, TValue>>(cosine.Similarity(key, val.Key.ToString()), val));
+                similarityDictionary.Add(new KeyValuePair<double, KeyValuePair<string, TValue>>(cosine.Similarity(key, val.Key), val));
 
             return similarityDictionary
                     .Where(_ => _.Key >= similarityValue)
@@ -32,7 +35,7 @@ namespace AmSpaceTools.Infrastructure
                     .Value;
         }
 
-        public static Task<KeyValuePair<TKey, TValue>> FindSimilarAsync<TKey, TValue>(this IDictionary<TKey, TValue> dict, string key, double similarityPercent)
+        public static Task<KeyValuePair<string, TValue>> FindSimilarAsync<TValue>(this IDictionary<string, TValue> dict, string key, double similarityPercent)
         {
             return Task.Run(() => FindSimilar(dict, key, similarityPercent));
         }
