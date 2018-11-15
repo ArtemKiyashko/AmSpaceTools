@@ -125,7 +125,7 @@ namespace AmSpaceTools.ViewModels
             ProgressVM.ReportProgress(new ProgressState { ProgressTasksDone = 0, ProgressDescriptionText = "Collecting information..." });
             var competencies = await _client.GetCompetenciesAsync();
             var allAmSpaceActions = new Dictionary<Competency, List<IdpAction>>();
-            _allRows = _excelWorker.GetAllRows(ExcelColumnsPreview);
+            _allRows =  await _excelWorker.GetAllRowsAsync(ExcelColumnsPreview);
             var uniqueActions = _allRows.NormalizeTranslations();
             int i = 0;
             foreach (var competency in competencies)
@@ -137,7 +137,7 @@ namespace AmSpaceTools.ViewModels
                 allAmSpaceActions.UpsertKey(competency).AddRange(compActions.Actions);
                 foreach (var action in compActions.Actions)
                 {
-                    var translationKey = uniqueActions.FindSimilar(action.Name, SimilarityPercent);
+                    var translationKey = await uniqueActions.FindSimilarAsync(action.Name, SimilarityPercent);
                     if (translationKey.Value == null) continue;
                     foreach (var translation in translationKey.Value)
                         action.Translations.UpsertTranslation(translation);
@@ -159,7 +159,7 @@ namespace AmSpaceTools.ViewModels
                 targetActions.Where(_ => _.Taken));
         }
 
-        protected void SaveUploadResults(IEnumerable<IdpExcelRow> missingActions, IEnumerable<IdpExcelRow> matchingActions)
+        protected async void SaveUploadResults(IEnumerable<IdpExcelRow> missingActions, IEnumerable<IdpExcelRow> matchingActions)
         {
             var fileName = Path.Combine("Reports",
                 $"{DateTime.Now.Year}_" +
@@ -169,7 +169,7 @@ namespace AmSpaceTools.ViewModels
                 $"{DateTime.Now.Minute}-" +
                 $"{DateTime.Now.Second}" +
                 $"_Missing.xlsx");
-            _excelWorker.SaveData(fileName, missingActions, "Missing");
+            await _excelWorker.SaveDataAsync(fileName, missingActions, "Missing");
 
             fileName = Path.Combine("Reports",
                 $"{DateTime.Now.Year}_" +
@@ -179,7 +179,7 @@ namespace AmSpaceTools.ViewModels
                 $"{DateTime.Now.Minute}-" +
                 $"{DateTime.Now.Second}" +
                 $"_Matching.xlsx");
-            _excelWorker.SaveData(fileName, matchingActions, "Matching");
+            await _excelWorker.SaveDataAsync(fileName, matchingActions, "Matching");
         }
 
         public ICommand UploadDataCommand

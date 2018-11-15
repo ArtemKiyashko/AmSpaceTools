@@ -130,5 +130,20 @@ namespace ExcelWorker
                        .ToExcelPackage().SaveAs(file);
             }
         }
+
+        public Task SaveDataAsync<T>(string fileName, IEnumerable<T> data, string sheetName) where T : class
+        {
+            return Task.Run(() => SaveData<T>(fileName, data, sheetName));
+        }
+
+        public Task<IEnumerable<T>> ExctractDataAsync<T>(string sheetName) where T : class, new()
+        {
+            return Task.Run(() => ExctractData<T>(sheetName));
+        }
+
+        public Task<IEnumerable<IdpExcelRow>> GetAllRowsAsync(IEnumerable<IdpColumn> columnDefinitions, bool ignoreFirstRow = true)
+        {
+            return Task.Run(() => GetAllRows(columnDefinitions, ignoreFirstRow));
+        }
     }
 }

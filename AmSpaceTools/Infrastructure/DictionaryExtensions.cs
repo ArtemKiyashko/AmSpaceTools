@@ -30,6 +30,11 @@ namespace AmSpaceTools.Infrastructure
                     .OrderByDescending(_ => _.Key)
                     .FirstOrDefault()
                     .Value;
-    }
+        }
+
+        public static Task<KeyValuePair<TKey, TValue>> FindSimilarAsync<TKey, TValue>(this IDictionary<TKey, TValue> dict, string key, double similarityPercent)
+        {
+            return Task.Run(() => FindSimilar(dict, key, similarityPercent));
+        }
     }
 }

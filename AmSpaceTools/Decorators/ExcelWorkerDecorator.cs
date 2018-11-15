@@ -144,5 +144,47 @@ namespace AmSpaceTools.Decorators
                 throw;
             }
         }
+
+        public Task SaveDataAsync<T>(string fileName, IEnumerable<T> data, string sheetName) where T : class
+        {
+            _logger.Info($"Saving file {fileName}");
+            try
+            {
+                return _decoratee.SaveDataAsync(fileName, data, sheetName);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Error during saving file {fileName}", ex);
+                throw;
+            }
+        }
+
+        public Task<IEnumerable<T>> ExctractDataAsync<T>(string sheetName) where T : class, new()
+        {
+            _logger.Info($"Extracting {(typeof(T)).Name} from {FileName}");
+            try
+            {
+                return _decoratee.ExctractDataAsync<T>(sheetName);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Error during extracting {(typeof(T)).Name} from {FileName}", ex);
+                throw;
+            }
+        }
+
+        public Task<IEnumerable<IdpExcelRow>> GetAllRowsAsync(IEnumerable<IdpColumn> columnDefinitions, bool ignoreFirstRow = true)
+        {
+            _logger.Info($"Reading all rows from {FileName}");
+            try
+            {
+                return _decoratee.GetAllRowsAsync(columnDefinitions, ignoreFirstRow);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Error during reading rows from {FileName}", ex);
+                throw;
+            }
+        }
     }
 }

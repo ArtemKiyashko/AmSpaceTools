@@ -155,7 +155,7 @@ namespace AmSpaceTools.ViewModels
             return accountResult;
         }
 
-        private void OpenFile(object obj)
+        private async void OpenFile(object obj)
         {
             IsLoading = true;
             var dialog = new OpenFileDialog
@@ -172,7 +172,8 @@ namespace AmSpaceTools.ViewModels
                     _excelWorker.OpenFile(_fileName);
                     _workSheet = _excelWorker.GetWorkSheet(1);
                     InputRows.Clear();
-                    _excelWorker.ExctractData<SapPersonExcelRow>(_workSheet.TableName).ForEach(_ => InputRows.Add(_));
+                    var data = await _excelWorker.ExctractDataAsync<SapPersonExcelRow>(_workSheet.TableName);
+                    data.ForEach(_ => InputRows.Add(_));
                 }
             }
             IsLoading = false;
