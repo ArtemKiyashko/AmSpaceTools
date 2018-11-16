@@ -25,6 +25,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -34,6 +35,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
@@ -141,6 +143,7 @@
     <Compile Include="Decorators\ExcelWorkerDecorator.cs" />
     <Compile Include="Infrastructure\AmSpaceEnvironmentsProvider.cs" />
     <Compile Include="Infrastructure\ColumnDefinitionError.cs" />
+    <Compile Include="Infrastructure\Converters\IntToStringPercentConverter.cs" />
     <Compile Include="Infrastructure\CsvLogAppender.cs" />
     <Compile Include="Infrastructure\DictionaryExtensions.cs" />
     <Compile Include="Infrastructure\IAmSpaceEnvironmentsProvider.cs" />
@@ -150,6 +153,7 @@
     <Compile Include="Infrastructure\ListExtensions.cs" />
     <Compile Include="Infrastructure\MenuItem.cs" />
     <Compile Include="Infrastructure\NotEmptyValidationRule.cs" />
+    <Compile Include="Infrastructure\ProgressState.cs" />
     <Compile Include="Infrastructure\RelayCommand.cs" />
     <Compile Include="Infrastructure\Services.cs" />
     <Compile Include="Infrastructure\StringExtensions.cs" />
@@ -166,6 +170,8 @@
     <Compile Include="ViewModels\OrgStructureViewModel.cs" />
     <Compile Include="ViewModels\PeopleUploadViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModel.cs" />
+    <Compile Include="ViewModels\IProgressReporter.cs" />
+    <Compile Include="ViewModels\ProgressIndicatorViewModel.cs" />
     <Compile Include="ViewModels\SearchPeopleViewModel.cs" />
     <Compile Include="ViewModels\SearchUserResultWithContractViewModel.cs" />
     <Compile Include="Views\ConfirmUnitDelete.xaml.cs">
@@ -191,6 +197,9 @@
     </Compile>
     <Compile Include="Views\Profile.xaml.cs">
       <DependentUpon>Profile.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ProgressIndicator.xaml.cs">
+      <DependentUpon>ProgressIndicator.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SearchPeople.xaml.cs">
       <DependentUpon>SearchPeople.xaml</DependentUpon>
@@ -236,6 +245,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Profile.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ProgressIndicator.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -1,0 +1,80 @@
+﻿<UserControl x:Class="AmSpaceTools.Views.ProgressIndicator"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:AmSpaceTools.Views"
+             xmlns:converters="clr-namespace:AmSpaceTools.Infrastructure.Converters"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d" 
+             d:DesignHeight="240" d:DesignWidth="240">
+    <UserControl.Resources>
+        <converters:IntToStringPercentConverter x:Key="IntToStringPercentConverter"/>
+    </UserControl.Resources>
+    <StackPanel>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto" MaxWidth="160"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="AUto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <ProgressBar
+            Style="{DynamicResource MaterialDesignCircularProgressBar}"
+            HorizontalAlignment="Center"
+            Height="200"
+            Width="200"
+            Margin="16"
+            IsIndeterminate="True"
+            Value="{Binding Progress.ProgressPercent, Mode=OneWay}"
+            Grid.Row="0"
+            Grid.RowSpan="5"
+            Grid.ColumnSpan="3"/>
+            <TextBlock 
+                Text="{Binding Progress.ProgressPercent, Mode=OneWay, Converter={StaticResource IntToStringPercentConverter}}"
+                Style="{StaticResource MaterialDesignDisplay1TextBlock}"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                TextAlignment="Center"
+                Grid.Row="2"
+                Grid.Column="1">
+            </TextBlock>
+            <TextBlock 
+                Text="{Binding Progress.ProgressDescriptionText, Mode=OneWay}"
+                Style="{StaticResource MaterialDesignBody1TextBlock}"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                TextWrapping="Wrap"
+                Grid.Row="3"
+                Width="160"
+                TextAlignment="Center"
+                Grid.Column="1">
+            </TextBlock>
+            <Button
+            Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}"
+            IsCancel="True"
+            Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
+            HorizontalAlignment="Center"
+            Margin="10"
+            materialDesign:HintAssist.Hint="Cancel"
+            Grid.Row="4"
+                Grid.Column="1">
+                <Button.CommandParameter>
+                    <system:Boolean>False</system:Boolean>
+                </Button.CommandParameter>
+                <materialDesign:PackIcon
+                    Kind="Close"
+                    Height="24"
+                    Width="24" />
+            </Button>
+        </Grid>
+    </StackPanel>
+</UserControl>

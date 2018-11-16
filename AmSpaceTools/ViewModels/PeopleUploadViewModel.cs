@@ -20,7 +20,7 @@ using System.Windows.Input;
 
 namespace AmSpaceTools.ViewModels
 {
-    public class PeopleUploadViewModel : BaseViewModel
+    public class PeopleUploadViewModel : BaseViewModel, IProgressReporter
     {
         private readonly IAmSpaceClient _client;
         private readonly IMapper _mapper;
@@ -29,6 +29,8 @@ namespace AmSpaceTools.ViewModels
         private DataTable _workSheet;
         private ObservableCollection<SapPersonExcelRow> _inputRows;
         private readonly SearchPeopleViewModel _searchVm;
+
+        public ProgressIndicatorViewModel ProgressVM { get; private set; }
 
         public ObservableCollection<SapPersonExcelRow> InputRows
         {
@@ -48,8 +50,9 @@ namespace AmSpaceTools.ViewModels
             }
         }
 
-        public PeopleUploadViewModel(IAmSpaceClient client, IMapper mapper, IExcelWorker excelWorker, SearchPeopleViewModel searchVm)
+        public PeopleUploadViewModel(IAmSpaceClient client, IMapper mapper, IExcelWorker excelWorker, SearchPeopleViewModel searchVm, ProgressIndicatorViewModel progressVm)
         {
+            ProgressVM = progressVm;
             _client = client;
             _mapper = mapper;
             _excelWorker = excelWorker;
@@ -78,19 +81,26 @@ namespace AmSpaceTools.ViewModels
         }
         private async void UploadData(object obj)
         {
-            IsLoading = true;
+            ProgressVM.ShowLoading();
+            ProgressVM.ReportProgress(new ProgressState { ProgressTasksDone = 0, ProgressDescriptionText = "Validating domains..." });
             await ValidateDomainsAsync(InputRows);
             var inputRowsGroupedByContracts = InputRows.GroupBy(_ => new { _.IdentityNumber, _.ManagerId }, v => v);
+            ProgressVM.ReportProgress(new ProgressState { ProgressTasksDone = 0, ProgressDescriptionText = "Generating structure tree..." });
             var tree = inputRowsGroupedByContracts.GenerateTree(c => c.Key.IdentityNumber, c => c.Key.ManagerId ?? string.Empty, string.Empty);
-            foreach (var account in tree.Descendants(_ => _.Children))
+            var i = 0;
+            var descendantList = tree.Descendants(_ => _.Children).ToList();
+            var contactsCount = descendantList.Select(_ => _.Item).Count();
+            foreach (var account in descendantList)
             {
-                foreach(var contract in account.Item)
+                if (ProgressVM.IsProgressCancelled) break;
+                foreach (var contract in account.Item)
                 {
+                    ProgressVM.ReportProgress(new ProgressState { ProgressTasksDone = ++i, ProgressTasksTotal = contactsCount, ProgressDescriptionText = $"{contract.Name} {contract.Surname} ID:[{contract.IdentityNumber}] processing" });
                     var externalAccount = await FillAccount(contract);
                     var accountResult = await UploadAccount(externalAccount);
                 }
             }
-            IsLoading = false;
+            ProgressVM.CloseLoading();
         }
 
         protected async Task<ExternalAccount> FillAccount(SapPersonExcelRow contract)
@@ -155,7 +165,7 @@ namespace AmSpaceTools.ViewModels
             return accountResult;
         }
 
-        private void OpenFile(object obj)
+        private async void OpenFile(object obj)
         {
             IsLoading = true;
             var dialog = new OpenFileDialog
@@ -172,7 +182,8 @@ namespace AmSpaceTools.ViewModels
                     _excelWorker.OpenFile(_fileName);
                     _workSheet = _excelWorker.GetWorkSheet(1);
                     InputRows.Clear();
-                    _excelWorker.ExctractData<SapPersonExcelRow>(_workSheet.TableName).ForEach(_ => InputRows.Add(_));
+                    var data = await _excelWorker.ExctractDataAsync<SapPersonExcelRow>(_workSheet.TableName);
+                    data.ForEach(_ => InputRows.Add(_));
                 }
             }
             IsLoading = false;

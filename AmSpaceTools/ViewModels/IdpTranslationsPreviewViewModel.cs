@@ -2,9 +2,11 @@
 using AmSpaceModels.Idp;
 using AmSpaceTools.Infrastructure;
 using AmSpaceTools.ModelConverters;
+using AmSpaceTools.Views;
 using AutoMapper;
 using ExcelWorker;
 using ExcelWorker.Models;
+using MaterialDesignThemes.Wpf;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -12,12 +14,13 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace AmSpaceTools.ViewModels
 {
-    public class IdpTranslationsPreviewViewModel : BaseViewModel
+    public class IdpTranslationsPreviewViewModel : BaseViewModel, IProgressReporter
     {
         private IEnumerable<IdpColumn> _excelColumnsPreview;
         private IExcelWorker _excelWorker;
@@ -29,6 +32,8 @@ namespace AmSpaceTools.ViewModels
         private IAmSpaceClient _client;
         private ObservableCollection<ColumnDefinitionError> _errors;
         private int _similarityPercent;
+        public ProgressIndicatorViewModel ProgressVM { get; private set; }
+
 
         public ObservableCollection<ColumnDefinitionError> Errors { get => _errors; set => _errors = value; }
 
@@ -102,7 +107,7 @@ namespace AmSpaceTools.ViewModels
             }
         }
 
-        public IdpTranslationsPreviewViewModel(IExcelWorker excelWorker, IMapper mapper, IAmSpaceClient client)
+        public IdpTranslationsPreviewViewModel(IExcelWorker excelWorker, IMapper mapper, IAmSpaceClient client, ProgressIndicatorViewModel vm)
         {
             _excelWorker = excelWorker;
             _mapper = mapper;
@@ -111,23 +116,28 @@ namespace AmSpaceTools.ViewModels
             UploadDataCommand = new RelayCommand(UploadData);
             Errors = new ObservableCollection<ColumnDefinitionError>();
             _similarityPercent = 100;
+            ProgressVM = vm;
         }
 
         private async void UploadData(object obj)
         {
-            IsLoading = true;
+            ProgressVM.ShowLoading();
+            ProgressVM.ReportProgress(new ProgressState { ProgressTasksDone = 0, ProgressDescriptionText = "Collecting information..." });
             var competencies = await _client.GetCompetenciesAsync();
             var allAmSpaceActions = new Dictionary<Competency, List<IdpAction>>();
-            _allRows = _excelWorker.GetAllRows(ExcelColumnsPreview);
+            _allRows =  await _excelWorker.GetAllRowsAsync(ExcelColumnsPreview);
             var uniqueActions = _allRows.NormalizeTranslations();
+            int i = 0;
             foreach (var competency in competencies)
             {
+                ProgressVM.ReportProgress(new ProgressState { ProgressTasksDone = ++i, ProgressTasksTotal = competencies.Count(), ProgressDescriptionText = $"{competency.Name} lvl {competency.Level.Name} processing" });
+                if (ProgressVM.IsProgressCancelled) break;
                 if (competency.ActionCount == 0) continue;
                 var compActions = await _client.GetCompetencyActionsAsync(competency.Id.Value);
                 allAmSpaceActions.UpsertKey(competency).AddRange(compActions.Actions);
                 foreach (var action in compActions.Actions)
                 {
-                    var translationKey = uniqueActions.FindSimilar(action.Name, SimilarityPercent);
+                    var translationKey = await uniqueActions.FindSimilarAsync(action.Name, SimilarityPercent);
                     if (translationKey.Value == null) continue;
                     foreach (var translation in translationKey.Value)
                         action.Translations.UpsertTranslation(translation);
@@ -138,7 +148,7 @@ namespace AmSpaceTools.ViewModels
                 var result = await _client.UpdateActionAsync(transformedActions, competency.Id.Value);
             }
             DetermineMissingMatchingActions(allAmSpaceActions);
-            IsLoading = false;
+            ProgressVM.CloseLoading();
         }
 
         private void DetermineMissingMatchingActions(IDictionary<Competency, List<IdpAction>> compActions)
@@ -149,7 +159,7 @@ namespace AmSpaceTools.ViewModels
                 targetActions.Where(_ => _.Taken));
         }
 
-        protected void SaveUploadResults(IEnumerable<IdpExcelRow> missingActions, IEnumerable<IdpExcelRow> matchingActions)
+        protected async void SaveUploadResults(IEnumerable<IdpExcelRow> missingActions, IEnumerable<IdpExcelRow> matchingActions)
         {
             var fileName = Path.Combine("Reports",
                 $"{DateTime.Now.Year}_" +
@@ -159,7 +169,7 @@ namespace AmSpaceTools.ViewModels
                 $"{DateTime.Now.Minute}-" +
                 $"{DateTime.Now.Second}" +
                 $"_Missing.xlsx");
-            _excelWorker.SaveData(fileName, missingActions, "Missing");
+            await _excelWorker.SaveDataAsync(fileName, missingActions, "Missing");
 
             fileName = Path.Combine("Reports",
                 $"{DateTime.Now.Year}_" +
@@ -169,13 +179,17 @@ namespace AmSpaceTools.ViewModels
                 $"{DateTime.Now.Minute}-" +
                 $"{DateTime.Now.Second}" +
                 $"_Matching.xlsx");
-            _excelWorker.SaveData(fileName, matchingActions, "Matching");
+            await _excelWorker.SaveDataAsync(fileName, matchingActions, "Matching");
         }
 
         public ICommand UploadDataCommand
         {
-            get { return _uploadDataCommand; }
-            set { _uploadDataCommand = value; }
+            get => _uploadDataCommand; 
+            set
+            {
+                _uploadDataCommand = value;
+                OnPropertyChanged();
+            }
         }
 
         public ICommand OpenFileCommand
@@ -208,5 +222,6 @@ namespace AmSpaceTools.ViewModels
         {
             OnPropertyChanged(nameof(IsUploadVisible));
         }
+        
     }
 }

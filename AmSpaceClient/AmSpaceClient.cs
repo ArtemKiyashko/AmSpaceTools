@@ -147,9 +147,9 @@ namespace AmSpaceClient
             return await RequestWrapper.PutAsyncWrapper(domain, Endpoints.DomainSapEndpoint);
         }
 
-        public async Task<bool> DisableUserAsync(SapUserDelete user)
+        public async Task<bool> DisableUserAsync(SapUserDelete userToDelete)
         {
-            return await RequestWrapper.DeleteAsyncWrapper(user, Endpoints.UserSapEndpoint);
+            return await RequestWrapper.DeleteAsyncWrapper(userToDelete, Endpoints.UserSapEndpoint);
         }
 
         public async Task<IEnumerable<Position>> GetPositionsInLevelsAsync(IEnumerable<Level> levels)
@@ -385,5 +385,42 @@ namespace AmSpaceClient
             return await RequestWrapper.PostAsyncWrapper<JobResponsibility, JobResponsibility>(responsibility, url);
         }
 
+        public async Task<IEnumerable<Level>> GetBrandLevelsAsync(Brand brand)
+        {
+            var url = string.Format(Endpoints.BrandLevelsEndpoint, brand.Id == 0 ? "rst" : brand.Id.ToString());
+            return await RequestWrapper.GetAsyncWrapper<IEnumerable<Level>>(url);
+        }
+
+        public async Task<Competencies> GetCompetenciesModelAsync(Brand brand, Level level)
+        {
+            var url = string.Format(Endpoints.CompetencielsModelEndpoint, brand.Id == 0 ? "rst" : brand.Id.ToString(), level.Id);
+            return await RequestWrapper.GetAsyncWrapper<Competencies>(url);
+        }
+
+        public async Task<Competencies> SaveCompetenciesModelAsync(Brand brand, Level level, Competencies competencies)
+        {
+            var url = string.Format(Endpoints.CompetencielsModelEndpoint, brand.Id == 0 ? "rst" : brand.Id.ToString(), level.Id);
+            return await RequestWrapper.PutAsyncWrapper<Competencies, Competencies>(competencies, url);
+        }
+
+        public async Task<bool> DeleteCompetencyModelAsync(Brand brand, Level level, CompetencyModel competency)
+        {
+            StringBuilder c = new StringBuilder();
+            c.AppendFormat(Endpoints.CompetencielsModelEndpoint, brand.Id == 0 ? "rst" : brand.Id.ToString(), level.Id)
+                .Append($"{competency.Id}/");
+            return await RequestWrapper.DeleteAsyncWrapper(c.ToString());
+        }
+
+        public async Task<CoreValues> GetCoreValuesAsync(Brand brand, Level level)
+        {
+            var url = string.Format(Endpoints.CoreValuesEndpoint, brand.Id == 0 ? "rst" : brand.Id.ToString(), level.Id);
+            return await RequestWrapper.GetAsyncWrapper<CoreValues>(url);
+        }
+
+        public async Task<CoreValues> SaveCoreValuesAsync(Brand brand, Level level, CoreValues values)
+        {
+            var url = string.Format(Endpoints.CoreValuesEndpoint, brand.Id == 0 ? "rst" : brand.Id.ToString(), level.Id);
+            return await RequestWrapper.PutAsyncWrapper<CoreValues, CoreValues>(values, url);
+        }
     }
 }

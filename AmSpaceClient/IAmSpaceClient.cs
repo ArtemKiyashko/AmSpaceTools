@@ -77,5 +77,11 @@ namespace AmSpaceClient
         Task<ExternalAccountResponse> CreateExternalAccount(ExternalAccount accountInfo);
         Task<ExternalAccountResponse> UpdateExternalAccount(long? contractId, ExternalAccount accountInfo);
         Task<bool> DeactivateExternalAccount(long? contractId, ExternalAccount accountInfo);
+        Task<IEnumerable<Level>> GetBrandLevelsAsync(Brand brand);
+        Task<Competencies> GetCompetenciesModelAsync(Brand brand, Level level);
+        Task<Competencies> SaveCompetenciesModelAsync(Brand brand, Level level, Competencies competencies);
+        Task<bool> DeleteCompetencyModelAsync(Brand brand, Level level, CompetencyModel competency);
+        Task<CoreValues> GetCoreValuesAsync(Brand brand, Level level);
+        Task<CoreValues> SaveCoreValuesAsync(Brand brand, Level level, CoreValues values);
     }
 }

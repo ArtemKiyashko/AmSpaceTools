@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AmSpaceExcelWorker.cs" />
+    <Compile Include="Enums\ExcelEnums.cs" />
     <Compile Include="EpplusExtensions.cs" />
     <Compile Include="IExcelWorker.cs" />
     <Compile Include="Models\EpplusIgnoreAttribute.cs" />

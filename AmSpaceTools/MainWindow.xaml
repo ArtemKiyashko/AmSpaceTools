@@ -75,13 +75,14 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <ScrollViewer Grid.Row="1" 
-                                  HorizontalScrollBarVisibility="{Binding ElementName=MenuItemsListBox, Path=SelectedItem.HorizontalScrollBarVisibilityRequirement}"
-                                  VerticalScrollBarVisibility="{Binding ElementName=MenuItemsListBox, Path=SelectedItem.VerticalScrollBarVisibilityRequirement}" 
-                                  Padding="{Binding ElementName=MenuItemsListBox, Path=SelectedItem.MarginRequirement}">
+                    <ScrollViewer Grid.Row="1"
+                                    HorizontalScrollBarVisibility="{Binding ElementName=MenuItemsListBox, Path=SelectedItem.HorizontalScrollBarVisibilityRequirement}"
+                                    VerticalScrollBarVisibility="{Binding ElementName=MenuItemsListBox, Path=SelectedItem.VerticalScrollBarVisibilityRequirement}" 
+                                    Padding="{Binding ElementName=MenuItemsListBox, Path=SelectedItem.MarginRequirement}">
+
                         <ContentControl x:Name="Pages" Content="{Binding SelectedViewModel}"/>
                     </ScrollViewer>
-                </Grid>
+                </Grid> 
             </DockPanel>
         </materialDesign:DrawerHost>
     </materialDesign:DialogHost>

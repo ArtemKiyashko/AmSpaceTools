@@ -43,6 +43,8 @@ namespace AmSpaceTools.ViewModels
             {
                 DataContext = Services.Container.With<string>(e.Exception.Message).GetInstance<ErrorViewModel>()
             };
+
+            (SelectedViewModel as IProgressReporter)?.ProgressVM.CloseLoading();
             DialogHost.Show(view, "RootDialog", delegate(object s, DialogOpenedEventArgs args)
             {
                 SelectedViewModel.IsLoading = false;
