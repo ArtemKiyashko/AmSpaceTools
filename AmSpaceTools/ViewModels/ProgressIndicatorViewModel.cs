@@ -50,7 +50,7 @@ namespace AmSpaceTools.ViewModels
             {
                 DataContext = this
             };
-            _dialogTask = DialogHost.Show(view, rootDialogName, (sender, session) => _session = session.Session, null);
+            _dialogTask = DialogHost.Show(view, rootDialogName, (sender, args) => _session = args.Session, null);
         }
 
         public void CloseLoading()
