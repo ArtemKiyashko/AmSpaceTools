@@ -68,9 +68,12 @@ namespace AmSpaceClient
 
         public async Task<BitmapSource> GetAvatarAsync(string link)
         {
-            var result = await RequestWrapper.GetAsyncWrapper(link);
+            var result = string.IsNullOrEmpty(link) ?
+                await RequestWrapper.GetAsyncWrapper(Endpoints.DefaultAvatarEndpoint) :
+                await RequestWrapper.GetAsyncWrapper(link);
+
             if (!result.IsSuccessStatusCode)
-                result = await RequestWrapper.GetAsyncWrapper($"{Endpoints.BaseAddress}/static/avatar.png");
+                result = await RequestWrapper.GetAsyncWrapper(Endpoints.DefaultAvatarEndpoint);
             await result.ValidateAsync();
             var content = await result.Content.ReadAsByteArrayAsync();
             return (BitmapSource)new ImageSourceConverter().ConvertFrom(content);

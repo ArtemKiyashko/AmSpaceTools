@@ -100,6 +100,8 @@ namespace AmSpaceClient
         /// </summary>
         public string CoreValuesEndpoint { get { return $"{BaseAddress}/api/v1/organization/domains/{{0}}/levels/{{1}}/core_values/"; } }
 
+        public string DefaultAvatarEndpoint { get { return $"{BaseAddress}/static/avatar.png"; } }
+
         public string BaseAddress { get; private set; }
 
         public ApiEndpoints(string baseAddress)

@@ -55,7 +55,7 @@ namespace AmSpaceTools.ViewModels
 
         public void CloseLoading()
         {
-            if(!_session.IsEnded)
+            if(_session?.IsEnded == false)
                 _session.Close(true);
         }
 
