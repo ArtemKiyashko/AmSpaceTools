@@ -10,9 +10,9 @@ using System.Windows;
 [assembly: AssemblyTitle("AmSpaceTools")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("AmRest Holdings SE")]
 [assembly: AssemblyProduct("AmSpaceTools")]
-[assembly: AssemblyCopyright("Copyright ©  2018")]
+[assembly: AssemblyCopyright("AmRest 2018 ©")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
