@@ -13,17 +13,18 @@
     <UserControl.Resources>
         <infrastructure:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </UserControl.Resources>
-    <Grid IsEnabled="{Binding UIEnabled}">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="Auto"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+    <materialDesign:DialogHost Identifier="ControlDialog">
+        <Grid IsEnabled="{Binding UIEnabled}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
             <TextBlock
                 Grid.Column="0"
                 Grid.Row="0"
@@ -44,22 +45,22 @@
                             Width="24" />
                 </StackPanel>
             </Button>
-        <Button Command="{Binding UploadDataCommand}"
+            <Button Command="{Binding UploadDataCommand}"
                         IsEnabled="{Binding IsUploadVisible}"
                         Grid.Column="2"
                         Grid.Row="0"
                         Margin="0 5 5 10"
                         Style="{StaticResource MaterialDesignFloatingActionButton}"
                         ToolTip="Upload to AmSpace">
-            <StackPanel Orientation="Horizontal">
-                <materialDesign:PackIcon
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon
                             Kind="CloudSync"
                             Height="24"
                             Width="24" />
-            </StackPanel>
-        </Button>
+                </StackPanel>
+            </Button>
 
-        <DataGrid
+            <DataGrid
             Grid.Column="0"
             Grid.Row="1"
             Grid.ColumnSpan="3"
@@ -69,9 +70,10 @@
             CanUserDeleteRows="True"
             CanUserAddRows="True" />
 
-        <ProgressBar IsIndeterminate="True" Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"
+            <ProgressBar IsIndeterminate="True" Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"
                      Grid.Column="0"
                      Grid.Row="1"
                      Grid.ColumnSpan="3"/>
-    </Grid>
+        </Grid>
+    </materialDesign:DialogHost>
 </UserControl>

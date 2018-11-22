@@ -27,7 +27,6 @@ namespace ExcelWorker.Models
         public long Mpk { get; set; }
 
         [ExcelTableColumn("Email")]
-        [Required]
         public string Email { get; set; }
 
         [ExcelTableColumn("Phone")]
@@ -79,13 +78,13 @@ namespace ExcelWorker.Models
 
     public enum ContractStatus
     {
-        Terminated = 0,
-        Active = 3,
-        Suspended = 4
+        ACTIVE,
+        SUSPENDED,
+        TERMINATED,
     }
     public enum Sex
     {
-        Male = 1,
-        Female = 2
+        MALE,
+        FEMALE
     }
 }

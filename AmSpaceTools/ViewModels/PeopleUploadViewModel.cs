@@ -95,9 +95,9 @@ namespace AmSpaceTools.ViewModels
                 if (ProgressVM.IsProgressCancelled) break;
                 foreach (var contract in account.Item)
                 {
-                    ProgressVM.ReportProgress(new ProgressState { ProgressTasksDone = ++i, ProgressTasksTotal = contactsCount, ProgressDescriptionText = $"{contract.Name} {contract.Surname} ID:[{contract.IdentityNumber}] processing" });
                     var externalAccount = await FillAccount(contract);
                     var accountResult = await UploadAccount(externalAccount);
+                    ProgressVM.ReportProgress(new ProgressState { ProgressTasksDone = ++i, ProgressTasksTotal = contactsCount, ProgressDescriptionText = $"{contract.Name} {contract.Surname} ID:[{contract.IdentityNumber}] done" });
                 }
             }
             ProgressVM.CloseLoading();
@@ -137,7 +137,7 @@ namespace AmSpaceTools.ViewModels
                 {
                     DataContext = _searchVm
                 };
-                var result = (bool)await DialogHost.Show(view, "RootDialog");
+                var result = (bool)await DialogHost.Show(view, "ControlDialog");
                 if (!result) throw new ArgumentNullException(nameof(contract.ManagerId), $"Manager for {contract.Name} {contract.Surname} not set");
                 externalAccount.ManagerId = _searchVm.SelectedUser.User.Id;
             }

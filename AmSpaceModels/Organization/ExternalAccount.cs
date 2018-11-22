@@ -35,7 +35,7 @@ namespace AmSpaceModels.Organization
         public string CountryCode { get; set; }
 
         [JsonProperty("sex")]
-        public SapSex Sex { get; set; }
+        public AmSpaceSex Sex { get; set; }
 
         [JsonProperty("mpk")]
         public long Mpk { get; set; }
@@ -62,7 +62,7 @@ namespace AmSpaceModels.Organization
         public DateTimeOffset? EndDate { get; set; }
 
         [JsonProperty("status")]
-        public SapUserStatus Status { get; set; }
+        public AmSpaceUserStatus Status { get; set; }
     }
 
     public partial class ExternalAccountResponse
