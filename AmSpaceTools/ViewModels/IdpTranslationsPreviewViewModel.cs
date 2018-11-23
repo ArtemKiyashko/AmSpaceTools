@@ -198,7 +198,7 @@ namespace AmSpaceTools.ViewModels
             set { _openFileCommand = value; }
         }
 
-        private void OpenFile(object obj)
+        private async void OpenFile(object obj)
         {
             IsLoading = true;
             var dialog = new OpenFileDialog
@@ -210,7 +210,7 @@ namespace AmSpaceTools.ViewModels
             if (dialog.ShowDialog() == true)
             {
                 CurrentFilePath = dialog.FileName;
-                _excelWorker.OpenFile(CurrentFilePath);
+                await _excelWorker.OpenFileAsync(CurrentFilePath);
                 ExcelColumnsPreview = _excelWorker.GetColumnDataPreview(10);
                 foreach(var excelColumn in ExcelColumnsPreview)
                     excelColumn.PropertyChanged += ExcelColumn_PropertyChanged;
@@ -222,6 +222,5 @@ namespace AmSpaceTools.ViewModels
         {
             OnPropertyChanged(nameof(IsUploadVisible));
         }
-        
     }
 }

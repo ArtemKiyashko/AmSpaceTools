@@ -145,5 +145,20 @@ namespace ExcelWorker
         {
             return Task.Run(() => GetAllRows(columnDefinitions, ignoreFirstRow));
         }
+
+        public Task<DataTable> GetWorkSheetAsync(string sheetName)
+        {
+            return Task.Run(() => GetWorkSheet(sheetName));
+        }
+
+        public Task<DataTable> GetWorkSheetAsync(int index)
+        {
+            return Task.Run(() => GetWorkSheet(index));
+        }
+
+        public Task OpenFileAsync(string fileName)
+        {
+            return Task.Run(() => OpenFile(fileName));
+        }
     }
 }

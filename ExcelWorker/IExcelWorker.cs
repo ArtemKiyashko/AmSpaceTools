@@ -24,6 +24,9 @@ namespace ExcelWorker
         IEnumerable<string> GetWorksheets();
         DataTable GetWorkSheet(string sheetName);
         DataTable GetWorkSheet(int index);
+        Task<DataTable> GetWorkSheetAsync(string sheetName);
+        Task<DataTable> GetWorkSheetAsync(int index);
         void OpenFile(string fileName);
+        Task OpenFileAsync(string fileName);
     }
 }

@@ -41,15 +41,8 @@ namespace AmSpaceTools.ViewModels
 
         public ICommand UploadDataCommand { get; set; }
 
-        public bool IsUploadVisible
-        {
-            get
-            {
-                if (!InputRows.Any()) return false;
-                return true;
-            }
-        }
-
+        public bool IsUploadVisible => InputRows.Any();
+        
         public PeopleUploadViewModel(IAmSpaceClient client, IMapper mapper, IExcelWorker excelWorker, SearchPeopleViewModel searchVm, ProgressIndicatorViewModel progressVm)
         {
             ProgressVM = progressVm;
@@ -179,8 +172,8 @@ namespace AmSpaceTools.ViewModels
                 using (_excelWorker)
                 {
                     _fileName = dialog.FileName;
-                    _excelWorker.OpenFile(_fileName);
-                    _workSheet = _excelWorker.GetWorkSheet(1);
+                    await _excelWorker.OpenFileAsync(_fileName);
+                    _workSheet = await _excelWorker.GetWorkSheetAsync(1);
                     InputRows.Clear();
                     var data = await _excelWorker.ExctractDataAsync<SapPersonExcelRow>(_workSheet.TableName);
                     data.ForEach(_ => InputRows.Add(_));

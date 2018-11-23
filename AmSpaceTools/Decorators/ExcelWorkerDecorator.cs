@@ -122,7 +122,6 @@ namespace AmSpaceTools.Decorators
                 _logger.Error($"Error during opening the file {FileName}", ex);
                 throw;
             }
-
         }
 
         public void Dispose()
@@ -183,6 +182,49 @@ namespace AmSpaceTools.Decorators
             catch (Exception ex)
             {
                 _logger.Error($"Error during reading rows from {FileName}", ex);
+                throw;
+            }
+        }
+
+        public Task<DataTable> GetWorkSheetAsync(string sheetName)
+        {
+            _logger.Info($"Get worksheet {sheetName} from file {FileName}");
+            try
+            {
+                return _decoratee.GetWorkSheetAsync(sheetName);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Error during reading worksheet {sheetName} in file {FileName}", ex);
+                throw;
+            }
+        }
+
+        public Task<DataTable> GetWorkSheetAsync(int index)
+        {
+            _logger.Info($"Get worksheet by index [{index}] from file {FileName}");
+            try
+            {
+                return _decoratee.GetWorkSheetAsync(index);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Error during reading worksheet by index [{index}] in file {FileName}", ex);
+                throw;
+            }
+        }
+
+        public Task OpenFileAsync(string fileName)
+        {
+            FileName = fileName;
+            _logger.Info($"Opening the file {FileName}");
+            try
+            {
+                return _decoratee.OpenFileAsync(fileName);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Error during opening the file {FileName}", ex);
                 throw;
             }
         }
