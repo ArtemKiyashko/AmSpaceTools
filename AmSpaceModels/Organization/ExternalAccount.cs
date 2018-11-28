@@ -26,7 +26,7 @@ namespace AmSpaceModels.Organization
         public string PhoneNumber { get; set; }
 
         [JsonProperty("date_of_birth")]
-        public DateTimeOffset? DateOfBirth { get; set; }
+        public DateTime? DateOfBirth { get; set; }
 
         [JsonProperty("nationality")]
         public string Nationality { get; set; }
@@ -56,10 +56,10 @@ namespace AmSpaceModels.Organization
         public long Level { get; set; }
 
         [JsonProperty("start_date")]
-        public DateTimeOffset StartDate { get; set; }
+        public DateTime StartDate { get; set; }
 
         [JsonProperty("end_date")]
-        public DateTimeOffset? EndDate { get; set; }
+        public DateTime? EndDate { get; set; }
 
         [JsonProperty("status")]
         public AmSpaceUserStatus Status { get; set; }
