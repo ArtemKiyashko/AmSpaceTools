@@ -12,8 +12,8 @@ namespace AmSpaceToolsTests.Infrastructure
     {
         public int CompareTo(object obj)
         {
-            if (!(obj is ExternalAccount)) return -1;
-            var res = (ExternalAccount)obj;
+            var res = obj as ExternalAccount;
+            if (res == null) return -1;
 
             if (!res.FirstName.Equals(Name)
                 || !res.LastName.Equals(Surname)
