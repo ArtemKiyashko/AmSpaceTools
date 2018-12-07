@@ -118,24 +118,24 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="PeopleUploadFinishUploadMessage" xml:space="preserve">
-    <value>All done!{0}Contracts uploaded: {1}</value>
+    <value>Все готово!{0}Загружено контрактов: {1}</value>
   </data>
   <data name="PeopleUploadGenerateStructureTreeMessage" xml:space="preserve">
-    <value>Generating structure tree...</value>
+    <value>Генерирует дерево сотрудников...</value>
   </data>
   <data name="PeopleUploadManagerNotFoundMessage" xml:space="preserve">
-    <value>Manager for {0} {1} not found!</value>
+    <value>Менеджер для {0} {1} не найден!</value>
   </data>
   <data name="PeopleUploadManagerNotSetMessage" xml:space="preserve">
-    <value>Manager for {0} {1} not set</value>
+    <value>Менеджер для {0} {1} не назначен</value>
   </data>
   <data name="PeopleUploadMissingMpkMessage" xml:space="preserve">
-    <value>Those MPKs are missing:</value>
+    <value>Следующие MPK не найдены:</value>
   </data>
   <data name="PeopleUploadReportUploadStatusMessage" xml:space="preserve">
-    <value>{0} {1} ID:[{2}] done</value>
+    <value>{0} {1} №:[{2}] загружен</value>
   </data>
   <data name="PeopleUploadValidateDomainMessage" xml:space="preserve">
-    <value>Validating domains...</value>
+    <value>Проверяем домены...</value>
   </data>
 </root>

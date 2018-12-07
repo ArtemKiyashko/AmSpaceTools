@@ -40,6 +40,9 @@
   <PropertyGroup>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>false</SignManifests>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="AutoMapper, Version=8.0.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
       <HintPath>..\packages\AutoMapper.8.0.0\lib\net461\AutoMapper.dll</HintPath>
@@ -53,8 +56,8 @@
     <Reference Include="MaterialDesignColors, Version=1.1.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MaterialDesignColors.1.1.3\lib\net45\MaterialDesignColors.dll</HintPath>
     </Reference>
-    <Reference Include="MaterialDesignThemes.Wpf, Version=2.5.0.1205, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MaterialDesignThemes.2.5.0.1205\lib\net45\MaterialDesignThemes.Wpf.dll</HintPath>
+    <Reference Include="MaterialDesignThemes.Wpf, Version=2.4.1.1101, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MaterialDesignThemes.2.4.1.1101\lib\net45\MaterialDesignThemes.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Win32.Primitives, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Win32.Primitives.4.3.0\lib\net46\Microsoft.Win32.Primitives.dll</HintPath>
@@ -153,6 +156,7 @@
     <Compile Include="Infrastructure\ListExtensions.cs" />
     <Compile Include="Infrastructure\MenuItem.cs" />
     <Compile Include="Infrastructure\NotEmptyValidationRule.cs" />
+    <Compile Include="Infrastructure\PasswordBoxAssistant.cs" />
     <Compile Include="Infrastructure\ProgressState.cs" />
     <Compile Include="Infrastructure\RelayCommand.cs" />
     <Compile Include="Infrastructure\Services.cs" />
@@ -163,6 +167,7 @@
     <Compile Include="ModelConverters\CompetencyActionsToExcelRowConverter.cs" />
     <Compile Include="ModelConverters\SapPersonExcelToAmspaceConverter.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
+    <Compile Include="ViewModels\ChangePasswordViewModel.cs" />
     <Compile Include="ViewModels\ErrorViewModel.cs" />
     <Compile Include="ViewModels\IdpTranslationsPreviewViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
@@ -174,6 +179,9 @@
     <Compile Include="ViewModels\ProgressIndicatorViewModel.cs" />
     <Compile Include="ViewModels\SearchPeopleViewModel.cs" />
     <Compile Include="ViewModels\SearchUserResultWithContractViewModel.cs" />
+    <Compile Include="Views\ChangePassword.xaml.cs">
+      <DependentUpon>ChangePassword.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ConfirmUnitDelete.xaml.cs">
       <DependentUpon>ConfirmUnitDelete.xaml</DependentUpon>
     </Compile>
@@ -216,6 +224,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\ChangePassword.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\ConfirmUnitDelete.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -275,6 +287,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.ru.resx" />
     <None Include="Environments.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

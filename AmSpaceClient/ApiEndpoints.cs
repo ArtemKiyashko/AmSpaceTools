@@ -102,6 +102,16 @@ namespace AmSpaceClient
 
         public string DefaultAvatarEndpoint { get { return $"{BaseAddress}/static/avatar.png"; } }
 
+        /// <summary>
+        /// Change password for your subbordinate
+        /// </summary>
+        public string ChangePasswordTeamEndpoint { get { return $"{BaseAddress}/api/v1/team/user/{{0}}/change_password/"; } }
+
+        /// <summary>
+        /// Change password for user by UserId
+        /// </summary>
+        public string ChangePasswordEndpoint { get { return $"{BaseAddress}/api/v1/auth/change_password/{{0}}/"; } }
+
         public string BaseAddress { get; private set; }
 
         public ApiEndpoints(string baseAddress)

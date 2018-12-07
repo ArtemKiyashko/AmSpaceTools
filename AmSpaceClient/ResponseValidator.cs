@@ -32,6 +32,29 @@ namespace AmSpaceClient
         {
             var error = JsonConvert.DeserializeObject<AmSpaceError>(resultContent);
 
+            //TODO: parse amspace erros as json to view [property_name: value]
+            //the problems is, that sometime amspace send erros like objects and sometime like arrays
+            //maybe we need to create different error formaters for different responses and specify it when calling ResponseValidator
+            //below realization for array
+            //
+            //
+            //var errorDescriptionBuilder = new StringBuilder();
+            //var resultObject = JObject.Parse(resultContent);
+
+            //foreach(JProperty jProperty in resultObject.Properties())
+            //{
+            //    errorDescriptionBuilder
+            //        .Append(jProperty.Name)
+            //        .Append(": ");
+
+            //    var valueBuilder = new StringBuilder();
+            //    foreach (JValue v in (JArray)jProperty.Value)
+            //        valueBuilder
+            //            .Append(v.Value)
+            //            .AppendLine();
+            //    errorDescriptionBuilder.Append(valueBuilder);
+            //}
+
             throw new ArgumentException(
                     error.ErrorDescription ??
                     error.Details ??

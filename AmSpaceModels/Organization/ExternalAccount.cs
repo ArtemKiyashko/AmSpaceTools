@@ -8,6 +8,12 @@ using Newtonsoft.Json.Converters;
 
 namespace AmSpaceModels.Organization
 {
+    public enum AccountBackendType
+    {
+        AmSpace,
+        ActiveDirectory
+    }
+
     public partial class ExternalAccount
     {
         [JsonProperty("first_name")]
@@ -63,6 +69,9 @@ namespace AmSpaceModels.Organization
 
         [JsonProperty("status")]
         public AmSpaceUserStatus Status { get; set; }
+
+        [JsonProperty("backend_type")]
+        public AccountBackendType BackendType { get; set; }
     }
 
     public partial class ExternalAccountResponse
