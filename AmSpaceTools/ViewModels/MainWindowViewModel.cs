@@ -14,6 +14,7 @@ namespace AmSpaceTools.ViewModels
     public class MainWindowViewModel : BaseViewModel
     {
         private ObservableCollection<MenuItem> _menuItems;
+
         public ObservableCollection<MenuItem> MenuItems
         {
             get
@@ -43,13 +44,13 @@ namespace AmSpaceTools.ViewModels
             {
                 DataContext = Services.Container.With<string>(e.Exception.Message).GetInstance<ErrorViewModel>()
             };
-
             (SelectedViewModel as IProgressReporter)?.ProgressVM.CloseLoading();
-            DialogHost.Show(view, "RootDialog", delegate(object s, DialogOpenedEventArgs args)
+
+            DialogHost.Show(view, "RootDialog", (object s, DialogOpenedEventArgs args) =>
             {
                 SelectedViewModel.IsLoading = false;
-                e.Handled = true;
             });
+            e.Handled = true;
         }
 
         private bool _isLoggedIn;

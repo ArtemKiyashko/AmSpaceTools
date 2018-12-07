@@ -5,6 +5,7 @@ using AmSpaceModels.JobMap;
 using AmSpaceModels.Organization;
 using AmSpaceModels.Performance;
 using AmSpaceModels.Sap;
+using AmSpaceModels.Auth;
 using AmSpaceTools.Infrastructure;
 using System;
 using System.Collections.Generic;
@@ -213,13 +214,13 @@ namespace AmSpaceClient
         public async Task<Kpi> CreateFinancialKpiAsync(ContractSearch userContract, Kpi kpi)
         {
             var url = string.Format(Endpoints.KpiFinancialCustomAdminEndpoint, userContract.Id);
-            return await RequestWrapper.PostAsyncWrapper<Kpi, Kpi>(kpi, url);
+            return await RequestWrapper.PostAsyncWrapper<Kpi, Kpi>(url, kpi);
         }
 
         public async Task<Kpi> CreateNonFinancialKpiAsync(ContractSearch userContract, Kpi kpi)
         {
             var url = string.Format(Endpoints.KpiNonFinancialCustomAdminEndpoint, userContract.Id);
-            return await RequestWrapper.PostAsyncWrapper<Kpi, Kpi>(kpi, url);
+            return await RequestWrapper.PostAsyncWrapper<Kpi, Kpi>(url, kpi);
         }
 
         public async Task<Kpi> UpdateFinancialKpiAsync(ContractSearch userContract, Kpi kpi)
@@ -237,13 +238,13 @@ namespace AmSpaceClient
         public async Task<Roadmap> CreateRoadmapAsync(ContractSearch userContract, Roadmap roadmap)
         {
             var url = string.Format(Endpoints.RoadmapsAdminEndpoint, userContract.Id);
-            return await RequestWrapper.PostAsyncWrapper<Roadmap, Roadmap>(roadmap, url);
+            return await RequestWrapper.PostAsyncWrapper<Roadmap, Roadmap>(url, roadmap);
         }
 
         public async Task<Goal> CreateGoalAsync(ContractSearch userContract, Roadmap roadmap, GoalNew goal)
         {
             var url = string.Format(Endpoints.GoalsAdminEndpoint, userContract.Id, roadmap.Year);
-            return await RequestWrapper.PostAsyncWrapper<GoalNew, Goal>(goal, url);
+            return await RequestWrapper.PostAsyncWrapper<GoalNew, Goal>(url, goal);
         }
 
         public async Task<Goal> UpdateGoalAsync(ContractSearch userContract, Roadmap roadmap, Goal goal)
@@ -324,12 +325,12 @@ namespace AmSpaceClient
 
         public async Task<TemporaryAccount> CreateTemporaryAccount(TemporaryAccount accountInfo)
         {
-            return await RequestWrapper.PostAsyncWrapper<TemporaryAccount, TemporaryAccount>(accountInfo, Endpoints.TemporaryAccountAdminEndpoint);
+            return await RequestWrapper.PostAsyncWrapper<TemporaryAccount, TemporaryAccount>(Endpoints.TemporaryAccountAdminEndpoint, accountInfo);
         }
 
         public Task<ExternalAccountResponse> CreateExternalAccount(ExternalAccount accountInfo)
         {
-            return RequestWrapper.PostAsyncWrapper<ExternalAccount, ExternalAccountResponse>(accountInfo, Endpoints.ExternalAccountCreateEndpoint);
+            return RequestWrapper.PostAsyncWrapper<ExternalAccount, ExternalAccountResponse>(Endpoints.ExternalAccountCreateEndpoint, accountInfo);
         }
 
         public Task<ExternalAccountResponse> UpdateExternalAccount(long? contractId, ExternalAccount accountInfo)
@@ -385,7 +386,7 @@ namespace AmSpaceClient
         public async Task<JobResponsibility> CreateJobResponsibilityAsync(JobResponsibility responsibility)
         {
             var url = string.Format(Endpoints.JobResponsibilitiesEndpoint, responsibility.Job);
-            return await RequestWrapper.PostAsyncWrapper<JobResponsibility, JobResponsibility>(responsibility, url);
+            return await RequestWrapper.PostAsyncWrapper<JobResponsibility, JobResponsibility>(url, responsibility);
         }
 
         public async Task<IEnumerable<Level>> GetBrandLevelsAsync(Brand brand)
@@ -424,6 +425,13 @@ namespace AmSpaceClient
         {
             var url = string.Format(Endpoints.CoreValuesEndpoint, brand.Id == 0 ? "rst" : brand.Id.ToString(), level.Id);
             return await RequestWrapper.PutAsyncWrapper<CoreValues, CoreValues>(values, url);
+        }
+
+        public Task<bool> ChangePasswordAsync(NewPassword password, SearchUserResult account)
+        {
+            password.UserId = null;
+            var url = string.Format(Endpoints.ChangePasswordEndpoint, account.Id);
+            return RequestWrapper.PostAsyncWrapper(url, password);
         }
     }
 }

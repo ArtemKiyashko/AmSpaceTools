@@ -80,6 +80,7 @@
     <Compile Include="Sap\SapUser.cs" />
     <Compile Include="Idp\Translation.cs" />
     <Compile Include="Idp\UpdateAction.cs" />
+    <Compile Include="Auth\NewPassword.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

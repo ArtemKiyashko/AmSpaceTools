@@ -93,7 +93,7 @@ namespace AmSpaceClient
             return await result.ValidateAsync();
         }
 
-        public async Task<TOutput> PostAsyncWrapper<TInput, TOutput>(TInput model, string endpoint) where TOutput : class
+        public async Task<TOutput> PostAsyncWrapper<TInput, TOutput>(string endpoint, TInput model) where TOutput : class
         {
             var httpcontent = PrepareContent(model);
             var result = await AmSpaceHttpClient.PostAsync(endpoint, httpcontent);
@@ -139,6 +139,13 @@ namespace AmSpaceClient
         {
             var request = CreateHttpMessage(model, endpoint, "PATCH");
             var result = await AmSpaceHttpClient.SendAsync(request);
+            return await result.ValidateAsync();
+        }
+
+        public async Task<bool> PostAsyncWrapper<TInput>(string endpoint, TInput model)
+        {
+            var httpcontent = PrepareContent(model);
+            var result = await AmSpaceHttpClient.PostAsync(endpoint, httpcontent);
             return await result.ValidateAsync();
         }
     }

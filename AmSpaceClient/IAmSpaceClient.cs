@@ -5,6 +5,7 @@ using AmSpaceModels.JobMap;
 using AmSpaceModels.Organization;
 using AmSpaceModels.Performance;
 using AmSpaceModels.Sap;
+using AmSpaceModels.Auth;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -83,5 +84,6 @@ namespace AmSpaceClient
         Task<bool> DeleteCompetencyModelAsync(Brand brand, Level level, CompetencyModel competency);
         Task<CoreValues> GetCoreValuesAsync(Brand brand, Level level);
         Task<CoreValues> SaveCoreValuesAsync(Brand brand, Level level, CoreValues values);
+        Task<bool> ChangePasswordAsync(NewPassword password, SearchUserResult account);
     }
 }
