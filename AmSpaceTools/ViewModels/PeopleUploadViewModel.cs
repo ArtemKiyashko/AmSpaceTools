@@ -19,7 +19,8 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using System.Threading;
+using AmSpaceTools.Properties;
+
 
 namespace AmSpaceTools.ViewModels
 {
@@ -76,7 +77,7 @@ namespace AmSpaceTools.ViewModels
             var existingMpks = flatDomains.Select(_ => _.Mpk).Distinct();
             var missingMpks = inputMpks.Except(existingMpks);
             if (missingMpks.Any())
-                throw new ArgumentException($"Those MPKs are missing: {missingMpks.Select(_ => _.ToString()).Aggregate((c, n) => c + ", " + n)}", nameof(SapPersonExcelRow.Mpk));
+                throw new ArgumentException($"{Resources.PeopleUploadMissingMpkMessage} {missingMpks.Select(_ => _.ToString()).Aggregate((c, n) => c + ", " + n)}", nameof(SapPersonExcelRow.Mpk));
         }
 
         private async Task RequestDefaultPassword(IEnumerable<SapPersonExcelRow> inputRows)
@@ -96,11 +97,11 @@ namespace AmSpaceTools.ViewModels
         private async void UploadData(object obj)
         {
             ProgressVM.ShowLoading();
-            ProgressVM.ReportProgress(new ProgressState { ProgressTasksDone = 0, ProgressDescriptionText = "Validating domains..." });
+            ProgressVM.ReportProgress(new ProgressState { ProgressTasksDone = 0, ProgressDescriptionText = Resources.PeopleUploadValidateDomainMessage });
             await ValidateDomainsAsync(InputRows);
             if (ProgressVM.IsProgressCancelled) return;
             var inputRowsGroupedByContracts = InputRows.GroupBy(_ => new { _.IdentityNumber, _.ManagerId }, v => v);
-            ProgressVM.ReportProgress(new ProgressState { ProgressTasksDone = 0, ProgressDescriptionText = "Generating structure tree..." });
+            ProgressVM.ReportProgress(new ProgressState { ProgressTasksDone = 0, ProgressDescriptionText = Resources.PeopleUploadGenerateStructureTreeMessage });
             var tree = inputRowsGroupedByContracts.GenerateTree(c => c.Key.IdentityNumber, c => c.Key.ManagerId ?? string.Empty, string.Empty);
             await RequestDefaultPassword(InputRows);
             if (ProgressVM.IsProgressCancelled) return;
@@ -114,10 +115,10 @@ namespace AmSpaceTools.ViewModels
                 {
                     var externalAccount = await FillAccount(contract);
                     var accountResult = await UploadAccount(externalAccount);
-                    ProgressVM.ReportProgress(new ProgressState { ProgressTasksDone = ++uploadedContracts, ProgressTasksTotal = contactsCount, ProgressDescriptionText = $"{contract.Name} {contract.Surname} ID:[{contract.IdentityNumber}] done" });
+                    ProgressVM.ReportProgress(new ProgressState { ProgressTasksDone = ++uploadedContracts, ProgressTasksTotal = contactsCount, ProgressDescriptionText = string.Format(Resources.PeopleUploadReportUploadStatusMessage, contract.Name, contract.Surname, contract.IdentityNumber) });
                 }
             }
-            ProgressVM.ReportProgress(new ProgressState { ProgressTasksDone = uploadedContracts, ProgressTasksTotal = contactsCount, ProgressDescriptionText = $"All done!{Environment.NewLine}Contracts uploaded: {uploadedContracts}" });
+            ProgressVM.ReportProgress(new ProgressState { ProgressTasksDone = uploadedContracts, ProgressTasksTotal = contactsCount, ProgressDescriptionText = string.Format(Resources.PeopleUploadFinishUploadMessage, Environment.NewLine, uploadedContracts) });
         }
 
         protected async Task<ExternalAccount> FillAccount(SapPersonExcelRow contract)
@@ -155,13 +156,13 @@ namespace AmSpaceTools.ViewModels
                     DataContext = _searchVm
                 };
                 var result = (bool)await DialogHost.Show(view, "ControlDialog");
-                if (!result) throw new ArgumentNullException(nameof(contract.ManagerId), $"Manager for {contract.Name} {contract.Surname} not set");
+                if (!result) throw new ArgumentNullException(nameof(contract.ManagerId), string.Format(Resources.PeopleUploadManagerNotSetMessage, contract.Name, contract.Surname));
                 externalAccount.ManagerId = _searchVm.SelectedUser.User.Id;
             }
             else
             {
                 var manager = await _client.FindUserByIdentityNumber(contract.ManagerId);
-                externalAccount.ManagerId = manager == null ? throw new ArgumentException($"Manager for {contract.Name} {contract.Surname} not found!") : manager.Id;
+                externalAccount.ManagerId = manager == null ? throw new ArgumentException(string.Format(Resources.PeopleUploadManagerNotFoundMessage, contract.Name, contract.Surname)) : manager.Id;
             }
         }
 
@@ -174,10 +175,9 @@ namespace AmSpaceTools.ViewModels
             else
             {
                 var existingContract = existingUser.Contracts.Find(_ => _.ContractNumber == externalAccount.ContractNumber);
-                if (existingContract == null)
-                    contractResult = await _client.CreateExternalAccount(externalAccount);
-                else
-                    contractResult = await _client.UpdateExternalAccount(existingContract.Id, externalAccount);
+                contractResult = existingContract == null ?
+                    await _client.CreateExternalAccount(externalAccount) :
+                    await _client.UpdateExternalAccount(existingContract.Id, externalAccount);
             }
             var passwordChanged = await ChangePassword(externalAccount, InputRows);
             return contractResult;

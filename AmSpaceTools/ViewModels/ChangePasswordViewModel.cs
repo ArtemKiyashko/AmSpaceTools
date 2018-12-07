@@ -19,7 +19,13 @@ namespace AmSpaceTools.ViewModels
         private string _rePassword;
 
         [Required]
-        public string NewPassword { get => _newPassword; set { _newPassword = value; ValidateModelProperty(); } }
+        public string NewPassword { get => _newPassword;
+            set
+            {
+                _newPassword = value;
+                ValidateModelProperty();
+            }
+        }
 
         [Required]
         public string RePassword { get => _rePassword;
