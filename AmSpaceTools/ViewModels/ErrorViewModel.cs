@@ -16,7 +16,7 @@ namespace AmSpaceTools.ViewModels
 
         public ErrorViewModel(string errorMsg)
         {
-            _errorMsg = errorMsg ;
+            _errorMsg = errorMsg;
         }
     }
 }
