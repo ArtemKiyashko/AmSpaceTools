@@ -119,13 +119,7 @@ namespace ExcelWorker
 
         public void SaveData<T>(string fileName, IEnumerable<T> data, string sheetName) where T : class
         {
-            string appDataLocal = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            var directory = Path.GetDirectoryName(fileName);
-            var appDirectory = $"{appDataLocal}\\AmSpaceTools\\{directory}";
-            if (!Directory.Exists(appDirectory))
-                Directory.CreateDirectory(appDirectory);
-            string specificFile = appDirectory + $"\\{Path.GetFileName(fileName)}";
-            using (var file = new FileStream(specificFile, FileMode.OpenOrCreate, FileAccess.Write, FileShare.ReadWrite))
+            using (var file = new FileStream(fileName, FileMode.OpenOrCreate, FileAccess.Write, FileShare.ReadWrite))
             {
                 data.ToWorksheet(sheetName)
                        .WithConfiguration(c =>

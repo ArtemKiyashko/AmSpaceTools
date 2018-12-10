@@ -17,10 +17,7 @@ namespace AmSpaceTools.Infrastructure
             get
             {
                 if (_environments == null)
-                {
-                    var currentPath = AppDomain.CurrentDomain.BaseDirectory;
-                    _environments = JsonConvert.DeserializeObject<List<AmSpaceEnvironment>>(File.ReadAllText($"{currentPath}\\Environments.json"));
-                }
+                    _environments = JsonConvert.DeserializeObject<List<AmSpaceEnvironment>>(File.ReadAllText(@"Environments.json"));
                 return _environments;
             }
         }
