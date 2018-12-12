@@ -1,4 +1,5 @@
 ﻿using AmSpaceModels;
+using AmSpaceModels.Enums;
 using AmSpaceModels.Idp;
 using AmSpaceModels.Performance;
 using ExcelWorker;
@@ -39,12 +40,12 @@ namespace AmSpaceTools.Decorators
             }
         }
 
-        public void SaveData<T>(string fileName, IEnumerable<T> data, string sheetName) where T : class
+        public void SaveData<T>(string fileName, AppDataFolders folder, IEnumerable<T> data, string sheetName) where T : class
         {
             _logger.Info($"Saving file {fileName}");
             try
             {
-                _decoratee.SaveData(fileName, data, sheetName);
+                _decoratee.SaveData(fileName, folder, data, sheetName);
             }
             catch (Exception ex)
             {
@@ -144,12 +145,12 @@ namespace AmSpaceTools.Decorators
             }
         }
 
-        public Task SaveDataAsync<T>(string fileName, IEnumerable<T> data, string sheetName) where T : class
+        public Task SaveDataAsync<T>(string fileName, AppDataFolders folder, IEnumerable<T> data, string sheetName) where T : class
         {
             _logger.Info($"Saving file {fileName}");
             try
             {
-                return _decoratee.SaveDataAsync(fileName, data, sheetName);
+                return _decoratee.SaveDataAsync(fileName, folder, data, sheetName);
             }
             catch (Exception ex)
             {
