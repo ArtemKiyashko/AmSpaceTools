@@ -14,9 +14,9 @@ namespace AmSpaceClient
     {
         public static async Task<TOutput> ValidateAsync<TOutput>(this HttpResponseMessage response) where TOutput : class
         {
-            var resultContent = await response.Content.ReadAsStringAsync();
+            var resultContent = await response.Content.ReadAsStringAsync(); ;
             if (!response.IsSuccessStatusCode)
-                response.ConverToAmSpaceError(resultContent);
+                response.ConverToExceptionAndThrow(resultContent);
             return JsonConvert.DeserializeObject<TOutput>(resultContent);
         }
 
@@ -24,44 +24,52 @@ namespace AmSpaceClient
         {
             var resultContent = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode)
-                response.ConverToAmSpaceError(resultContent);
+                response.ConverToExceptionAndThrow(resultContent);
             return true;
         }
 
-        private static void ConverToAmSpaceError(this HttpResponseMessage response, string resultContent)
+        private static void ConverToExceptionAndThrow(this HttpResponseMessage response, string resultContent)
         {
-            var error = JsonConvert.DeserializeObject<AmSpaceError>(resultContent);
+            var errorDescriptionBuilder = new StringBuilder();
+            var resultObject = JRaw.Parse(resultContent);
 
-            //TODO: parse amspace erros as json to view [property_name: value]
-            //the problems is, that sometime amspace send erros like objects and sometime like arrays
-            //maybe we need to create different error formaters for different responses and specify it when calling ResponseValidator
-            //below realization for array
-            //
-            //
-            //var errorDescriptionBuilder = new StringBuilder();
-            //var resultObject = JObject.Parse(resultContent);
-
-            //foreach(JProperty jProperty in resultObject.Properties())
-            //{
-            //    errorDescriptionBuilder
-            //        .Append(jProperty.Name)
-            //        .Append(": ");
-
-            //    var valueBuilder = new StringBuilder();
-            //    foreach (JValue v in (JArray)jProperty.Value)
-            //        valueBuilder
-            //            .Append(v.Value)
-            //            .AppendLine();
-            //    errorDescriptionBuilder.Append(valueBuilder);
-            //}
-
-            throw new ArgumentException(
-                    error.ErrorDescription ??
-                    error.Details ??
-                    error.MissingFields ??
-                    JToken.Parse(resultContent).ToString());
+            foreach (var jProperty in resultObject.Children())
+            {
+                errorDescriptionBuilder
+                    .Append(GetJTokenContent(jProperty));
+            }
+            throw new ArgumentException(errorDescriptionBuilder.ToString().TrimEnd());
         }
-
+        
+        private static string GetJTokenContent(JToken token)
+        {
+            if (token == null)
+                return "";
+            var valueBuilder = new StringBuilder();
+            switch (token)
+            {
+                case JProperty property:
+                    valueBuilder.Append($"{property.Name}: {GetJTokenContent(property.Value)}");
+                    break;
+                case JArray array:
+                    valueBuilder.Append("\n");
+                    foreach (var value in array)
+                    {
+                        valueBuilder.Append($"{GetJTokenContent(value)}");
+                    }
+                    break;
+                case JObject obj:
+                    foreach (var jProperty in obj.Children())
+                    {
+                        valueBuilder.Append($"\n{GetJTokenContent(jProperty)}");
+                    }
+                    break;
+                default:
+                    valueBuilder.Append($"{token.ToString()}\n");
+                    break;
+            }
+            return valueBuilder.ToString();
+        }
 
     }
 }
