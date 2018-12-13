@@ -33,10 +33,10 @@ namespace AmspaceClientUnitTests
 
         [Test]
         [TestCase("[\"ERROR\"]", "ERROR")]
-        [TestCase("[\"ERROR\", \"another error\"]", "ERROR\nanother error")]
+        [TestCase("[\"ERROR\", \"another error\"]", "ERROR\r\nanother error")]
         [TestCase("{\"error\" : \"i can't take this any more\"}", "error: i can't take this any more")]
-        [TestCase("{\"errors\" : [\"ERROR\", \"another error\"]}", "errors: \nERROR\nanother error")]
-        [TestCase("{\"errors\" : {\"ERROR\": \"error text\"}}", "errors: \nERROR: error text")]
+        [TestCase("{\"errors\" : [\"ERROR\", \"another error\"]}", "errors: \r\nERROR\r\nanother error")]
+        [TestCase("{\"errors\" : {\"ERROR\": \"error text\"}}", "errors: \r\nERROR: error text")]
         public void ValidateAsync_WhenCalledWithNotOkStatusCode_ThrowsWithCorrectMessage(string incomingJson, string expectedMessage)
         {
             _messageToValidate.StatusCode = System.Net.HttpStatusCode.Unauthorized;
@@ -62,10 +62,10 @@ namespace AmspaceClientUnitTests
 
         [Test]
         [TestCase("[\"ERROR\"]", "ERROR")]
-        [TestCase("[\"ERROR\", \"another error\"]", "ERROR\nanother error")]
+        [TestCase("[\"ERROR\", \"another error\"]", "ERROR\r\nanother error")]
         [TestCase("{\"error\" : \"i can't take this any more\"}", "error: i can't take this any more")]
-        [TestCase("{\"errors\" : [\"ERROR\", \"another error\"]}", "errors: \nERROR\nanother error")]
-        [TestCase("{\"errors\" : {\"ERROR\": \"error text\"}}", "errors: \nERROR: error text")]
+        [TestCase("{\"errors\" : [\"ERROR\", \"another error\"]}", "errors: \r\nERROR\r\nanother error")]
+        [TestCase("{\"errors\" : {\"ERROR\": \"error text\"}}", "errors: \r\nERROR: error text")]
         public void ValidateAsyncTOutput_WhenCalledWithNotOkStatusCode_ThrowsWithCorrectMessage(string incomingJson, string expectedMessage)
         {
             _messageToValidate.StatusCode = System.Net.HttpStatusCode.Unauthorized;

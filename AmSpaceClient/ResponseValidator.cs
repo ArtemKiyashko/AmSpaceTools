@@ -52,7 +52,7 @@ namespace AmSpaceClient
                     valueBuilder.Append($"{property.Name}: {GetJTokenContent(property.Value)}");
                     break;
                 case JArray array:
-                    valueBuilder.Append("\n");
+                    valueBuilder.Append(Environment.NewLine);
                     foreach (var value in array)
                     {
                         valueBuilder.Append($"{GetJTokenContent(value)}");
@@ -61,11 +61,11 @@ namespace AmSpaceClient
                 case JObject obj:
                     foreach (var jProperty in obj.Children())
                     {
-                        valueBuilder.Append($"\n{GetJTokenContent(jProperty)}");
+                        valueBuilder.Append($"{Environment.NewLine}{GetJTokenContent(jProperty)}");
                     }
                     break;
                 default:
-                    valueBuilder.Append($"{token.ToString()}\n");
+                    valueBuilder.Append($"{token.ToString()}{Environment.NewLine}");
                     break;
             }
             return valueBuilder.ToString();
