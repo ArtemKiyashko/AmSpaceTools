@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Enums\AppDataFolders.cs" />
     <Compile Include="Enums\Enums.cs" />
     <Compile Include="Idp\ActionType.cs" />
     <Compile Include="AmSpaceError.cs" />

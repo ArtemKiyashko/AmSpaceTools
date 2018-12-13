@@ -12,6 +12,7 @@ using OfficeOpenXml;
 using EPPlus.Core.Extensions;
 using OfficeOpenXml.Table;
 using System.Data;
+using AmSpaceModels.Enums;
 
 namespace ExcelWorker
 {
@@ -117,9 +118,13 @@ namespace ExcelWorker
             _ePackage = null;
         }
 
-        public void SaveData<T>(string fileName, IEnumerable<T> data, string sheetName) where T : class
+        public void SaveData<T>(string fileName, AppDataFolders folder, IEnumerable<T> data, string sheetName) where T : class
         {
-            using (var file = new FileStream(fileName, FileMode.OpenOrCreate, FileAccess.Write, FileShare.ReadWrite))
+            var appDirectory = FoldersLocations.GetFolderLocation(folder);
+            if (!Directory.Exists(appDirectory))
+                Directory.CreateDirectory(appDirectory);
+            string specificFile = appDirectory + $"\\{Path.GetFileName(fileName)}";
+            using (var file = new FileStream(specificFile, FileMode.OpenOrCreate, FileAccess.Write, FileShare.ReadWrite))
             {
                 data.ToWorksheet(sheetName)
                        .WithConfiguration(c =>
@@ -131,9 +136,9 @@ namespace ExcelWorker
             }
         }
 
-        public Task SaveDataAsync<T>(string fileName, IEnumerable<T> data, string sheetName) where T : class
+        public Task SaveDataAsync<T>(string fileName, AppDataFolders folder, IEnumerable<T> data, string sheetName) where T : class
         {
-            return Task.Run(() => SaveData<T>(fileName, data, sheetName));
+            return Task.Run(() => SaveData<T>(fileName, folder, data, sheetName));
         }
 
         public Task<IEnumerable<T>> ExctractDataAsync<T>(string sheetName) where T : class, new()

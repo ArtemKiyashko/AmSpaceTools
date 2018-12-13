@@ -161,25 +161,25 @@ namespace AmSpaceTools.ViewModels
 
         protected async void SaveUploadResults(IEnumerable<IdpExcelRow> missingActions, IEnumerable<IdpExcelRow> matchingActions)
         {
-            var fileName = Path.Combine("Reports",
+            var fileName =
                 $"{DateTime.Now.Year}_" +
                 $"{DateTime.Now.Month}_" +
                 $"{DateTime.Now.Day}_" +
                 $"{DateTime.Now.Hour}-" +
                 $"{DateTime.Now.Minute}-" +
                 $"{DateTime.Now.Second}" +
-                $"_Missing.xlsx");
-            await _excelWorker.SaveDataAsync(fileName, missingActions, "Missing");
+                $"_Missing.xlsx";
+            await _excelWorker.SaveDataAsync(fileName, AmSpaceModels.Enums.AppDataFolders.Reports, missingActions, "Missing");
 
-            fileName = Path.Combine("Reports",
+            fileName = 
                 $"{DateTime.Now.Year}_" +
                 $"{DateTime.Now.Month}_" +
                 $"{DateTime.Now.Day}_" +
                 $"{DateTime.Now.Hour}-" +
                 $"{DateTime.Now.Minute}-" +
                 $"{DateTime.Now.Second}" +
-                $"_Matching.xlsx");
-            await _excelWorker.SaveDataAsync(fileName, matchingActions, "Matching");
+                $"_Matching.xlsx";
+            await _excelWorker.SaveDataAsync(fileName, AmSpaceModels.Enums.AppDataFolders.Reports, matchingActions, "Matching");
         }
 
         public ICommand UploadDataCommand
