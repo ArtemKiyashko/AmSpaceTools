@@ -192,7 +192,16 @@ namespace AmSpaceTools.ViewModels
                 .SingleOrDefault(_defaultPasswordRequiredCondition);
             if (row == null) return false;
             var existingUser = await _client.FindUserByIdentityNumber(account.PersonLegalId);
-            return await _client.ChangePasswordAsync(_defaultPassword, existingUser);
+            bool result = false;
+            try
+            {
+                result = await _client.ChangePasswordAsync(_defaultPassword, existingUser);
+            }
+            catch (ArgumentException ex)
+            {
+                if (ex.Message.Contains("New password cannot be the same as old password.")) return false;
+            }
+            return result;
         }
 
         private async void OpenFile(object obj)

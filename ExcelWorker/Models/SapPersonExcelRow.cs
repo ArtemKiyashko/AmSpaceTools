@@ -36,6 +36,7 @@ namespace ExcelWorker.Models
         public DateTime? BirthDate { get; set; }
 
         [ExcelTableColumn("Nationality")]
+        [Required]
         public string Nationality { get; set; }
 
         [ExcelTableColumn("Country")]
