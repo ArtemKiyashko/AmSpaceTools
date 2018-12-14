@@ -43,6 +43,7 @@ namespace AmSpaceClient
 
         public AmSpaceHttpClient()
         {
+            RequestWrapper.RetryPolicy.ApplyToStatusCode.Add(HttpStatusCode.NotFound);
             IsAthorized = false;
         }
 

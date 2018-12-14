@@ -5,9 +5,11 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using AmSpaceModels;
 using Newtonsoft.Json;
+using Polly;
 
 namespace AmSpaceClient
 {
@@ -16,6 +18,7 @@ namespace AmSpaceClient
     {
         public CookieContainer CookieContainer { get; private set; }
         public HttpClient AmSpaceHttpClient { get; private set; }
+        public IRetryPolicy RetryPolicy { get; set; }
 
         public RequestWrapper()
         {
@@ -27,6 +30,7 @@ namespace AmSpaceClient
             };
 
             AmSpaceHttpClient = new HttpClient(handler);
+            RetryPolicy = new RetryPolicy() { Attemts = 3, InitialDelay =2 };
         }
 
         public void AddAuthHeaders(AuthenticationHeaderValue authData)
@@ -107,7 +111,13 @@ namespace AmSpaceClient
 
         public async Task<TOutput> PostAsyncWrapper<TOutput>(string endpoint, FormUrlEncodedContent content) where TOutput : class
         {
-            var result = await AmSpaceHttpClient.PostAsync(endpoint, content);
+            var result = await Policy.HandleResult<HttpResponseMessage>(responce => RetryPolicy.ApplyToStatusCode.Contains(responce.StatusCode))
+                .WaitAndRetryAsync(RetryPolicy.Attemts, (attempt) => TimeSpan.FromMilliseconds(attempt * RetryPolicy.InitialDelay))
+                .ExecuteAsync(async () =>
+                {
+                    var contentCopy = new FormUrlEncodedContent(JsonConvert.DeserializeObject<IEnumerable<KeyValuePair<string, string>>>(await content.ReadAsStringAsync()));
+                    return await AmSpaceHttpClient.PostAsync(endpoint, content);
+                });
             return await result.ValidateAsync<TOutput>();
         }
 

@@ -29,5 +29,6 @@ namespace AmSpaceClient
         Task<TOutput> PatchAsyncWrapper<TInput, TOutput>(TInput model, string endpoint) where TOutput : class;
         Task<bool> PatchAsyncWrapper<TInput>(TInput model, string endpoint);
         Task<TOutput> PutAsyncWrapper<TInput, TOutput>(TInput model, string endpoint) where TOutput : class;
+        IRetryPolicy RetryPolicy { get; set; }
     }
 }
