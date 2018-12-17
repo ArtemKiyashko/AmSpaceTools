@@ -16,7 +16,7 @@ namespace AmSpaceClient
         {
             var resultContent = await response.Content.ReadAsStringAsync(); ;
             if (!response.IsSuccessStatusCode)
-                response.ConverToExceptionAndThrow(resultContent);
+                await response.ConverToExceptionAndThrow(resultContent);
             return JsonConvert.DeserializeObject<TOutput>(resultContent);
         }
 
@@ -24,19 +24,28 @@ namespace AmSpaceClient
         {
             var resultContent = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode)
-                response.ConverToExceptionAndThrow(resultContent);
+                await response.ConverToExceptionAndThrow(resultContent);
             return true;
         }
 
-        private static void ConverToExceptionAndThrow(this HttpResponseMessage response, string resultContent)
+        private async static Task ConverToExceptionAndThrow(this HttpResponseMessage response, string resultContent)
         {
             var errorDescriptionBuilder = new StringBuilder();
-            var resultObject = JRaw.Parse(resultContent);
-
-            foreach (var jProperty in resultObject.Children())
+            try
             {
-                errorDescriptionBuilder
-                    .Append(GetJTokenContent(jProperty));
+                var resultObject = JRaw.Parse(resultContent);
+
+                foreach (var jProperty in resultObject.Children())
+                {
+                    errorDescriptionBuilder
+                        .Append(GetJTokenContent(jProperty));
+                }
+            }
+            catch
+            {
+                errorDescriptionBuilder.Append($"{response.ReasonPhrase}.")
+                                        .AppendLine()
+                                        .Append(await response.Content.ReadAsStringAsync());
             }
             throw new ArgumentException(errorDescriptionBuilder.ToString().TrimEnd());
         }

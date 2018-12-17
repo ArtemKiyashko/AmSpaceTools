@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using AmSpaceModels;
 using Newtonsoft.Json;
 using Polly;
+using Polly.Retry;
 
 namespace AmSpaceClient
 {
@@ -18,7 +21,16 @@ namespace AmSpaceClient
     {
         public CookieContainer CookieContainer { get; private set; }
         public HttpClient AmSpaceHttpClient { get; private set; }
-        public IRetryPolicy RetryPolicy { get; set; }
+        private Policy<HttpResponseMessage> _httpResponcePolicy;
+        public Policy<HttpResponseMessage> HttpResponcePolicy
+        {
+            get => _httpResponcePolicy;
+            set
+            {
+                if (value != null)
+                    _httpResponcePolicy = value;
+            }
+        }
 
         public RequestWrapper()
         {
@@ -30,9 +42,8 @@ namespace AmSpaceClient
             };
 
             AmSpaceHttpClient = new HttpClient(handler);
-            RetryPolicy = new RetryPolicy() { Attemts = 3, InitialDelay =2 };
+            HttpResponcePolicy = GetDefaultPolicy();
         }
-
         public void AddAuthHeaders(AuthenticationHeaderValue authData)
         {
             AmSpaceHttpClient.DefaultRequestHeaders.Authorization = authData;
@@ -43,8 +54,139 @@ namespace AmSpaceClient
             CookieContainer.Add(uri, cookie);
         }
 
-        private StringContent PrepareContent<TInput>(TInput model)
+        public async Task<T> GetAsyncWrapper<T>(string endpoint) where T : class
         {
+            var result = await HttpResponcePolicy.ExecuteAsync(async () => await AmSpaceHttpClient.GetAsync(endpoint));
+            return await result.ValidateAsync<T>();
+        }
+
+        public async Task<HttpResponseMessage> GetAsyncWrapper(string endpoint)
+        {
+            return await HttpResponcePolicy.ExecuteAsync(async () => await AmSpaceHttpClient.GetAsync(endpoint));
+        }
+
+        public async Task<bool> PutAsyncWrapper<T>(T model, string endpoint)
+        {
+            var result = await HttpResponcePolicy.ExecuteAsync(async () =>
+            {
+                var httpcontent = PrepareStringContent(model);
+                return await AmSpaceHttpClient.PutAsync(endpoint, httpcontent);
+            });
+            return await result.ValidateAsync();
+        }
+
+        public async Task<bool> DeleteAsyncWrapper<T>(T model, string endpoint)
+        {
+            var result = await HttpResponcePolicy.ExecuteAsync(async () =>
+            {
+                var request = new HttpRequestMessage
+                {
+                    Method = HttpMethod.Delete,
+                    RequestUri = new Uri(endpoint),
+                    Content = PrepareStringContent(model)
+                };
+                return await AmSpaceHttpClient.SendAsync(request);
+            });
+            return await result.ValidateAsync();
+        }
+
+        public async Task<bool> DeleteAsyncWrapper(string endpoint)
+        {
+            var result = await HttpResponcePolicy.ExecuteAsync(async () =>
+            {
+                var request = new HttpRequestMessage
+                {
+                    Method = HttpMethod.Delete,
+                    RequestUri = new Uri(endpoint),
+                };
+                return await AmSpaceHttpClient.SendAsync(request);
+            });
+            return await result.ValidateAsync();
+        }
+
+        public async Task<TOutput> PostAsyncWrapper<TInput, TOutput>(string endpoint, TInput model) where TOutput : class
+        {
+            var result = await HttpResponcePolicy.ExecuteAsync(async () =>
+            {
+                var httpcontent = PrepareStringContent(model);
+                return await AmSpaceHttpClient.PostAsync(endpoint, httpcontent);
+            });
+            return await result.ValidateAsync<TOutput>();
+        }
+
+        public async Task<HttpResponseMessage> PostAsyncWrapper(string endpoint, IEnumerable<KeyValuePair<string, string>> content)
+        {
+            return await HttpResponcePolicy.ExecuteAsync(async () =>
+            {
+                var contentCopy = new FormUrlEncodedContent(content);
+                return await AmSpaceHttpClient.PostAsync(endpoint, contentCopy);
+            });
+        }
+
+        public async Task<TOutput> PostAsyncWrapper<TOutput>(string endpoint, IEnumerable<KeyValuePair<string, string>> content) where TOutput : class
+        {
+            var result = await HttpResponcePolicy.ExecuteAsync(async () =>
+            {
+                var contentCopy = new FormUrlEncodedContent(content);
+                return await AmSpaceHttpClient.PostAsync(endpoint, contentCopy);
+            });
+            return await result.ValidateAsync<TOutput>();
+        }
+
+        public async Task<TOutput> PatchAsyncWrapper<TInput, TOutput>(TInput model, string endpoint) where TOutput : class
+        {
+            var result = await HttpResponcePolicy.ExecuteAsync(async () =>
+            {
+                var request = CreateHttpMessage(model, endpoint, "PATCH");
+                return await AmSpaceHttpClient.SendAsync(request);
+            });
+            return await result.ValidateAsync<TOutput>();
+        }
+
+        public async Task<TOutput> PutAsyncWrapper<TInput, TOutput>(TInput model, string endpoint) where TOutput : class
+        {
+            var result = await HttpResponcePolicy.ExecuteAsync(async () =>
+            {
+                var httpcontent = PrepareStringContent(model);
+                return await AmSpaceHttpClient.PutAsync(endpoint, httpcontent);
+            });
+            return await result.ValidateAsync<TOutput>();
+        }
+
+        public async Task<bool> PatchAsyncWrapper<TInput>(TInput model, string endpoint)
+        {
+            var result = await HttpResponcePolicy.ExecuteAsync(async () =>
+            {
+                var request = CreateHttpMessage(model, endpoint, "PATCH");
+                return await AmSpaceHttpClient.SendAsync(request);
+            });
+            return await result.ValidateAsync();
+        }
+
+        public async Task<bool> PostAsyncWrapper<TInput>(string endpoint, TInput model)
+        {
+            var result = await HttpResponcePolicy.ExecuteAsync(async () =>
+            {
+                var httpcontent = PrepareStringContent(model);
+                return await AmSpaceHttpClient.PostAsync(endpoint, httpcontent);
+            });
+            return await result.ValidateAsync();
+        }
+
+        private HttpRequestMessage CreateHttpMessage<TInput>(TInput model, string endpoint, string method)
+        {
+            return new HttpRequestMessage
+            {
+                Method = new HttpMethod(method),
+                RequestUri = new Uri(endpoint),
+                Content = PrepareStringContent(model)
+            };
+        }
+
+        private StringContent PrepareStringContent<TInput>(TInput model)
+        {
+            if (model == null)
+                return null;
             var stringContent = JsonConvert.SerializeObject(model, Formatting.None, new JsonSerializerSettings
             {
                 NullValueHandling = NullValueHandling.Ignore,
@@ -54,109 +196,11 @@ namespace AmSpaceClient
             httpcontent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             return httpcontent;
         }
-
-        public async Task<T> GetAsyncWrapper<T>(string endpoint) where T : class
+        private Policy<HttpResponseMessage> GetDefaultPolicy()
         {
-            var result = await AmSpaceHttpClient.GetAsync(endpoint);
-            return await result.ValidateAsync<T>();
-        }
-
-        public async Task<HttpResponseMessage> GetAsyncWrapper(string endpoint)
-        {
-            var result = await AmSpaceHttpClient.GetAsync(endpoint);
-            return result;
-        }
-
-        public async Task<bool> PutAsyncWrapper<T>(T model, string endpoint)
-        {
-            var httpcontent = PrepareContent(model);
-            var result = await AmSpaceHttpClient.PutAsync(endpoint, httpcontent);
-            return await result.ValidateAsync();
-        }
-
-        public async Task<bool> DeleteAsyncWrapper<T>(T model, string endpoint)
-        {
-            var request = new HttpRequestMessage
-            {
-                Method = HttpMethod.Delete,
-                RequestUri = new Uri(endpoint),
-                Content = PrepareContent(model)
-            };
-            var result = await AmSpaceHttpClient.SendAsync(request);
-            return await result.ValidateAsync();
-        }
-
-        public async Task<bool> DeleteAsyncWrapper(string endpoint)
-        {
-            var request = new HttpRequestMessage
-            {
-                Method = new HttpMethod("DELETE"),
-                RequestUri = new Uri(endpoint),
-            };
-            var result = await AmSpaceHttpClient.SendAsync(request);
-            return await result.ValidateAsync();
-        }
-
-        public async Task<TOutput> PostAsyncWrapper<TInput, TOutput>(string endpoint, TInput model) where TOutput : class
-        {
-            var httpcontent = PrepareContent(model);
-            var result = await AmSpaceHttpClient.PostAsync(endpoint, httpcontent);
-            return await result.ValidateAsync<TOutput>();
-        }
-
-        public async Task<HttpResponseMessage> PostAsyncWrapper(string endpoint, FormUrlEncodedContent content)
-        {
-            return await AmSpaceHttpClient.PostAsync(endpoint, content);
-        }
-
-        public async Task<TOutput> PostAsyncWrapper<TOutput>(string endpoint, FormUrlEncodedContent content) where TOutput : class
-        {
-            var result = await Policy.HandleResult<HttpResponseMessage>(responce => RetryPolicy.ApplyToStatusCode.Contains(responce.StatusCode))
-                .WaitAndRetryAsync(RetryPolicy.Attemts, (attempt) => TimeSpan.FromMilliseconds(attempt * RetryPolicy.InitialDelay))
-                .ExecuteAsync(async () =>
-                {
-                    var contentCopy = new FormUrlEncodedContent(JsonConvert.DeserializeObject<IEnumerable<KeyValuePair<string, string>>>(await content.ReadAsStringAsync()));
-                    return await AmSpaceHttpClient.PostAsync(endpoint, content);
-                });
-            return await result.ValidateAsync<TOutput>();
-        }
-
-        public async Task<TOutput> PatchAsyncWrapper<TInput, TOutput>(TInput model, string endpoint) where TOutput : class
-        {
-            var request = CreateHttpMessage(model, endpoint, "PATCH");
-            var result = await AmSpaceHttpClient.SendAsync(request);
-            return await result.ValidateAsync<TOutput>();
-        }
-
-        private HttpRequestMessage CreateHttpMessage<TInput>(TInput model, string endpoint, string method)
-        {
-            return new HttpRequestMessage
-            {
-                Method = new HttpMethod(method),
-                RequestUri = new Uri(endpoint),
-                Content = PrepareContent(model)
-            };
-        }
-
-        public async Task<TOutput> PutAsyncWrapper<TInput, TOutput>(TInput model, string endpoint) where TOutput : class
-        {
-            var httpcontent = PrepareContent(model);
-            var result = await AmSpaceHttpClient.PutAsync(endpoint, httpcontent);
-            return await result.ValidateAsync<TOutput>();
-        }
-
-        public async Task<bool> PatchAsyncWrapper<TInput>(TInput model, string endpoint)
-        {
-            var request = CreateHttpMessage(model, endpoint, "PATCH");
-            var result = await AmSpaceHttpClient.SendAsync(request);
-            return await result.ValidateAsync();
-        }
-
-        public async Task<bool> PostAsyncWrapper<TInput>(string endpoint, TInput model)
-        {
-            var httpcontent = PrepareContent(model);
-            var result = await AmSpaceHttpClient.PostAsync(endpoint, httpcontent);
-            return await result.ValidateAsync();
+            var statusCodeToHandle = new[] { HttpStatusCode.ServiceUnavailable, HttpStatusCode.BadGateway };
+            return Policy.HandleResult<HttpResponseMessage>(responce => statusCodeToHandle.Contains(responce.StatusCode))
+                .WaitAndRetryAsync(3, (attempt) => TimeSpan.FromMilliseconds(attempt * attempt * 1000));
         }
     }
 }
