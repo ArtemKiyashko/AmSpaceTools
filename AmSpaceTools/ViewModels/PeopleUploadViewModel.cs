@@ -200,6 +200,7 @@ namespace AmSpaceTools.ViewModels
             catch (ArgumentException ex)
             {
                 if (ex.Message.Contains("New password cannot be the same as old password.")) return false;
+                else throw;
             }
             return result;
         }
