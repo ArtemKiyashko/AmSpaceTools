@@ -59,8 +59,7 @@ namespace AmSpaceClient
                     { "grant_type", GrantPermissionType },
                     { "client_id", ClientId }
                 };
-            var content = new FormUrlEncodedContent(values);
-            LoginResult = await RequestWrapper.PostAsyncWrapper<LoginResult>(Endpoints.TokenEndpoint, content);
+            LoginResult = await RequestWrapper.PostFormUrlEncodedContentAsyncWrapper<LoginResult>(Endpoints.TokenEndpoint, values);
             RequestWrapper.AddAuthHeaders(new AuthenticationHeaderValue("Bearer", LoginResult.AccessToken));
             RequestWrapper.AddAuthCookies(new Uri(Endpoints.BaseAddress), new Cookie("accessToken", LoginResult.AccessToken));
             IsAthorized = true;
@@ -113,8 +112,7 @@ namespace AmSpaceClient
                     { "token", LoginResult.AccessToken },
                     { "client_id", ClientId }
                 };
-            var content = new FormUrlEncodedContent(values);
-            var result = await RequestWrapper.PostAsyncWrapper(Endpoints.LogoutEndpoint, content);
+            var result = await RequestWrapper.PostFormUrlEncodedContentAsyncWrapper(Endpoints.LogoutEndpoint, values);
             await result.ValidateAsync();
             IsAthorized = false;
             return true;

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Polly;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -23,11 +24,12 @@ namespace AmSpaceClient
         Task<bool> DeleteAsyncWrapper<T>(T model, string endpoint);
         Task<bool> DeleteAsyncWrapper(string endpoint);
         Task<TOutput> PostAsyncWrapper<TInput, TOutput>(string endpoint, TInput model) where TOutput : class;
-        Task<TOutput> PostAsyncWrapper<TOutput>(string endpoint, FormUrlEncodedContent content) where TOutput : class;
-        Task<HttpResponseMessage> PostAsyncWrapper(string endpoint, FormUrlEncodedContent content);
+        Task<TOutput> PostFormUrlEncodedContentAsyncWrapper<TOutput>(string endpoint, IEnumerable<KeyValuePair<string, string>> content) where TOutput : class;
+        Task<HttpResponseMessage> PostFormUrlEncodedContentAsyncWrapper(string endpoint, IEnumerable<KeyValuePair<string, string>> content);
         Task<bool> PostAsyncWrapper<TInput>(string endpoint, TInput model);
         Task<TOutput> PatchAsyncWrapper<TInput, TOutput>(TInput model, string endpoint) where TOutput : class;
         Task<bool> PatchAsyncWrapper<TInput>(TInput model, string endpoint);
         Task<TOutput> PutAsyncWrapper<TInput, TOutput>(TInput model, string endpoint) where TOutput : class;
+        IAsyncPolicy<HttpResponseMessage> HttpResponcePolicy { get; set; }
     }
 }
