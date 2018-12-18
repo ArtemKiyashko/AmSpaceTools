@@ -185,11 +185,23 @@ namespace AmSpaceClient
             httpcontent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             return httpcontent;
         }
+        
         private Policy<HttpResponseMessage> GetDefaultPolicy()
         {
             var statusCodeToHandle = new[] { HttpStatusCode.ServiceUnavailable, HttpStatusCode.BadGateway };
             return Policy.HandleResult<HttpResponseMessage>(responce => statusCodeToHandle.Contains(responce.StatusCode))
                 .WaitAndRetryAsync(3, (attempt) => TimeSpan.FromMilliseconds(attempt * attempt * 1000));
+        }
+
+        public async Task<TOutput> PostMultipartAsync<TOutput>(string endpoint, IEnumerable<KeyValuePair<string,string>> parameters, byte[] data = null, string dataName = null) where TOutput : class
+        {
+            var content = new MultipartFormDataContent();
+            foreach(var param in parameters)
+                content.Add(new StringContent(param.Key), param.Value);
+            if (data != null)
+                content.Add(new ByteArrayContent(data, 0, data.Length), dataName);
+            var result = await AmSpaceHttpClient.PostAsync(endpoint, content);
+            return await result.ValidateAsync<TOutput>();
         }
     }
 }

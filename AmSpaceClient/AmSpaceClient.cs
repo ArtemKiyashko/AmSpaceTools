@@ -431,5 +431,15 @@ namespace AmSpaceClient
             var url = string.Format(Endpoints.ChangePasswordEndpoint, account.Id);
             return RequestWrapper.PostAsyncWrapper(password, url);
         }
+
+        public Task<IEnumerable<JpaFile>> GetJpaHistoryAsync(string username)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> UploadJpaHistoryAsync(JpaFile jpaEntry)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

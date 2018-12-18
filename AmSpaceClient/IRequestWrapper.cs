@@ -31,5 +31,6 @@ namespace AmSpaceClient
         Task<bool> PatchAsyncWrapper<TInput>(TInput model, string endpoint);
         Task<TOutput> PutAsyncWrapper<TInput, TOutput>(TInput model, string endpoint) where TOutput : class;
         IAsyncPolicy<HttpResponseMessage> HttpResponcePolicy { get; set; }
+        Task<TOutput> PostMultipartAsync<TOutput>(string endpoint, IEnumerable<KeyValuePair<string, string>> parameters, byte[] data, string dataName) where TOutput : class;
     }
 }
