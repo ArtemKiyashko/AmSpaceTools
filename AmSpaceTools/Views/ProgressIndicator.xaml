@@ -10,7 +10,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="240" d:DesignWidth="240">
     <UserControl.Resources>
-        <converters:IntToStringPercentConverter x:Key="IntToStringPercentConverter"/>
+        <converters:DecimalToStringPercentConverter x:Key="IntToStringPercentConverter"/>
     </UserControl.Resources>
     <StackPanel>
         <Grid>

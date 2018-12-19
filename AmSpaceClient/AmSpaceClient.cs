@@ -19,6 +19,8 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using UriBuilderExtended;
+using System.IO;
+using System.IO.Compression;
 
 namespace AmSpaceClient
 {
@@ -437,9 +439,22 @@ namespace AmSpaceClient
             throw new NotImplementedException();
         }
 
-        public Task<bool> UploadJpaHistoryAsync(JpaFile jpaEntry)
+        public Task<JpaFile> UploadJpaHistoryAsync(JpaFile jpaEntry)
         {
-            throw new NotImplementedException();
+            var parameters = new Dictionary<string, string>();
+            parameters.Add("jpa_name", jpaEntry.JpaName);
+            parameters.Add("year", jpaEntry.Year.ToString());
+            parameters.Add("user", jpaEntry.UserName);
+            var data = File.ReadAllBytes(jpaEntry.File.ToString());
+            var file = new FileToUpload
+            {
+                Data = data,
+                DataName = "file",
+                FileName = $"{jpaEntry.JpaName}.pdf"
+            };
+            var fileList = new List<FileToUpload>();
+            fileList.Add(file);
+            return RequestWrapper.PostFormAsync<JpaFile>(Endpoints.JpaHistoryAdminEndpoint, parameters, fileList);
         }
     }
 }

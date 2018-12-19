@@ -106,7 +106,7 @@ namespace AmSpaceTools.ViewModels
             await RequestDefaultPassword(InputRows);
             if (ProgressVM.IsProgressCancelled) return;
             var descendantList = tree.Descendants(_ => _.Children).ToList();
-            var contactsCount = descendantList.Select(_ => _.Item).Count();
+            var contactsCount = descendantList.SelectMany(_ => _.Item).Count();
             var uploadedContracts = 0;
             foreach (var account in descendantList)
             {

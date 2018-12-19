@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -193,14 +194,17 @@ namespace AmSpaceClient
                 .WaitAndRetryAsync(3, (attempt) => TimeSpan.FromMilliseconds(attempt * attempt * 1000));
         }
 
-        public async Task<TOutput> PostMultipartAsync<TOutput>(string endpoint, IEnumerable<KeyValuePair<string,string>> parameters, byte[] data = null, string dataName = null) where TOutput : class
+        public async Task<TOutput> PostFormAsync<TOutput>(string endpoint, IEnumerable<KeyValuePair<string,string>> parameters, IEnumerable<FileToUpload> files) where TOutput : class
         {
-            var content = new MultipartFormDataContent();
-            foreach(var param in parameters)
-                content.Add(new StringContent(param.Key), param.Value);
-            if (data != null)
-                content.Add(new ByteArrayContent(data, 0, data.Length), dataName);
-            var result = await AmSpaceHttpClient.PostAsync(endpoint, content);
+            var result = await HttpResponcePolicy.ExecuteAsync(async () =>
+            {
+                var form = new MultipartFormDataContent();
+                foreach (var parameter in parameters)
+                    form.Add(new StringContent(parameter.Value), parameter.Key);
+                foreach(var file in files)
+                    form.Add(new StreamContent(new MemoryStream(file.Data)), file.DataName, file.FileName);
+                return await AmSpaceHttpClient.PostAsync(endpoint, form);
+            });
             return await result.ValidateAsync<TOutput>();
         }
     }

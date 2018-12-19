@@ -146,7 +146,7 @@
     <Compile Include="Decorators\ExcelWorkerDecorator.cs" />
     <Compile Include="Infrastructure\AmSpaceEnvironmentsProvider.cs" />
     <Compile Include="Infrastructure\ColumnDefinitionError.cs" />
-    <Compile Include="Infrastructure\Converters\IntToStringPercentConverter.cs" />
+    <Compile Include="Infrastructure\Converters\DecimalToStringPercentConverter.cs" />
     <Compile Include="Infrastructure\CsvLogAppender.cs" />
     <Compile Include="Infrastructure\DictionaryExtensions.cs" />
     <Compile Include="Infrastructure\IAmSpaceEnvironmentsProvider.cs" />

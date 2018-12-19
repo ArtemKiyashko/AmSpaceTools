@@ -112,7 +112,7 @@ namespace ExcelWorker
 
         public void Dispose()
         {
-            if (_fStream != null) _fStream.Close();
+            if (_fStream != null) _fStream.Dispose();
             if (_ePackage != null) _ePackage.Dispose();
             _fStream = null;
             _ePackage = null;
