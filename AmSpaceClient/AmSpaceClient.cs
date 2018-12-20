@@ -59,7 +59,7 @@ namespace AmSpaceClient
                     { "grant_type", GrantPermissionType },
                     { "client_id", ClientId }
                 };
-            LoginResult = await RequestWrapper.PostFormUrlEncodedContentAsyncWrapper<LoginResult>(Endpoints.TokenEndpoint, values);
+            LoginResult = await RequestWrapper.PostFormUrlEncodedContentAsyncWrapper<LoginResult>(values, Endpoints.TokenEndpoint);
             RequestWrapper.AddAuthHeaders(new AuthenticationHeaderValue("Bearer", LoginResult.AccessToken));
             RequestWrapper.AddAuthCookies(new Uri(Endpoints.BaseAddress), new Cookie("accessToken", LoginResult.AccessToken));
             IsAthorized = true;
@@ -112,7 +112,7 @@ namespace AmSpaceClient
                     { "token", LoginResult.AccessToken },
                     { "client_id", ClientId }
                 };
-            var result = await RequestWrapper.PostFormUrlEncodedContentAsyncWrapper(Endpoints.LogoutEndpoint, values);
+            var result = await RequestWrapper.PostFormUrlEncodedContentAsyncWrapper(values, Endpoints.LogoutEndpoint);
             await result.ValidateAsync();
             IsAthorized = false;
             return true;
@@ -212,13 +212,13 @@ namespace AmSpaceClient
         public async Task<Kpi> CreateFinancialKpiAsync(ContractSearch userContract, Kpi kpi)
         {
             var url = string.Format(Endpoints.KpiFinancialCustomAdminEndpoint, userContract.Id);
-            return await RequestWrapper.PostAsyncWrapper<Kpi, Kpi>(url, kpi);
+            return await RequestWrapper.PostAsyncWrapper<Kpi, Kpi>(kpi, url);
         }
 
         public async Task<Kpi> CreateNonFinancialKpiAsync(ContractSearch userContract, Kpi kpi)
         {
             var url = string.Format(Endpoints.KpiNonFinancialCustomAdminEndpoint, userContract.Id);
-            return await RequestWrapper.PostAsyncWrapper<Kpi, Kpi>(url, kpi);
+            return await RequestWrapper.PostAsyncWrapper<Kpi, Kpi>(kpi, url);
         }
 
         public async Task<Kpi> UpdateFinancialKpiAsync(ContractSearch userContract, Kpi kpi)
@@ -236,13 +236,13 @@ namespace AmSpaceClient
         public async Task<Roadmap> CreateRoadmapAsync(ContractSearch userContract, Roadmap roadmap)
         {
             var url = string.Format(Endpoints.RoadmapsAdminEndpoint, userContract.Id);
-            return await RequestWrapper.PostAsyncWrapper<Roadmap, Roadmap>(url, roadmap);
+            return await RequestWrapper.PostAsyncWrapper<Roadmap, Roadmap>(roadmap, url);
         }
 
         public async Task<Goal> CreateGoalAsync(ContractSearch userContract, Roadmap roadmap, GoalNew goal)
         {
             var url = string.Format(Endpoints.GoalsAdminEndpoint, userContract.Id, roadmap.Year);
-            return await RequestWrapper.PostAsyncWrapper<GoalNew, Goal>(url, goal);
+            return await RequestWrapper.PostAsyncWrapper<GoalNew, Goal>(goal, url);
         }
 
         public async Task<Goal> UpdateGoalAsync(ContractSearch userContract, Roadmap roadmap, Goal goal)
@@ -323,12 +323,12 @@ namespace AmSpaceClient
 
         public async Task<TemporaryAccount> CreateTemporaryAccount(TemporaryAccount accountInfo)
         {
-            return await RequestWrapper.PostAsyncWrapper<TemporaryAccount, TemporaryAccount>(Endpoints.TemporaryAccountAdminEndpoint, accountInfo);
+            return await RequestWrapper.PostAsyncWrapper<TemporaryAccount, TemporaryAccount>(accountInfo, Endpoints.TemporaryAccountAdminEndpoint);
         }
 
         public Task<ExternalAccountResponse> CreateExternalAccount(ExternalAccount accountInfo)
         {
-            return RequestWrapper.PostAsyncWrapper<ExternalAccount, ExternalAccountResponse>(Endpoints.ExternalAccountCreateEndpoint, accountInfo);
+            return RequestWrapper.PostAsyncWrapper<ExternalAccount, ExternalAccountResponse>(accountInfo, Endpoints.ExternalAccountCreateEndpoint);
         }
 
         public Task<ExternalAccountResponse> UpdateExternalAccount(long? contractId, ExternalAccount accountInfo)
@@ -384,7 +384,7 @@ namespace AmSpaceClient
         public async Task<JobResponsibility> CreateJobResponsibilityAsync(JobResponsibility responsibility)
         {
             var url = string.Format(Endpoints.JobResponsibilitiesEndpoint, responsibility.Job);
-            return await RequestWrapper.PostAsyncWrapper<JobResponsibility, JobResponsibility>(url, responsibility);
+            return await RequestWrapper.PostAsyncWrapper<JobResponsibility, JobResponsibility>(responsibility, url);
         }
 
         public async Task<IEnumerable<Level>> GetBrandLevelsAsync(Brand brand)
@@ -429,7 +429,7 @@ namespace AmSpaceClient
         {
             password.UserId = null;
             var url = string.Format(Endpoints.ChangePasswordEndpoint, account.Id);
-            return RequestWrapper.PostAsyncWrapper(url, password);
+            return RequestWrapper.PostAsyncWrapper(password, url);
         }
     }
 }

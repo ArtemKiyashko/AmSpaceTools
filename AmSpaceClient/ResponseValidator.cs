@@ -14,7 +14,7 @@ namespace AmSpaceClient
     {
         public static async Task<TOutput> ValidateAsync<TOutput>(this HttpResponseMessage response) where TOutput : class
         {
-            var resultContent = await response.Content.ReadAsStringAsync(); ;
+            var resultContent = response.Content != null ? await response.Content.ReadAsStringAsync() : "";
             if (!response.IsSuccessStatusCode)
                 await response.ConverToExceptionAndThrow(resultContent);
             return JsonConvert.DeserializeObject<TOutput>(resultContent);
@@ -22,7 +22,7 @@ namespace AmSpaceClient
 
         public static async Task<bool> ValidateAsync(this HttpResponseMessage response)
         {
-            var resultContent = await response.Content.ReadAsStringAsync();
+            var resultContent = response.Content != null ? await response.Content.ReadAsStringAsync() : "";
             if (!response.IsSuccessStatusCode)
                 await response.ConverToExceptionAndThrow(resultContent);
             return true;
@@ -45,7 +45,7 @@ namespace AmSpaceClient
             {
                 errorDescriptionBuilder.Append($"{response.ReasonPhrase}.")
                                         .AppendLine()
-                                        .Append(await response.Content.ReadAsStringAsync());
+                                        .Append(response.Content != null ? await response.Content.ReadAsStringAsync() : "");
             }
             throw new ArgumentException(errorDescriptionBuilder.ToString().TrimEnd());
         }
