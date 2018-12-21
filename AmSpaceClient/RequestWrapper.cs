@@ -207,5 +207,19 @@ namespace AmSpaceClient
             });
             return await result.ValidateAsync<TOutput>();
         }
+
+        public async Task<TOutput> PutFormAsync<TOutput>(string endpoint, IEnumerable<KeyValuePair<string, string>> parameters, IEnumerable<FileToUpload> files) where TOutput : class
+        {
+            var result = await HttpResponcePolicy.ExecuteAsync(async () =>
+            {
+                var form = new MultipartFormDataContent();
+                foreach (var parameter in parameters)
+                    form.Add(new StringContent(parameter.Value), parameter.Key);
+                foreach (var file in files)
+                    form.Add(new StreamContent(new MemoryStream(file.Data)), file.DataName, file.FileName);
+                return await AmSpaceHttpClient.PutAsync(endpoint, form);
+            });
+            return await result.ValidateAsync<TOutput>();
+        }
     }
 }

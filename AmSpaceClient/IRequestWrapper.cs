@@ -32,5 +32,6 @@ namespace AmSpaceClient
         Task<TOutput> PutAsyncWrapper<TInput, TOutput>(TInput model, string endpoint) where TOutput : class;
         IAsyncPolicy<HttpResponseMessage> HttpResponcePolicy { get; set; }
         Task<TOutput> PostFormAsync<TOutput>(string endpoint, IEnumerable<KeyValuePair<string, string>> parameters, IEnumerable<FileToUpload> files) where TOutput : class;
+        Task<TOutput> PutFormAsync<TOutput>(string endpoint, IEnumerable<KeyValuePair<string, string>> parameters, IEnumerable<FileToUpload> files) where TOutput : class;
     }
 }

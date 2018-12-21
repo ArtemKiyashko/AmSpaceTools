@@ -13,14 +13,30 @@ using EPPlus.Core.Extensions;
 using OfficeOpenXml.Table;
 using System.Data;
 using AmSpaceModels.Enums;
+using ExcelWorker.Services;
 
 namespace ExcelWorker
 {
     public class AmSpaceExcelWorker : IExcelWorker
     {
         public string FileName { get; private set; }
-        private FileStream _fStream { get; set; }
+        private Stream _fStream { get; set; }
         private ExcelPackage _ePackage { get; set; }
+        public ISaveLocator SaveLocator { get; }
+        public IFileWrapper FileWrapper { get; }
+
+        public AmSpaceExcelWorker(ISaveLocator saveLocator, IFileWrapper fileWrapper)
+        {
+            SaveLocator = saveLocator;
+            FileWrapper = fileWrapper;
+        }
+
+        public AmSpaceExcelWorker()
+        {
+            SaveLocator = new SaveLocator();
+            FileWrapper = new FileWrapper();
+        }
+
         public IEnumerable<IdpColumn> GetColumnDataPreview(int rowLimit)
         {
             var result = new List<IdpColumn>();
@@ -106,7 +122,7 @@ namespace ExcelWorker
         {
             Dispose();
             FileName = fileName;
-            _fStream = new FileStream(FileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            _fStream = FileWrapper.GetStream(FileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             _ePackage = new ExcelPackage(_fStream);
         }
 
@@ -120,20 +136,41 @@ namespace ExcelWorker
 
         public void SaveData<T>(string fileName, AppDataFolders folder, IEnumerable<T> data, string sheetName) where T : class
         {
-            var appDirectory = FoldersLocations.GetFolderLocation(folder);
-            if (!Directory.Exists(appDirectory))
-                Directory.CreateDirectory(appDirectory);
-            string specificFile = appDirectory + $"\\{Path.GetFileName(fileName)}";
-            using (var file = new FileStream(specificFile, FileMode.OpenOrCreate, FileAccess.Write, FileShare.ReadWrite))
+            string specificFile = SaveLocator.GetSaveLocation(fileName, folder);
+            using (var file = FileWrapper.GetStream(specificFile, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite))
             {
-                data.ToWorksheet(sheetName)
-                       .WithConfiguration(c =>
-                       {
-                           c.WithColumnConfiguration(_ => _.AutoFit(10, 150));
-                           c.WithHeaderRowConfiguration(h => { h.AutoFilter = true; h.Worksheet.View.FreezePanes(2, 1); });
-                       })
-                       .ToExcelPackage().SaveAs(file);
+                if (data.AttributesExists())
+                    SaveWithAttributes(data, sheetName, file);
+                else
+                    SaveWithoutAttributes(data, sheetName, file);
             }
+        }
+
+        protected void SaveWithoutAttributes<T>(IEnumerable<T> data, string sheetName, Stream stream) where T : class
+        {
+            using (var excel = new ExcelPackage(stream))
+            {
+                var ws = string.IsNullOrEmpty(sheetName) ?
+                    excel.GetWorksheet(1) :
+                    excel.GetWorksheet(sheetName) ?? excel.AddWorksheet(sheetName);
+                ws.Cells["A1"].LoadFromCollection(data, true);
+                var header = ws.Cells[ws.Dimension.Start.Row, ws.Dimension.Start.Column, ws.Dimension.Start.Row, ws.Dimension.End.Column];
+                header.AutoFilter = true;
+                header.AutoFitColumns();
+                ws.View.FreezePanes(2, 1);
+                excel.Save();
+            }
+        }
+
+        protected void SaveWithAttributes<T>(IEnumerable<T> data, string sheetName, Stream stream) where T : class
+        {
+            data.ToWorksheet(sheetName)
+                                       .WithConfiguration(c =>
+                                       {
+                                           c.WithColumnConfiguration(_ => _.AutoFit(10, 150));
+                                           c.WithHeaderRowConfiguration(h => { h.AutoFilter = true; h.Worksheet.View.FreezePanes(2, 1); });
+                                       })
+                                       .ToExcelPackage().SaveAs(stream);
         }
 
         public Task SaveDataAsync<T>(string fileName, AppDataFolders folder, IEnumerable<T> data, string sheetName) where T : class

@@ -85,7 +85,9 @@ namespace AmSpaceClient
         Task<CoreValues> GetCoreValuesAsync(Brand brand, Level level);
         Task<CoreValues> SaveCoreValuesAsync(Brand brand, Level level, CoreValues values);
         Task<bool> ChangePasswordAsync(NewPassword password, SearchUserResult account);
-        Task<IEnumerable<JpaFile>> GetJpaHistoryAsync(string username);
-        Task<JpaFile> UploadJpaHistoryAsync(JpaFile jpaEntry);
+        Task<IEnumerable<JpaFile>> GetJpaHistoryByUsernameAsync(string username);
+        Task<JpaFile> CreateJpaHistoryAsync(JpaFile jpaEntry);
+        Task<JpaFile> UpdateJpaHistoryAsync(JpaFile jpaEntry);
+        Task<bool> DeleteJpaHistoryAsync(JpaFile jpaEntry);
     }
 }

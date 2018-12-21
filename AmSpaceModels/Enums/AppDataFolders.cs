@@ -13,7 +13,7 @@ namespace AmSpaceModels.Enums
         Common
     }
 
-    public class FoldersLocations
+    public static class FoldersLocations
     {
         private static readonly Dictionary<AppDataFolders, string> _locations;
         static FoldersLocations()
@@ -21,8 +21,8 @@ namespace AmSpaceModels.Enums
             _locations = new Dictionary<AppDataFolders, string>
             {
                 { AppDataFolders.Common, "" },
-                { AppDataFolders.Logs, "Logs\\"},
-                { AppDataFolders.Reports, "Reports\\"}
+                { AppDataFolders.Logs, "Logs"},
+                { AppDataFolders.Reports, "Reports"}
             };
         }
 
