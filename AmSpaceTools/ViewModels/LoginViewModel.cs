@@ -91,7 +91,7 @@ namespace AmSpaceTools.ViewModels
             MainViewModel.IsLoggedIn = await _client.LoginRequestAsync(Name, Password, SelectedEnvironment);
             MainViewModel.ProfileViewModel = Services.Container.GetInstance<ProfileViewModel>();
             var ipdTranslationViewModel = Services.Container.GetInstance<IdpTranslationsPreviewViewModel>();
-            ShowMenu(ipdTranslationViewModel);
+            MainViewModel.ShowMenu(ipdTranslationViewModel);
             IsLoading = false;
         }
     }

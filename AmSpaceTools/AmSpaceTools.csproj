@@ -170,6 +170,7 @@
     <Compile Include="ViewModels\ChangePasswordViewModel.cs" />
     <Compile Include="ViewModels\ErrorViewModel.cs" />
     <Compile Include="ViewModels\IdpTranslationsPreviewViewModel.cs" />
+    <Compile Include="ViewModels\JobMapUploadViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\OrgStructureViewModel.cs" />
@@ -199,6 +200,9 @@
     </Compile>
     <Compile Include="Views\OrgStructure.xaml.cs">
       <DependentUpon>OrgStructure.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\JobMapUpload.xaml.cs">
+      <DependentUpon>JobMapUpload.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PeopleUpload.xaml.cs">
       <DependentUpon>PeopleUpload.xaml</DependentUpon>
@@ -251,6 +255,10 @@
     <Page Include="Views\OrgStructure.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\JobMapUpload.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\PeopleUpload.xaml">
       <SubType>Designer</SubType>
