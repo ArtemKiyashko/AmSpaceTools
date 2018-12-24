@@ -23,10 +23,10 @@ namespace AmSpaceClient
         Task<bool> PutAsyncWrapper<T>(T model, string endpoint);
         Task<bool> DeleteAsyncWrapper<T>(T model, string endpoint);
         Task<bool> DeleteAsyncWrapper(string endpoint);
-        Task<TOutput> PostAsyncWrapper<TInput, TOutput>(string endpoint, TInput model) where TOutput : class;
-        Task<TOutput> PostFormUrlEncodedContentAsyncWrapper<TOutput>(string endpoint, IEnumerable<KeyValuePair<string, string>> content) where TOutput : class;
-        Task<HttpResponseMessage> PostFormUrlEncodedContentAsyncWrapper(string endpoint, IEnumerable<KeyValuePair<string, string>> content);
-        Task<bool> PostAsyncWrapper<TInput>(string endpoint, TInput model);
+        Task<TOutput> PostAsyncWrapper<TInput, TOutput>(TInput model, string endpoint) where TOutput : class;
+        Task<TOutput> PostFormUrlEncodedContentAsyncWrapper<TOutput>(IEnumerable<KeyValuePair<string, string>> content, string endpoint) where TOutput : class;
+        Task<HttpResponseMessage> PostFormUrlEncodedContentAsyncWrapper(IEnumerable<KeyValuePair<string, string>> content, string endpoint);
+        Task<bool> PostAsyncWrapper<TInput>(TInput model, string endpoint);
         Task<TOutput> PatchAsyncWrapper<TInput, TOutput>(TInput model, string endpoint) where TOutput : class;
         Task<bool> PatchAsyncWrapper<TInput>(TInput model, string endpoint);
         Task<TOutput> PutAsyncWrapper<TInput, TOutput>(TInput model, string endpoint) where TOutput : class;

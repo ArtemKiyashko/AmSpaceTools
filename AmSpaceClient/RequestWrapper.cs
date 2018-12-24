@@ -64,7 +64,7 @@ namespace AmSpaceClient
         {
             return await HttpResponcePolicy.ExecuteAsync(async () => await AmSpaceHttpClient.GetAsync(endpoint));
         }
-
+        
         public async Task<bool> PutAsyncWrapper<T>(T model, string endpoint)
         {
             var result = await HttpResponcePolicy.ExecuteAsync(async () =>
@@ -73,6 +73,15 @@ namespace AmSpaceClient
                 return await AmSpaceHttpClient.PutAsync(endpoint, httpcontent);
             });
             return await result.ValidateAsync();
+        }
+        public async Task<TOutput> PutAsyncWrapper<TInput, TOutput>(TInput model, string endpoint) where TOutput : class
+        {
+            var result = await HttpResponcePolicy.ExecuteAsync(async () =>
+            {
+                var httpcontent = PrepareStringContent(model);
+                return await AmSpaceHttpClient.PutAsync(endpoint, httpcontent);
+            });
+            return await result.ValidateAsync<TOutput>();
         }
 
         public async Task<bool> DeleteAsyncWrapper<T>(T model, string endpoint)
@@ -95,7 +104,7 @@ namespace AmSpaceClient
             return await result.ValidateAsync();
         }
 
-        public async Task<TOutput> PostAsyncWrapper<TInput, TOutput>(string endpoint, TInput model) where TOutput : class
+        public async Task<TOutput> PostAsyncWrapper<TInput, TOutput>(TInput model, string endpoint) where TOutput : class
         {
             var result = await HttpResponcePolicy.ExecuteAsync(async () =>
             {
@@ -105,7 +114,17 @@ namespace AmSpaceClient
             return await result.ValidateAsync<TOutput>();
         }
 
-        public async Task<HttpResponseMessage> PostFormUrlEncodedContentAsyncWrapper(string endpoint, IEnumerable<KeyValuePair<string, string>> content)
+        public async Task<bool> PostAsyncWrapper<TInput>(TInput model, string endpoint)
+        {
+            var result = await HttpResponcePolicy.ExecuteAsync(async () =>
+            {
+                var httpcontent = PrepareStringContent(model);
+                return await AmSpaceHttpClient.PostAsync(endpoint, httpcontent);
+            });
+            return await result.ValidateAsync();
+        }
+
+        public async Task<HttpResponseMessage> PostFormUrlEncodedContentAsyncWrapper(IEnumerable<KeyValuePair<string, string>> content, string endpoint)
         {
             return await HttpResponcePolicy.ExecuteAsync(async () =>
             {
@@ -114,22 +133,12 @@ namespace AmSpaceClient
             });
         }
 
-        public async Task<TOutput> PostFormUrlEncodedContentAsyncWrapper<TOutput>(string endpoint, IEnumerable<KeyValuePair<string, string>> content) where TOutput : class
+        public async Task<TOutput> PostFormUrlEncodedContentAsyncWrapper<TOutput>(IEnumerable<KeyValuePair<string, string>> content, string endpoint) where TOutput : class
         {
             var result = await HttpResponcePolicy.ExecuteAsync(async () =>
             {
                 var contentCopy = new FormUrlEncodedContent(content);
                 return await AmSpaceHttpClient.PostAsync(endpoint, contentCopy);
-            });
-            return await result.ValidateAsync<TOutput>();
-        }
-
-        public async Task<TOutput> PutAsyncWrapper<TInput, TOutput>(TInput model, string endpoint) where TOutput : class
-        {
-            var result = await HttpResponcePolicy.ExecuteAsync(async () =>
-            {
-                var httpcontent = PrepareStringContent(model);
-                return await AmSpaceHttpClient.PutAsync(endpoint, httpcontent);
             });
             return await result.ValidateAsync<TOutput>();
         }
@@ -153,17 +162,6 @@ namespace AmSpaceClient
             });
             return await result.ValidateAsync();
         }
-
-        public async Task<bool> PostAsyncWrapper<TInput>(string endpoint, TInput model)
-        {
-            var result = await HttpResponcePolicy.ExecuteAsync(async () =>
-            {
-                var httpcontent = PrepareStringContent(model);
-                return await AmSpaceHttpClient.PostAsync(endpoint, httpcontent);
-            });
-            return await result.ValidateAsync();
-        }
-
         private HttpRequestMessage CreateHttpMessage<TInput>(TInput model, string endpoint, string method)
         {
             return new HttpRequestMessage

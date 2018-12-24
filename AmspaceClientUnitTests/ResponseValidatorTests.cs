@@ -49,7 +49,7 @@ namespace AmspaceClientUnitTests
         }
 
         [Test]
-        public async Task ValidateAsyncTOutput_WhenCalledWithOkStatusCode_ReturnsDeserializedObject()
+        public async Task ValidateAsyncTOutput_WhenCalledWithOkStatusCodeAndExpectedJson_ReturnsDeserializedObject()
         {
             _messageToValidate.StatusCode = System.Net.HttpStatusCode.OK;
             _messageToValidate.Content = new StringContent("{\"value\": 123, \"display_name\": \"test\"}");
