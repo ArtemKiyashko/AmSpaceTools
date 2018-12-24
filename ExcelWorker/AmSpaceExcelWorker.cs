@@ -22,8 +22,8 @@ namespace ExcelWorker
         public string FileName { get; private set; }
         private Stream _fStream { get; set; }
         private ExcelPackage _ePackage { get; set; }
-        public ISaveLocator SaveLocator { get; }
-        public IFileWrapper FileWrapper { get; }
+        public virtual ISaveLocator SaveLocator { get; }
+        public virtual IFileWrapper FileWrapper { get; }
 
         public AmSpaceExcelWorker(ISaveLocator saveLocator, IFileWrapper fileWrapper)
         {
