@@ -23,6 +23,16 @@ namespace AmspaceClientUnitTests
         {
             [JsonProperty(PropertyName = "property")]
             public int Proprety { get; set; }
+
+            public override bool Equals(object obj)
+            {
+                return this.Proprety == (obj as TestModelClass)?.Proprety;
+            }
+
+            public override int GetHashCode()
+            {
+                return this.Proprety.GetHashCode();
+            }
         }
         private interface IHttpClientHandlerProtectedMembers
         {
@@ -30,12 +40,13 @@ namespace AmspaceClientUnitTests
         }
 
         private IRequestWrapper _requestWrapper;
-        private Mock<HttpClientHandler> _moqHttpClientHandler;
+        private Mock<HttpMessageHandler> _moqHttpClientHandler;
         private string _testEndpoing = "https://some.place.in.internet";
         private JsonSerializerSettings _commonSerializerSettings = new JsonSerializerSettings
         {
             NullValueHandling = NullValueHandling.Ignore,
-            DateFormatString = "yyyy-MM-dd"
+            DateFormatString = "yyyy-MM-dd",
+            Formatting = Formatting.None
         };
         private HttpResponseMessage _defaultResponce;
 
@@ -47,7 +58,7 @@ namespace AmspaceClientUnitTests
                 StatusCode = HttpStatusCode.OK,
                 Content = new StringContent("{\"property\": \"0\"}")
             };
-            _moqHttpClientHandler = new Mock<HttpClientHandler>() { CallBase = false};
+            _moqHttpClientHandler = new Mock<HttpMessageHandler>();
             _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
                 .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.FromResult(_defaultResponce));
@@ -115,7 +126,7 @@ namespace AmspaceClientUnitTests
             
             var result = await _requestWrapper.GetAsyncWrapper<TestModelClass>(_testEndpoing);
 
-            Assert.AreEqual(expectedObject.Proprety, result.Proprety);
+            Assert.AreEqual(expectedObject, result);
         }
 
         [Test]
@@ -196,7 +207,7 @@ namespace AmspaceClientUnitTests
         {
             string sentContent = default;
             var testModel = new TestModelClass { Proprety = 0 };
-            var expectedContent = new StringContent(JsonConvert.SerializeObject(testModel, Formatting.None, _commonSerializerSettings));
+            var expectedContent = new StringContent(JsonConvert.SerializeObject(testModel, _commonSerializerSettings));
             _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
                 .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
                 .Callback<HttpRequestMessage, CancellationToken>(async (message, token) => sentContent = await message.Content.ReadAsStringAsync())
@@ -264,7 +275,7 @@ namespace AmspaceClientUnitTests
         {
             string sentContent = default;
             var testModel = new TestModelClass { Proprety = 0 };
-            var expectedContent = new StringContent(JsonConvert.SerializeObject(testModel, Formatting.None, _commonSerializerSettings));
+            var expectedContent = new StringContent(JsonConvert.SerializeObject(testModel, _commonSerializerSettings));
             _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
                 .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
                 .Callback<HttpRequestMessage, CancellationToken>(async (message, token) => sentContent = await message.Content.ReadAsStringAsync())
@@ -301,7 +312,7 @@ namespace AmspaceClientUnitTests
 
             var result = await _requestWrapper.PutAsyncWrapper<TestModelClass, TestModelClass>(modelToSend, _testEndpoing);
 
-            Assert.AreEqual(expectedObject.Proprety, result.Proprety);
+            Assert.AreEqual(expectedObject, result);
         }
 
         [Test]
@@ -334,7 +345,7 @@ namespace AmspaceClientUnitTests
         {
             string sentContent = default;
             var testModel = new TestModelClass { Proprety = 0 };
-            var expectedContent = new StringContent(JsonConvert.SerializeObject(testModel, Formatting.None, _commonSerializerSettings));
+            var expectedContent = new StringContent(JsonConvert.SerializeObject(testModel, _commonSerializerSettings));
             _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
                 .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
                 .Callback<HttpRequestMessage, CancellationToken>(async (message, token) => sentContent = await message.Content.ReadAsStringAsync())
@@ -450,7 +461,7 @@ namespace AmspaceClientUnitTests
         {
             string sentContent = default;
             var testModel = new TestModelClass { Proprety = 0 };
-            var expectedContent = new StringContent(JsonConvert.SerializeObject(testModel, Formatting.None, _commonSerializerSettings));
+            var expectedContent = new StringContent(JsonConvert.SerializeObject(testModel, _commonSerializerSettings));
             _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
                 .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
                 .Callback<HttpRequestMessage, CancellationToken>(async (message, token) => sentContent = await message.Content.ReadAsStringAsync())
@@ -487,7 +498,7 @@ namespace AmspaceClientUnitTests
 
             var result = await _requestWrapper.PostAsyncWrapper<TestModelClass, TestModelClass>(modelToSend, _testEndpoing);
 
-            Assert.AreEqual(expectedObject.Proprety, result.Proprety);
+            Assert.AreEqual(expectedObject, result);
         }
 
         [Test]
@@ -520,7 +531,7 @@ namespace AmspaceClientUnitTests
         {
             string sentContent = default;
             var testModel = new TestModelClass { Proprety = 0 };
-            var expectedContent = new StringContent(JsonConvert.SerializeObject(testModel, Formatting.None, _commonSerializerSettings));
+            var expectedContent = new StringContent(JsonConvert.SerializeObject(testModel, _commonSerializerSettings));
             _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
                 .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
                 .Callback<HttpRequestMessage, CancellationToken>(async (message, token) => sentContent = await message.Content.ReadAsStringAsync())
@@ -547,7 +558,7 @@ namespace AmspaceClientUnitTests
         [Test]
         public async Task PostAsyncWrapperT_WhenReceiveSucessStatusCode_ReturnTrue()
         {
-            var incomingHttpResponce = new HttpResponseMessage(HttpStatusCode.Created);
+            var incomingHttpResponce = new HttpResponseMessage(HttpStatusCode.OK);
             _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
                 .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.FromResult(incomingHttpResponce));
@@ -695,7 +706,7 @@ namespace AmspaceClientUnitTests
 
             var result = await _requestWrapper.PostFormUrlEncodedContentAsyncWrapper<TestModelClass>(testContent, _testEndpoing);
 
-            Assert.AreEqual(expectedObject.Proprety, result.Proprety);
+            Assert.AreEqual(expectedObject, result);
         }
         
         [Test]
@@ -728,7 +739,7 @@ namespace AmspaceClientUnitTests
         {
             string sentContent = default;
             var testModel = new TestModelClass { Proprety = 0 };
-            var expectedContent = new StringContent(JsonConvert.SerializeObject(testModel, Formatting.None, _commonSerializerSettings));
+            var expectedContent = new StringContent(JsonConvert.SerializeObject(testModel, _commonSerializerSettings));
             _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
                 .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
                 .Callback<HttpRequestMessage, CancellationToken>(async (message, token) => sentContent = await message.Content.ReadAsStringAsync())
@@ -765,7 +776,7 @@ namespace AmspaceClientUnitTests
 
             var result = await _requestWrapper.PatchAsyncWrapper<TestModelClass, TestModelClass>(modelToSend, _testEndpoing);
 
-            Assert.AreEqual(expectedObject.Proprety, result.Proprety);
+            Assert.AreEqual(expectedObject, result);
         }
         [Test]
         public void PatchAsyncWrapperTInTOut_WhenReceiveUnsucessStatusCode_Throws()
@@ -797,7 +808,7 @@ namespace AmspaceClientUnitTests
         {
             string sentContent = default;
             var testModel = new TestModelClass { Proprety = 0 };
-            var expectedContent = new StringContent(JsonConvert.SerializeObject(testModel, Formatting.None, _commonSerializerSettings));
+            var expectedContent = new StringContent(JsonConvert.SerializeObject(testModel, _commonSerializerSettings));
             _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
                 .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
                 .Callback<HttpRequestMessage, CancellationToken>(async (message, token) => sentContent = await message.Content.ReadAsStringAsync())
