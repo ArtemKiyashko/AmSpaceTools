@@ -67,6 +67,7 @@ namespace AmSpaceTools.ViewModels
                 OnPropertyChanged();
             }
         }
+
         public MainWindowViewModel()
         {
             Dispatcher.CurrentDispatcher.UnhandledException += CurrentDispatcher_UnhandledException;

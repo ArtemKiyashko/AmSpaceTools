@@ -19,10 +19,10 @@ namespace AmSpaceTools.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace AmSpaceTools.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AmSpaceTools.Properties.Resources", typeof(Resources).Assembly);
@@ -51,7 +51,7 @@ namespace AmSpaceTools.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -61,9 +61,72 @@ namespace AmSpaceTools.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Checking {0} JobMap validity....
+        /// </summary>
+        public static string JobMapCheckValidity {
+            get {
+                return ResourceManager.GetString("JobMapCheckValidity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Initiating uploading.
+        /// </summary>
+        public static string JobMapInitiatingUploading {
+            get {
+                return ResourceManager.GetString("JobMapInitiatingUploading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to JobMap Uploading.
+        /// </summary>
+        public static string JobMapScreenTitle {
+            get {
+                return ResourceManager.GetString("JobMapScreenTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Upload complete.
+        /// </summary>
+        public static string JobMapUploadComplete {
+            get {
+                return ResourceManager.GetString("JobMapUploadComplete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Upload complete. Looks like some issues appeared during uploading. Please check report file in report folder to discover.
+        /// </summary>
+        public static string JobMapUploadCompleteWithIssues {
+            get {
+                return ResourceManager.GetString("JobMapUploadCompleteWithIssues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Selected file is empty or contains errors.
+        /// </summary>
+        public static string JobMapUploadFileIncorrect {
+            get {
+                return ResourceManager.GetString("JobMapUploadFileIncorrect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uploading JobMap: {0}....
+        /// </summary>
+        public static string JobMapUploading {
+            get {
+                return ResourceManager.GetString("JobMapUploading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to All done!{0}Contracts uploaded: {1}.
         /// </summary>
-        internal static string PeopleUploadFinishUploadMessage {
+        public static string PeopleUploadFinishUploadMessage {
             get {
                 return ResourceManager.GetString("PeopleUploadFinishUploadMessage", resourceCulture);
             }
@@ -72,7 +135,7 @@ namespace AmSpaceTools.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Generating structure tree....
         /// </summary>
-        internal static string PeopleUploadGenerateStructureTreeMessage {
+        public static string PeopleUploadGenerateStructureTreeMessage {
             get {
                 return ResourceManager.GetString("PeopleUploadGenerateStructureTreeMessage", resourceCulture);
             }
@@ -81,7 +144,7 @@ namespace AmSpaceTools.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Manager for {0} {1} not found!.
         /// </summary>
-        internal static string PeopleUploadManagerNotFoundMessage {
+        public static string PeopleUploadManagerNotFoundMessage {
             get {
                 return ResourceManager.GetString("PeopleUploadManagerNotFoundMessage", resourceCulture);
             }
@@ -90,7 +153,7 @@ namespace AmSpaceTools.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Manager for {0} {1} not set.
         /// </summary>
-        internal static string PeopleUploadManagerNotSetMessage {
+        public static string PeopleUploadManagerNotSetMessage {
             get {
                 return ResourceManager.GetString("PeopleUploadManagerNotSetMessage", resourceCulture);
             }
@@ -99,7 +162,7 @@ namespace AmSpaceTools.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Those MPKs are missing:.
         /// </summary>
-        internal static string PeopleUploadMissingMpkMessage {
+        public static string PeopleUploadMissingMpkMessage {
             get {
                 return ResourceManager.GetString("PeopleUploadMissingMpkMessage", resourceCulture);
             }
@@ -108,7 +171,7 @@ namespace AmSpaceTools.Properties {
         /// <summary>
         ///   Looks up a localized string similar to {0} {1} ID:[{2}] done.
         /// </summary>
-        internal static string PeopleUploadReportUploadStatusMessage {
+        public static string PeopleUploadReportUploadStatusMessage {
             get {
                 return ResourceManager.GetString("PeopleUploadReportUploadStatusMessage", resourceCulture);
             }
@@ -117,9 +180,18 @@ namespace AmSpaceTools.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Validating domains....
         /// </summary>
-        internal static string PeopleUploadValidateDomainMessage {
+        public static string PeopleUploadValidateDomainMessage {
             get {
                 return ResourceManager.GetString("PeopleUploadValidateDomainMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reports folder.
+        /// </summary>
+        public static string ReportsFolder {
+            get {
+                return ResourceManager.GetString("ReportsFolder", resourceCulture);
             }
         }
     }

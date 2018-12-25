@@ -117,6 +117,27 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="JobMapCheckValidity" xml:space="preserve">
+    <value>Checking {0} JobMap validity...</value>
+  </data>
+  <data name="JobMapInitiatingUploading" xml:space="preserve">
+    <value>Initiating uploading</value>
+  </data>
+  <data name="JobMapScreenTitle" xml:space="preserve">
+    <value>JobMap Uploading</value>
+  </data>
+  <data name="JobMapUploadComplete" xml:space="preserve">
+    <value>Upload complete</value>
+  </data>
+  <data name="JobMapUploadCompleteWithIssues" xml:space="preserve">
+    <value>Upload complete. Looks like some issues appeared during uploading. Please check report file in report folder to discover</value>
+  </data>
+  <data name="JobMapUploadFileIncorrect" xml:space="preserve">
+    <value>Selected file is empty or contains errors</value>
+  </data>
+  <data name="JobMapUploading" xml:space="preserve">
+    <value>Uploading JobMap: {0}...</value>
+  </data>
   <data name="PeopleUploadFinishUploadMessage" xml:space="preserve">
     <value>All done!{0}Contracts uploaded: {1}</value>
   </data>
@@ -137,5 +158,8 @@
   </data>
   <data name="PeopleUploadValidateDomainMessage" xml:space="preserve">
     <value>Validating domains...</value>
+  </data>
+  <data name="ReportsFolder" xml:space="preserve">
+    <value>Reports folder</value>
   </data>
 </root>
