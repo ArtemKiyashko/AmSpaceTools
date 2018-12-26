@@ -178,7 +178,7 @@ namespace AmSpaceTools.ViewModels
         {
             using (_excelWorker)
             {
-                await _excelWorker.SaveDataAsync($"{DateTime.Now.ToShortDateString()}_errors_{DateTime.Now.Millisecond}.xlsx", AmSpaceModels.Enums.AppDataFolders.Reports, _jobMapsWithErrors, "Errors");
+                await _excelWorker.SaveDataAsync($"{DateTime.Now.ToShortDateString()}_JobMapUploadErrors_{DateTime.Now.Millisecond}.xlsx", AmSpaceModels.Enums.AppDataFolders.Reports, _jobMapsWithErrors, "Errors");
             }
             NewReportsCount++;
             _jobMapsWithErrors.Clear();

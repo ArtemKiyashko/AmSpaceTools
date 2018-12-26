@@ -117,14 +117,17 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="IDPTranslationCaption" xml:space="preserve">
+    <value>IDP actions translation</value>
+  </data>
+  <data name="JobMapBatchUploadCaption" xml:space="preserve">
+    <value>JobMap Batch Upload</value>
+  </data>
   <data name="JobMapCheckValidity" xml:space="preserve">
     <value>Checking {0} JobMap validity...</value>
   </data>
   <data name="JobMapInitiatingUploading" xml:space="preserve">
     <value>Initiating uploading</value>
-  </data>
-  <data name="JobMapScreenTitle" xml:space="preserve">
-    <value>JobMap Uploading</value>
   </data>
   <data name="JobMapUploadComplete" xml:space="preserve">
     <value>Upload complete</value>
@@ -137,6 +140,27 @@
   </data>
   <data name="JobMapUploading" xml:space="preserve">
     <value>Uploading JobMap: {0}...</value>
+  </data>
+  <data name="LoginButtonToolTip" xml:space="preserve">
+    <value>Login using Your AmSpace credentials</value>
+  </data>
+  <data name="LoginCaption" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="LogOutToolTip" xml:space="preserve">
+    <value>Logout from account</value>
+  </data>
+  <data name="OpenFileButtonToolTip" xml:space="preserve">
+    <value>Open File</value>
+  </data>
+  <data name="OrgStructureCaption" xml:space="preserve">
+    <value>Organization Structure Management</value>
+  </data>
+  <data name="PasswordBoxToolTip" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="PeopleBatchUploadCaption" xml:space="preserve">
+    <value>People Batch Upload</value>
   </data>
   <data name="PeopleUploadFinishUploadMessage" xml:space="preserve">
     <value>All done!{0}Contracts uploaded: {1}</value>
@@ -161,5 +185,14 @@
   </data>
   <data name="ReportsFolder" xml:space="preserve">
     <value>Reports folder</value>
+  </data>
+  <data name="SelectEnvironmentToolTip" xml:space="preserve">
+    <value>Select system environment</value>
+  </data>
+  <data name="UploadToAmSpaceButtonToolTip" xml:space="preserve">
+    <value>Upload to AmSpace</value>
+  </data>
+  <data name="UserNameBoxToolTip" xml:space="preserve">
+    <value>User name</value>
   </data>
 </root>

@@ -117,14 +117,17 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="IDPTranslationCaption" xml:space="preserve">
+    <value>Перевод действий IDP</value>
+  </data>
+  <data name="JobMapBatchUploadCaption" xml:space="preserve">
+    <value>Массовая загрузка JobMap</value>
+  </data>
   <data name="JobMapCheckValidity" xml:space="preserve">
     <value>Проверяем валидность JobMap {0}</value>
   </data>
   <data name="JobMapInitiatingUploading" xml:space="preserve">
     <value>Начинаем загрузку</value>
-  </data>
-  <data name="JobMapScreenTitle" xml:space="preserve">
-    <value>Загрузка JobMap</value>
   </data>
   <data name="JobMapUploadComplete" xml:space="preserve">
     <value>Загрузка завершена.</value>
@@ -137,6 +140,27 @@
   </data>
   <data name="JobMapUploading" xml:space="preserve">
     <value>Загружаем JobMap: {0}</value>
+  </data>
+  <data name="LoginButtonToolTip" xml:space="preserve">
+    <value>Войти с использованием твоего логина и пароля от AmSpace </value>
+  </data>
+  <data name="LoginCaption" xml:space="preserve">
+    <value>Вход</value>
+  </data>
+  <data name="LogOutToolTip" xml:space="preserve">
+    <value>Выйти из аккаунта</value>
+  </data>
+  <data name="OpenFileButtonToolTip" xml:space="preserve">
+    <value>Открыть файл</value>
+  </data>
+  <data name="OrgStructureCaption" xml:space="preserve">
+    <value>Управление организационной структурой </value>
+  </data>
+  <data name="PasswordBoxToolTip" xml:space="preserve">
+    <value>Пароль</value>
+  </data>
+  <data name="PeopleBatchUploadCaption" xml:space="preserve">
+    <value>Массовая загрузка аккаунтов</value>
   </data>
   <data name="PeopleUploadFinishUploadMessage" xml:space="preserve">
     <value>Все готово!{0}Загружено контрактов: {1}</value>
@@ -161,5 +185,14 @@
   </data>
   <data name="ReportsFolder" xml:space="preserve">
     <value>Папка отчётов</value>
+  </data>
+  <data name="SelectEnvironmentToolTip" xml:space="preserve">
+    <value>Укажите адрес системы</value>
+  </data>
+  <data name="UploadToAmSpaceButtonToolTip" xml:space="preserve">
+    <value>Загрузить в AmSpace</value>
+  </data>
+  <data name="UserNameBoxToolTip" xml:space="preserve">
+    <value>Имя пользователя</value>
   </data>
 </root>

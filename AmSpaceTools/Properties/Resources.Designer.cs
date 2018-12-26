@@ -19,7 +19,7 @@ namespace AmSpaceTools.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -61,6 +61,24 @@ namespace AmSpaceTools.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to IDP actions translation.
+        /// </summary>
+        public static string IDPTranslationCaption {
+            get {
+                return ResourceManager.GetString("IDPTranslationCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to JobMap Batch Upload.
+        /// </summary>
+        public static string JobMapBatchUploadCaption {
+            get {
+                return ResourceManager.GetString("JobMapBatchUploadCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Checking {0} JobMap validity....
         /// </summary>
         public static string JobMapCheckValidity {
@@ -75,15 +93,6 @@ namespace AmSpaceTools.Properties {
         public static string JobMapInitiatingUploading {
             get {
                 return ResourceManager.GetString("JobMapInitiatingUploading", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to JobMap Uploading.
-        /// </summary>
-        public static string JobMapScreenTitle {
-            get {
-                return ResourceManager.GetString("JobMapScreenTitle", resourceCulture);
             }
         }
         
@@ -120,6 +129,69 @@ namespace AmSpaceTools.Properties {
         public static string JobMapUploading {
             get {
                 return ResourceManager.GetString("JobMapUploading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Login using Your AmSpace credentials.
+        /// </summary>
+        public static string LoginButtonToolTip {
+            get {
+                return ResourceManager.GetString("LoginButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Login.
+        /// </summary>
+        public static string LoginCaption {
+            get {
+                return ResourceManager.GetString("LoginCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Logout from account.
+        /// </summary>
+        public static string LogOutToolTip {
+            get {
+                return ResourceManager.GetString("LogOutToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open File.
+        /// </summary>
+        public static string OpenFileButtonToolTip {
+            get {
+                return ResourceManager.GetString("OpenFileButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Organization Structure Management.
+        /// </summary>
+        public static string OrgStructureCaption {
+            get {
+                return ResourceManager.GetString("OrgStructureCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password.
+        /// </summary>
+        public static string PasswordBoxToolTip {
+            get {
+                return ResourceManager.GetString("PasswordBoxToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to People Batch Upload.
+        /// </summary>
+        public static string PeopleBatchUploadCaption {
+            get {
+                return ResourceManager.GetString("PeopleBatchUploadCaption", resourceCulture);
             }
         }
         
@@ -192,6 +264,33 @@ namespace AmSpaceTools.Properties {
         public static string ReportsFolder {
             get {
                 return ResourceManager.GetString("ReportsFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select system environment.
+        /// </summary>
+        public static string SelectEnvironmentToolTip {
+            get {
+                return ResourceManager.GetString("SelectEnvironmentToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Upload to AmSpace.
+        /// </summary>
+        public static string UploadToAmSpaceButtonToolTip {
+            get {
+                return ResourceManager.GetString("UploadToAmSpaceButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User name.
+        /// </summary>
+        public static string UserNameBoxToolTip {
+            get {
+                return ResourceManager.GetString("UserNameBoxToolTip", resourceCulture);
             }
         }
     }

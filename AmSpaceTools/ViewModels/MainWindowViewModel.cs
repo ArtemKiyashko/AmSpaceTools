@@ -1,4 +1,5 @@
 ﻿using AmSpaceTools.Infrastructure;
+using AmSpaceTools.Properties;
 using AmSpaceTools.Views;
 using MaterialDesignThemes.Wpf;
 using System;
@@ -74,7 +75,7 @@ namespace AmSpaceTools.ViewModels
             SelectedViewModel = Services.Container.GetInstance<LoginViewModel>();
             MenuItems = new ObservableCollection<MenuItem>
             {
-                new MenuItem("Login", SelectedViewModel)
+                new MenuItem(Resources.LoginCaption, SelectedViewModel)
             };
             SelectedMenuItem = MenuItems[0];
         }
@@ -102,10 +103,10 @@ namespace AmSpaceTools.ViewModels
         {
             MainViewModel.SelectedViewModel = startupViewModel;
             MainViewModel.MenuItems.Clear();
-            MainViewModel.MenuItems.Add(new MenuItem("IDP Translation", startupViewModel));
-            MainViewModel.MenuItems.Add(new MenuItem("Org. Structure", Services.Container.GetInstance<OrgStructureViewModel>()));
-            MainViewModel.MenuItems.Add(new MenuItem("People Batch Upload", Services.Container.GetInstance<PeopleUploadViewModel>()));
-            MainViewModel.MenuItems.Add(new MenuItem("JobMap Batch Upload", Services.Container.GetInstance<JobMapUploadViewModel>()));
+            MainViewModel.MenuItems.Add(new MenuItem(Resources.IDPTranslationCaption, startupViewModel));
+            MainViewModel.MenuItems.Add(new MenuItem(Resources.OrgStructureCaption, Services.Container.GetInstance<OrgStructureViewModel>()));
+            MainViewModel.MenuItems.Add(new MenuItem(Resources.PeopleBatchUploadCaption, Services.Container.GetInstance<PeopleUploadViewModel>()));
+            MainViewModel.MenuItems.Add(new MenuItem(Resources.JobMapBatchUploadCaption, Services.Container.GetInstance<JobMapUploadViewModel>()));
             MainViewModel.SelectedMenuItem = MainViewModel.MenuItems.FirstOrDefault(item => item.Content == startupViewModel);
         }
 
@@ -114,7 +115,7 @@ namespace AmSpaceTools.ViewModels
             var loginVm = Services.Container.GetInstance<LoginViewModel>();
             MainViewModel.SelectedViewModel = loginVm;
             MainViewModel.MenuItems.Clear();
-            MainViewModel.MenuItems.Add(new MenuItem("Login", loginVm));
+            MainViewModel.MenuItems.Add(new MenuItem(Resources.LoginCaption, loginVm));
             MainViewModel.SelectedMenuItem = MainViewModel.MenuItems.FirstOrDefault(item => item.Content == loginVm);
         }
     }

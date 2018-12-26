@@ -32,7 +32,7 @@
                 Style="{StaticResource MaterialDesignHeadlineTextBlock}"
                 Margin="0 5 0 10"
                 VerticalAlignment="Stretch"
-                Text="{x:Static resources:Resources.JobMapScreenTitle}"/>
+                Text="{x:Static resources:Resources.JobMapBatchUploadCaption}"/>
             <materialDesign:Badged
                 Badge="{Binding NewReportsCount}"
                 VerticalAlignment="Stretch" HorizontalAlignment="Left"
@@ -46,7 +46,7 @@
                         Grid.Row="0"
                         Margin="0 5 10 10"
                         Style="{StaticResource MaterialDesignFloatingActionButton}"
-                        ToolTip="Open File">
+                        ToolTip="{x:Static resources:Resources.OpenFileButtonToolTip}">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon
                             Kind="FileExcel"
@@ -60,7 +60,7 @@
                         Grid.Row="0"
                         Margin="0 5 5 10"
                         Style="{StaticResource MaterialDesignFloatingActionButton}"
-                        ToolTip="Upload to AmSpace">
+                        ToolTip="{x:Static resources:Resources.UploadToAmSpaceButtonToolTip}">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon
                             Kind="CloudSync"
