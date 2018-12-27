@@ -25,12 +25,6 @@ namespace ExcelWorker
         public virtual ISaveLocator SaveLocator { get; }
         public virtual IFileWrapper FileWrapper { get; }
 
-        public AmSpaceExcelWorker(ISaveLocator saveLocator, IFileWrapper fileWrapper)
-        {
-            SaveLocator = saveLocator;
-            FileWrapper = fileWrapper;
-        }
-
         public AmSpaceExcelWorker()
         {
             SaveLocator = new SaveLocator();

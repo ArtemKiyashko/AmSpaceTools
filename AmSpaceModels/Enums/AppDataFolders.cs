@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,6 +28,6 @@ namespace AmSpaceModels.Enums
         }
 
         public static string GetFolderLocation(AppDataFolders dataFolder) => 
-            $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\\AmSpaceTools\\{_locations[dataFolder]}";
+           Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.FriendlyName), _locations[dataFolder]);
     }
 }
