@@ -14,64 +14,19 @@ namespace AmSpaceTools.ViewModels
 {
     public abstract class BaseViewModel : INotifyPropertyChanged, INotifyDataErrorInfo
     {
-        private BaseViewModel _selectedViewModel;
-        private ProfileViewModel _profileViewModel;
-        private MenuItem _selectedMenuItem;
         private bool _isLoading;
         private readonly Dictionary<string, ICollection<string>> _validationErrors = new Dictionary<string, ICollection<string>>();
-
 
         protected BaseViewModel()
         {
             ValidateModel();
         }
 
-        public BaseViewModel SelectedViewModel
-        {
-            get
-            {
-                return _selectedViewModel;
-            }
-            set
-            {
-                _selectedViewModel = value;
-                OnPropertyChanged();
-            }
-        }
-
         public bool DefaultButtonIsEnabled { get => !HasErrors; }
-        public ProfileViewModel ProfileViewModel
-        {
-            get
-            {
-                return _profileViewModel;
-            }
-            set
-            {
-                _profileViewModel = value;
-                OnPropertyChanged(nameof(ProfileViewModel));
-            }
-        }
-
-        public MenuItem SelectedMenuItem
-        {
-            get
-            {
-                return _selectedMenuItem;
-            }
-            set
-            {
-                _selectedMenuItem = value;
-                OnPropertyChanged(nameof(SelectedMenuItem));
-            }
-        }
-
+        
         public bool IsLoading
         {
-            get
-            {
-                return _isLoading;
-            }
+            get => _isLoading;
             set
             {
                 _isLoading = value;
@@ -84,10 +39,7 @@ namespace AmSpaceTools.ViewModels
 
         public MainWindowViewModel MainViewModel
         {
-            get
-            {
-                return Services.Container.GetInstance<MainWindowViewModel>();
-            }
+            get => Services.Container.GetInstance<MainWindowViewModel>();
         }
 
         public bool HasErrors => _validationErrors.Any();
@@ -147,29 +99,6 @@ namespace AmSpaceTools.ViewModels
                 }
             }
             _validationErrors.ForEach(_ => OnErrorsChanged(_.Key));
-        }
-
-        /// <summary>
-        /// Updates app's views after Login according to specified startup View and profile model
-        /// </summary>
-        /// <param name="nextView"></param>
-        protected void ShowMenu(BaseViewModel startupViewModel)
-        {
-            MainViewModel.SelectedViewModel = startupViewModel;
-            MainViewModel.MenuItems.Clear();
-            MainViewModel.MenuItems.Add(new MenuItem("IDP Translation", startupViewModel));
-            MainViewModel.MenuItems.Add(new MenuItem("Org. Structure", Services.Container.GetInstance<OrgStructureViewModel>()));
-            MainViewModel.MenuItems.Add(new MenuItem("People Batch Upload", Services.Container.GetInstance<PeopleUploadViewModel>()));
-            MainViewModel.SelectedMenuItem = MainViewModel.MenuItems.FirstOrDefault(item => item.Content == startupViewModel);
-        }
-
-        protected void HideMenu()
-        {
-            var loginVm = Services.Container.GetInstance<LoginViewModel>();
-            MainViewModel.SelectedViewModel = loginVm;
-            MainViewModel.MenuItems.Clear();
-            MainViewModel.MenuItems.Add(new MenuItem("Login", loginVm));
-            MainViewModel.SelectedMenuItem = MainViewModel.MenuItems.FirstOrDefault(item => item.Content == loginVm);
         }
 
         public IEnumerable GetErrors(string propertyName)

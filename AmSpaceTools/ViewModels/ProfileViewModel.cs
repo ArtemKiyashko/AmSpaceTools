@@ -35,7 +35,7 @@ namespace AmSpaceTools.ViewModels
             var result = await _client.LogoutRequestAsync();
             if (!result) throw new Exception();
             MainViewModel.IsLoggedIn = false;
-            HideMenu();
+            MainViewModel.HideMenu();
             IsLoading = false;
         }
 

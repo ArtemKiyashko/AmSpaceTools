@@ -166,10 +166,16 @@
     <Compile Include="ModelConverters\ActionToUpdateConverter.cs" />
     <Compile Include="ModelConverters\CompetencyActionsToExcelRowConverter.cs" />
     <Compile Include="ModelConverters\SapPersonExcelToAmspaceConverter.cs" />
+    <Compile Include="Properties\Resources.ru.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.ru.resx</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="ViewModels\ChangePasswordViewModel.cs" />
     <Compile Include="ViewModels\ErrorViewModel.cs" />
     <Compile Include="ViewModels\IdpTranslationsPreviewViewModel.cs" />
+    <Compile Include="ViewModels\JobMapUploadViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\OrgStructureViewModel.cs" />
@@ -199,6 +205,9 @@
     </Compile>
     <Compile Include="Views\OrgStructure.xaml.cs">
       <DependentUpon>OrgStructure.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\JobMapUpload.xaml.cs">
+      <DependentUpon>JobMapUpload.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PeopleUpload.xaml.cs">
       <DependentUpon>PeopleUpload.xaml</DependentUpon>
@@ -252,6 +261,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\JobMapUpload.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\PeopleUpload.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -284,10 +297,13 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.ru.resx" />
+    <EmbeddedResource Include="Properties\Resources.ru.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.ru.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <None Include="Environments.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

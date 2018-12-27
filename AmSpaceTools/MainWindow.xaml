@@ -26,6 +26,9 @@
         <DataTemplate DataType="{x:Type vm:PeopleUploadViewModel}">
             <views:PeopleUpload/>
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:JobMapUploadViewModel}">
+            <views:JobMapUpload/>
+        </DataTemplate>
         <infrastructure:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </Window.Resources>
     <materialDesign:DialogHost Identifier="RootDialog">
@@ -58,12 +61,12 @@
             <DockPanel>
                 <materialDesign:ColorZone Padding="16" materialDesign:ShadowAssist.ShadowDepth="Depth2"
                                             Mode="PrimaryMid" DockPanel.Dock="Top">
-                    <DockPanel >
+                    <DockPanel>
                         <ToggleButton DockPanel.Dock="Left"  Style="{StaticResource MaterialDesignHamburgerToggleButton}" IsChecked="False"
                                         x:Name="MenuToggleButton"/>
                         <TextBlock HorizontalAlignment="Center" Margin="30, 0, 0, 0" VerticalAlignment="Center" FontSize="22" Width="Auto">AmSpace Tools</TextBlock>
                         <ContentControl 
-                            DockPanel.Dock="Right"  
+                            DockPanel.Dock="Right"
                             x:Name="ProfileView" 
                             Visibility="{Binding IsLoggedIn, Converter={StaticResource BoolToVisibilityConverter}}" 
                             Content="{Binding ProfileViewModel}" 
