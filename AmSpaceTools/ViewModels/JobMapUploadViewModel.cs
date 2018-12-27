@@ -24,10 +24,11 @@ namespace AmSpaceTools.ViewModels
         private readonly IExcelWorker _excelWorker;
         private string _fileName;
         private DataTable _workSheet;
-        private Dictionary<string, string> _languageMap;
         private ObservableCollection<JobMapExcelRow> _inputRows;
         private List<JobMapExcelRow> _jobMapsWithErrors;
         public int _newReportsCount;
+        private Task<IEnumerable<Brand>> _brands;
+        private Task<IEnumerable<Level>> _levels; 
         public ProgressIndicatorViewModel ProgressVM { get; private set; }
         public ObservableCollection<JobMapExcelRow> InputRows
         {
@@ -69,24 +70,8 @@ namespace AmSpaceTools.ViewModels
             InputRows = new ObservableCollection<JobMapExcelRow>();
             InputRows.CollectionChanged += InputRows_CollectionChanged;
             _jobMapsWithErrors = new List<JobMapExcelRow>();
-            _languageMap = new Dictionary<string, string>
-            {
-                ["EN"] = "en",
-                ["PL"] = "pl",
-                ["CZ"] = "cs",
-                ["HU"] = "hu",
-                ["SK"] = "sk",
-                ["BG"] = "bg",
-                ["DE"] = "de",
-                ["ES"] = "es",
-                ["RO"] = "ro",
-                ["RU"] = "ru",
-                ["RS"] = "rs",
-                ["ZH-HANS"] = "zh-hans",
-                ["CN"] = "zh-hans",
-                ["FR"] = "fr",
-                ["HR"] = "hr"
-            };
+            _brands = _client.GetBrandsAsync();
+            _levels = _client.GetLevelsAsync();
         }
 
         private void InputRows_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -100,8 +85,6 @@ namespace AmSpaceTools.ViewModels
             ProgressVM.ShowLoading();
             ProgressVM.ReportProgress(new ProgressState { ProgressTasksTotal = InputRows.Count, ProgressTasksDone = doneTasks, ProgressDescriptionText = Resources.JobMapInitiatingUploading });
             var groupedResponsibilities = InputRows.GroupBy(item => (item.Country, item.Brand, item.Level, item.Position, item.OrganizationUnit));
-            var brands = await _client.GetBrandsAsync();
-            var levels = await _client.GetLevelsAsync();
             foreach (var collection in groupedResponsibilities)
             {
                 if (ProgressVM.IsProgressCancelled)
@@ -109,9 +92,7 @@ namespace AmSpaceTools.ViewModels
                 ProgressVM.ReportProgress(new ProgressState { ProgressTasksTotal = InputRows.Count, ProgressTasksDone = doneTasks, ProgressDescriptionText = string.Format(Resources.JobMapCheckValidity, collection.Key.Position)});
                 if (!ValidateJobMapExcelRowCollection(collection, ref doneTasks))
                     continue;
-                var (stringCountry, stringBrand, intLevel, position, department) = collection.Key;
-                var (country, level) = await GetSearchObjects(stringCountry, stringBrand, intLevel, brands, levels);
-                var foundJobMaps = await FindJobMap(country, level, position, department);
+                var foundJobMaps = await GetJobMaps(collection);
                 if (!ValidateFoundJobMaps(foundJobMaps, collection, ref doneTasks))
                     continue;
                 var jobMap = foundJobMaps.First();
@@ -152,13 +133,18 @@ namespace AmSpaceTools.ViewModels
                     await _excelWorker.OpenFileAsync(_fileName);
                     _workSheet = await _excelWorker. GetWorkSheetAsync(1);
                     var data = await _excelWorker.ExctractDataAsync<JobMapExcelRow>(_workSheet.TableName);
-                    if (!data.Any())
-                        throw new ArgumentException(Resources.JobMapUploadFileIncorrect);
                     InputRows.Clear();
                     data.ForEach(row => InputRows.Add(row));
                 }
             }
             IsLoading = false;
+        }
+
+        private async Task<IEnumerable<JobMap>> GetJobMaps(IGrouping<(string, string, int, string, string), JobMapExcelRow> collection)
+        {
+            var (stringCountry, stringBrand, intLevel, position, department) = collection.Key;
+            var (country, level) = await GetSearchObjects(stringCountry, stringBrand, intLevel, await _brands, await _levels);
+            return await FindJobMap(country, level, position, department);
         }
 
         private async Task<(Country, Level)> GetSearchObjects(string country, string brand, int level, IEnumerable<Brand> brands, IEnumerable<Level> levels)
@@ -210,7 +196,7 @@ namespace AmSpaceTools.ViewModels
                 {
                     Name = jobMapExcelRow.Position,
                     Description = jobMapExcelRow.JobPurposeLocal,
-                    Language = _languageMap[jobMapExcelRow.Country.Trim()]
+                    Language = TranslationsMap.Map[jobMapExcelRow.Country.Trim()]
                 });
             }
             return new JobDescription { Id = id, Translations = translations };
@@ -231,7 +217,7 @@ namespace AmSpaceTools.ViewModels
                 {
                     Description = row.ResponsibilityLocal,
                     KpiText = row.KPILocal,
-                    Language = _languageMap[row.Country.Trim()]
+                    Language = TranslationsMap.Map[row.Country.Trim()]
                 });
             }
             return new JobResponsibility { Translations = translations, Job = jobId.Value };
