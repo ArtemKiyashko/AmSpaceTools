@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using Moq.Protected;
 using EPPlus.Core.Extensions;
 
+
 namespace ExcelWorkerTests
 {
     public class TestWithAttributes
@@ -129,6 +130,23 @@ namespace ExcelWorkerTests
             _amSpaceExcelWorker.Object.OpenFile("test");
 
             Assert.Throws<ArgumentException>(() => _amSpaceExcelWorker.Object.ExctractData<TestWithoutAttributes>("sheet"));
+        }
+
+        [Test]
+        public void GetWroksheet_ShouldReturn_WithoutAttributes()
+        {
+            var expected = new List<TestWithoutAttributes> {
+                new TestWithoutAttributes
+                {
+                    Property1 = "test"
+                }
+            };
+
+            _amSpaceExcelWorker.Object.SaveData("test", AppDataFolders.Reports, expected, "sheet");
+            _amSpaceFileWrapper.Setup(_ => _.GetStream(It.IsAny<string>(), It.IsAny<FileMode>(), It.IsAny<FileAccess>(), It.IsAny<FileShare>())).Returns(new MemoryStream(_memoryStream.ToArray()));
+            _amSpaceExcelWorker.Object.OpenFile("test");
+            var actual = _amSpaceExcelWorker.Object.GetWorkSheet("sheet");
+            Assert.That(actual.Rows, Has.Count.EqualTo(expected.Count));
         }
     }
 }
