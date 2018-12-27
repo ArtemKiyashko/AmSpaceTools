@@ -88,12 +88,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="SapPeopleTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Resources\example.xlsx" />
-    <None Include="Resources\ImportPeople_template.xlsx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AmSpaceModels\AmSpaceModels.csproj">

@@ -59,15 +59,5 @@ namespace ExcelWorkerTests.Properties {
                 resourceCulture = value;
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] example {
-            get {
-                object obj = ResourceManager.GetObject("example", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
     }
 }
