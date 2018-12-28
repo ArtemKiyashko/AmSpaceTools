@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using AmSpaceModels;
+using Extensions.AmSpaceClient;
 using Newtonsoft.Json;
 using Polly;
 using Polly.Retry;
@@ -199,10 +200,7 @@ namespace AmSpaceClient
             var result = await HttpResponcePolicy.ExecuteAsync(async () =>
             {
                 var form = new MultipartFormDataContent();
-                foreach (var parameter in parameters)
-                    form.Add(new StringContent(parameter.Value), parameter.Key);
-                foreach(var file in files)
-                    form.Add(new StreamContent(new MemoryStream(file.Data)), file.DataName, file.FileName);
+                form.FillForm(parameters, files);
                 return await AmSpaceHttpClient.PostAsync(endpoint, form);
             });
             return await result.ValidateAsync<TOutput>();
@@ -213,10 +211,7 @@ namespace AmSpaceClient
             var result = await HttpResponcePolicy.ExecuteAsync(async () =>
             {
                 var form = new MultipartFormDataContent();
-                foreach (var parameter in parameters)
-                    form.Add(new StringContent(parameter.Value), parameter.Key);
-                foreach (var file in files)
-                    form.Add(new StreamContent(new MemoryStream(file.Data)), file.DataName, file.FileName);
+                form.FillForm(parameters, files);
                 return await AmSpaceHttpClient.PutAsync(endpoint, form);
             });
             return await result.ValidateAsync<TOutput>();
