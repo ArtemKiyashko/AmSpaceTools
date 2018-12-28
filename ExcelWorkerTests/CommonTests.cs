@@ -12,17 +12,22 @@ using AmSpaceModels.Enums;
 using System.Collections.Generic;
 using Moq.Protected;
 using EPPlus.Core.Extensions;
-
+using System.Data;
 
 namespace ExcelWorkerTests
 {
-    public class TestWithAttributes
+    internal interface ITestBaseModel
+    {
+        string Property1 { get; set; }
+    }
+
+    internal sealed class TestWithAttributes : ITestBaseModel
     {
         [ExcelTableColumn]
         public string Property1 { get; set; }
     }
 
-    public class TestWithoutAttributes
+    internal sealed class TestWithoutAttributes : ITestBaseModel
     {
         public string Property1 { get; set; }
     }
@@ -52,7 +57,7 @@ namespace ExcelWorkerTests
 
 
         [Test]
-        public void SaveData_ShouldSaveCollections_WithoutExcelAttributes()
+        public void SaveData_WhenSaveCollectionsWithoutExcelAttributes_DoesNotThrow()
         {
             var collection = new List<TestWithoutAttributes> {
                 new TestWithoutAttributes
@@ -64,7 +69,7 @@ namespace ExcelWorkerTests
         }
 
         [Test]
-        public void SaveData_ShouldSaveCollections_WithExcelAttributes()
+        public void SaveData_WhenSaveCollectionsWithExcelAttributes_DoesNotThrow()
         {
             var collection = new List<TestWithAttributes> {
                 new TestWithAttributes
@@ -84,13 +89,16 @@ namespace ExcelWorkerTests
                     Property1 = "test"
                 }
             };
+            SaveAndOpenExcelPackage(expected);
+            var actual = _amSpaceExcelWorker.Object.ExctractData<TestWithAttributes>("sheet");
+            CollectionAssert.AllItemsAreInstancesOfType(actual, typeof(TestWithAttributes));
+        }
 
+        private void SaveAndOpenExcelPackage(IEnumerable<ITestBaseModel> expected)
+        {
             _amSpaceExcelWorker.Object.SaveData("test", AppDataFolders.Reports, expected, "sheet");
             _amSpaceFileWrapper.Setup(_ => _.GetStream(It.IsAny<string>(), It.IsAny<FileMode>(), It.IsAny<FileAccess>(), It.IsAny<FileShare>())).Returns(new MemoryStream(_memoryStream.ToArray()));
             _amSpaceExcelWorker.Object.OpenFile("test");
-            var actual = _amSpaceExcelWorker.Object.ExctractData<TestWithAttributes>("sheet");
-
-            CollectionAssert.AllItemsAreInstancesOfType(actual, typeof(TestWithAttributes));
         }
 
         [Test]
@@ -107,11 +115,8 @@ namespace ExcelWorkerTests
                 }
             };
 
-            _amSpaceExcelWorker.Object.SaveData("test", AppDataFolders.Reports, expected, "sheet");
-            _amSpaceFileWrapper.Setup(_ => _.GetStream(It.IsAny<string>(), It.IsAny<FileMode>(), It.IsAny<FileAccess>(), It.IsAny<FileShare>())).Returns(new MemoryStream(_memoryStream.ToArray()));
-            _amSpaceExcelWorker.Object.OpenFile("test");
+            SaveAndOpenExcelPackage(expected);
             var actual = _amSpaceExcelWorker.Object.ExctractData<TestWithAttributes>("sheet");
-
             Assert.That(actual, Has.Count.EqualTo(expected.Count));
         }
 
@@ -125,10 +130,7 @@ namespace ExcelWorkerTests
                 }
             };
 
-            _amSpaceExcelWorker.Object.SaveData("test", AppDataFolders.Reports, expected, "sheet");
-            _amSpaceFileWrapper.Setup(_ => _.GetStream(It.IsAny<string>(), It.IsAny<FileMode>(), It.IsAny<FileAccess>(), It.IsAny<FileShare>())).Returns(new MemoryStream(_memoryStream.ToArray()));
-            _amSpaceExcelWorker.Object.OpenFile("test");
-
+            SaveAndOpenExcelPackage(expected);
             Assert.Throws<ArgumentException>(() => _amSpaceExcelWorker.Object.ExctractData<TestWithoutAttributes>("sheet"));
         }
 
@@ -142,11 +144,9 @@ namespace ExcelWorkerTests
                 }
             };
 
-            _amSpaceExcelWorker.Object.SaveData("test", AppDataFolders.Reports, expected, "sheet");
-            _amSpaceFileWrapper.Setup(_ => _.GetStream(It.IsAny<string>(), It.IsAny<FileMode>(), It.IsAny<FileAccess>(), It.IsAny<FileShare>())).Returns(new MemoryStream(_memoryStream.ToArray()));
-            _amSpaceExcelWorker.Object.OpenFile("test");
+            SaveAndOpenExcelPackage(expected);
             var actual = _amSpaceExcelWorker.Object.GetWorkSheet("sheet");
-            Assert.That(actual.Rows, Has.Count.EqualTo(expected.Count));
+            Assert.IsInstanceOf<DataTable>(actual);
         }
     }
 }
