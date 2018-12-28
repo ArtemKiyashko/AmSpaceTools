@@ -452,7 +452,9 @@ namespace AmSpaceClient
         public Task<JpaFile> CreateJpaHistoryAsync(JpaFile jpaEntry)
         {
             var parameters = CreateFormParametersJpa(jpaEntry);
-            var fileList = CreateFileListJpa(jpaEntry);
+            var file = CreateFileJpa(jpaEntry);
+            var fileList = new List<FileToUpload>();
+            fileList.Add(file);
             return RequestWrapper.PostFormAsync<JpaFile>(Endpoints.JpaHistoryAdminEndpoint, parameters, fileList);
         }
 
@@ -465,23 +467,23 @@ namespace AmSpaceClient
         public Task<JpaFile> UpdateJpaHistoryAsync(JpaFile jpaEntry)
         {
             var parameters = CreateFormParametersJpa(jpaEntry);
-            var fileList = CreateFileListJpa(jpaEntry);
+            var file = CreateFileJpa(jpaEntry);
+            var fileList = new List<FileToUpload>();
+            fileList.Add(file);
             var url = string.Format(Endpoints.JpaHistoryUpdateAdminEndpoint, jpaEntry.Id.ToString());
+
             return RequestWrapper.PutFormAsync<JpaFile>(url, parameters, fileList);
         }
 
-        private IEnumerable<FileToUpload> CreateFileListJpa(JpaFile jpaEntry)
+        private FileToUpload CreateFileJpa(JpaFile jpaEntry)
         {
             var data = File.ReadAllBytes(jpaEntry.File.ToString());
-            var file = new FileToUpload
+            return new FileToUpload
             {
                 Data = data,
                 DataName = "file",
                 FileName = Path.GetFileName(jpaEntry.File.ToString())
             };
-            var fileList = new List<FileToUpload>();
-            fileList.Add(file);
-            return fileList;
         }
 
         private Dictionary<string, string> CreateFormParametersJpa(JpaFile jpaEntry)
