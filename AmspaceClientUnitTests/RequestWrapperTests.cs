@@ -890,9 +890,11 @@ namespace AmspaceClientUnitTests
             
             _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
                 .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
-                .Callback<HttpRequestMessage, CancellationToken>(async (message, token) => 
-                    sentContent = await (message.Content as MultipartFormDataContent).OfType<StringContent>().First(_ => _.Headers.ContentDisposition.Name == "param1").ReadAsStringAsync())
-                .ReturnsAsync(_defaultResponce);
+                .Returns<HttpRequestMessage, CancellationToken>(async (message, token) =>
+                {
+                    sentContent = await (message.Content as MultipartFormDataContent).OfType<StringContent>().First(_ => _.Headers.ContentDisposition.Name == "param1").ReadAsStringAsync();
+                    return _defaultResponce;
+                });
 
             var result = await _requestWrapper.PostFormAsync<TestModelClass>(_testEndpoing, parameters, files);
 
@@ -915,9 +917,11 @@ namespace AmspaceClientUnitTests
 
             _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
                 .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
-                .Callback<HttpRequestMessage, CancellationToken>(async (message, token) =>
-                    sentContent = await (message.Content as MultipartFormDataContent).OfType<StreamContent>().First(_ => _.Headers.ContentDisposition.Name == "file").ReadAsByteArrayAsync())
-                .ReturnsAsync(_defaultResponce);
+                .Returns<HttpRequestMessage, CancellationToken>(async (message, token) =>
+                {
+                    sentContent = await (message.Content as MultipartFormDataContent).OfType<StreamContent>().First(_ => _.Headers.ContentDisposition.Name == "file").ReadAsByteArrayAsync();
+                    return _defaultResponce;
+                });
 
             var result = await _requestWrapper.PostFormAsync<TestModelClass>(_testEndpoing, parameters, files);
 
@@ -978,9 +982,11 @@ namespace AmspaceClientUnitTests
 
             _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
                 .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
-                .Callback<HttpRequestMessage, CancellationToken>(async (message, token) =>
-                    sentContent = await (message.Content as MultipartFormDataContent).OfType<StringContent>().First(_ => _.Headers.ContentDisposition.Name == "param1").ReadAsStringAsync())
-                .ReturnsAsync(_defaultResponce);
+                .Returns<HttpRequestMessage, CancellationToken>(async (message, token) =>
+                {
+                    sentContent = await (message.Content as MultipartFormDataContent).OfType<StringContent>().First(_ => _.Headers.ContentDisposition.Name == "param1").ReadAsStringAsync();
+                    return _defaultResponce;
+                });
 
             var result = await _requestWrapper.PutFormAsync<TestModelClass>(_testEndpoing, parameters, files);
 
@@ -1003,9 +1009,11 @@ namespace AmspaceClientUnitTests
 
             _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
                 .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
-                .Callback<HttpRequestMessage, CancellationToken>(async (message, token) =>
-                    sentContent = await (message.Content as MultipartFormDataContent).OfType<StreamContent>().First(_ => _.Headers.ContentDisposition.Name == "file").ReadAsByteArrayAsync())
-                .ReturnsAsync(_defaultResponce);
+                .Returns<HttpRequestMessage, CancellationToken>(async (message, token) =>
+                {
+                    sentContent = await (message.Content as MultipartFormDataContent).OfType<StreamContent>().First(_ => _.Headers.ContentDisposition.Name == "file").ReadAsByteArrayAsync();
+                    return _defaultResponce;
+                });
 
             var result = await _requestWrapper.PutFormAsync<TestModelClass>(_testEndpoing, parameters, files);
 
