@@ -1,4 +1,5 @@
 ﻿using AmSpaceClient;
+using Extensions.AmSpaceClient;
 using Moq;
 using Moq.Protected;
 using Newtonsoft.Json;
@@ -857,5 +858,182 @@ namespace AmspaceClientUnitTests
 
             Assert.ThrowsAsync<ArgumentException>(async () => await _requestWrapper.PatchAsyncWrapper(model, _testEndpoing));
         }
+
+        #region Post form tests
+        [Test]
+        public async Task PostFormAsyncWrapperTOut_WhenCalled_MakeUseOfHttpClientWithCorrectMethodAndEndpoint()
+        {
+            Expression<Func<HttpRequestMessage, bool>> verifyMessageMatch = message => message.Method == HttpMethod.Post
+                                                                                    && message.RequestUri.OriginalString == _testEndpoing;
+
+            var result = await _requestWrapper.PostFormAsync<TestModelClass>(_testEndpoing, new List<KeyValuePair<string, string>>(), new List<FileToUpload>());
+
+            _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
+                .Verify(handler => handler.SendAsync(It.Is(verifyMessageMatch), It.IsAny<CancellationToken>()), Times.Once());
+        }
+
+        [Test]
+        public async Task PostFormAsyncWrapperTOut_WhenCalled_UseCorrectParametersContent()
+        {
+            string sentContent = default;
+            var parameters = new List<KeyValuePair<string, string>> {
+                new KeyValuePair<string, string>("param1", "value1")
+            };
+            var files = new List<FileToUpload> {
+                new FileToUpload
+                {
+                    Data = new byte[0],
+                    FileName = "file.txt",
+                    DataName = "file"
+                }
+            };
+            
+            _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
+                .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
+                .Callback<HttpRequestMessage, CancellationToken>(async (message, token) => 
+                    sentContent = await (message.Content as MultipartFormDataContent).OfType<StringContent>().First(_ => _.Headers.ContentDisposition.Name == "param1").ReadAsStringAsync())
+                .ReturnsAsync(_defaultResponce);
+
+            var result = await _requestWrapper.PostFormAsync<TestModelClass>(_testEndpoing, parameters, files);
+
+            Assert.AreEqual(parameters[0].Value, sentContent);
+        }
+
+        [Test]
+        public async Task PostFormAsyncWrapperTOut_WhenCalled_UseCorrectFileContent()
+        {
+            byte[] sentContent = default;
+            var parameters = new List<KeyValuePair<string, string>>();
+            var files = new List<FileToUpload> {
+                new FileToUpload
+                {
+                    Data = new byte[] { 0x25, 0x20 },
+                    FileName = "file.txt",
+                    DataName = "file"
+                }
+            };
+
+            _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
+                .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
+                .Callback<HttpRequestMessage, CancellationToken>(async (message, token) =>
+                    sentContent = await (message.Content as MultipartFormDataContent).OfType<StreamContent>().First(_ => _.Headers.ContentDisposition.Name == "file").ReadAsByteArrayAsync())
+                .ReturnsAsync(_defaultResponce);
+
+            var result = await _requestWrapper.PostFormAsync<TestModelClass>(_testEndpoing, parameters, files);
+
+            Assert.AreEqual(files.First().Data, sentContent);
+        }
+
+        [Test]
+        public async Task PostFormAsyncWrapperTOut_WhenCalled_MakeUseOfIAsyncPolicy()
+        {
+            var policyMock = new Mock<IAsyncPolicy<HttpResponseMessage>>();
+            policyMock.Setup(policy => policy.ExecuteAsync(It.IsAny<Func<Task<HttpResponseMessage>>>())).Returns(Task.FromResult(_defaultResponce));
+            _requestWrapper.HttpResponcePolicy = policyMock.Object;
+
+            var result = await _requestWrapper.PostFormAsync<TestModelClass>(_testEndpoing, new List<KeyValuePair<string, string>>(), new List<FileToUpload>());
+
+            policyMock.Verify(policy => policy.ExecuteAsync(It.IsAny<Func<Task<HttpResponseMessage>>>()), Times.AtLeastOnce);
+        }
+
+        [Test]
+        public void PostFormAsyncWrapperTOut_WhenReceiveUnsucessStatusCode_Throws()
+        {
+            var incomingHttpResponce = new HttpResponseMessage(HttpStatusCode.NotFound);
+            _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
+                .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(incomingHttpResponce);
+
+            Assert.ThrowsAsync<ArgumentException>(async () => await _requestWrapper.PostFormAsync<TestModelClass>(_testEndpoing, new List<KeyValuePair<string, string>>(), new List<FileToUpload>()));
+        }
+        #endregion
+        #region Put form tests
+        [Test]
+        public async Task PutFormAsyncWrapperTOut_WhenCalled_MakeUseOfHttpClientWithCorrectMethodAndEndpoint()
+        {
+            Expression<Func<HttpRequestMessage, bool>> verifyMessageMatch = message => message.Method == HttpMethod.Put
+                                                                                    && message.RequestUri.OriginalString == _testEndpoing;
+
+            var result = await _requestWrapper.PutFormAsync<TestModelClass>(_testEndpoing, new List<KeyValuePair<string, string>>(), new List<FileToUpload>());
+
+            _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
+                .Verify(handler => handler.SendAsync(It.Is(verifyMessageMatch), It.IsAny<CancellationToken>()), Times.Once());
+        }
+
+        [Test]
+        public async Task PutFormAsyncWrapperTOut_WhenCalled_UseCorrectParametersContent()
+        {
+            string sentContent = default;
+            var parameters = new List<KeyValuePair<string, string>> {
+                new KeyValuePair<string, string>("param1", "value1")
+            };
+            var files = new List<FileToUpload> {
+                new FileToUpload
+                {
+                    Data = new byte[0],
+                    FileName = "file.txt",
+                    DataName = "file"
+                }
+            };
+
+            _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
+                .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
+                .Callback<HttpRequestMessage, CancellationToken>(async (message, token) =>
+                    sentContent = await (message.Content as MultipartFormDataContent).OfType<StringContent>().First(_ => _.Headers.ContentDisposition.Name == "param1").ReadAsStringAsync())
+                .ReturnsAsync(_defaultResponce);
+
+            var result = await _requestWrapper.PutFormAsync<TestModelClass>(_testEndpoing, parameters, files);
+
+            Assert.AreEqual(parameters[0].Value, sentContent);
+        }
+
+        [Test]
+        public async Task PutFormAsyncWrapperTOut_WhenCalled_UseCorrectFileContent()
+        {
+            byte[] sentContent = default;
+            var parameters = new List<KeyValuePair<string, string>>();
+            var files = new List<FileToUpload> {
+                new FileToUpload
+                {
+                    Data = new byte[] { 0x25, 0x20 },
+                    FileName = "file.txt",
+                    DataName = "file"
+                }
+            };
+
+            _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
+                .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
+                .Callback<HttpRequestMessage, CancellationToken>(async (message, token) =>
+                    sentContent = await (message.Content as MultipartFormDataContent).OfType<StreamContent>().First(_ => _.Headers.ContentDisposition.Name == "file").ReadAsByteArrayAsync())
+                .ReturnsAsync(_defaultResponce);
+
+            var result = await _requestWrapper.PutFormAsync<TestModelClass>(_testEndpoing, parameters, files);
+
+            Assert.AreEqual(files.First().Data, sentContent);
+        }
+
+        [Test]
+        public async Task PutFormAsyncWrapperTOut_WhenCalled_MakeUseOfIAsyncPolicy()
+        {
+            var policyMock = new Mock<IAsyncPolicy<HttpResponseMessage>>();
+            policyMock.Setup(policy => policy.ExecuteAsync(It.IsAny<Func<Task<HttpResponseMessage>>>())).Returns(Task.FromResult(_defaultResponce));
+            _requestWrapper.HttpResponcePolicy = policyMock.Object;
+
+            var result = await _requestWrapper.PutFormAsync<TestModelClass>(_testEndpoing, new List<KeyValuePair<string, string>>(), new List<FileToUpload>());
+
+            policyMock.Verify(policy => policy.ExecuteAsync(It.IsAny<Func<Task<HttpResponseMessage>>>()), Times.AtLeastOnce);
+        }
+
+        [Test]
+        public void PutFormAsyncWrapperTOut_WhenReceiveUnsucessStatusCode_Throws()
+        {
+            var incomingHttpResponce = new HttpResponseMessage(HttpStatusCode.NotFound);
+            _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
+                .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(incomingHttpResponce);
+
+            Assert.ThrowsAsync<ArgumentException>(async () => await _requestWrapper.PutFormAsync<TestModelClass>(_testEndpoing, new List<KeyValuePair<string, string>>(), new List<FileToUpload>()));
+        }
+        #endregion
     }
 }
