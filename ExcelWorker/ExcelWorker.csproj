@@ -63,6 +63,8 @@
     <Compile Include="Enums\ExcelEnums.cs" />
     <Compile Include="EpplusExtensions.cs" />
     <Compile Include="IExcelWorker.cs" />
+    <Compile Include="Services\IFileWrapper.cs" />
+    <Compile Include="Services\ISaveLocator.cs" />
     <Compile Include="Models\EpplusIgnoreAttribute.cs" />
     <Compile Include="Models\GoalExcelRow.cs" />
     <Compile Include="Models\IdpExcelRow.cs" />

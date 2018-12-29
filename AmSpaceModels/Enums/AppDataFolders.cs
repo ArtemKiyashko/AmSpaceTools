@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,7 +14,7 @@ namespace AmSpaceModels.Enums
         Common
     }
 
-    public class FoldersLocations
+    public static class FoldersLocations
     {
         private static readonly Dictionary<AppDataFolders, string> _locations;
         static FoldersLocations()
@@ -21,12 +22,12 @@ namespace AmSpaceModels.Enums
             _locations = new Dictionary<AppDataFolders, string>
             {
                 { AppDataFolders.Common, "" },
-                { AppDataFolders.Logs, "Logs\\"},
-                { AppDataFolders.Reports, "Reports\\"}
+                { AppDataFolders.Logs, "Logs"},
+                { AppDataFolders.Reports, "Reports"}
             };
         }
 
         public static string GetFolderLocation(AppDataFolders dataFolder) => 
-            $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\\AmSpaceTools\\{_locations[dataFolder]}";
+           Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.FriendlyName), _locations[dataFolder]);
     }
 }

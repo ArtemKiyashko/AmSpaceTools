@@ -19,6 +19,8 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using UriBuilderExtended;
+using System.IO;
+using System.IO.Compression;
 
 namespace AmSpaceClient
 {
@@ -430,6 +432,67 @@ namespace AmSpaceClient
             password.UserId = null;
             var url = string.Format(Endpoints.ChangePasswordEndpoint, account.Id);
             return RequestWrapper.PostAsyncWrapper(password, url);
+        }
+
+        public async Task<IEnumerable<JpaFile>> GetJpaHistoryByUsernameAsync(string username)
+        {
+            var url = new UriBuilder(Endpoints.JpaHistoryAdminEndpoint);
+            url.AddQuery("username", username);
+            var pager = await RequestWrapper.GetAsyncWrapper<JpaFileList>(url.ToString());
+            var result = new List<JpaFile>();
+            result.AddRange(pager.Results);
+            while (!string.IsNullOrEmpty(pager.Next))
+            {
+                pager = await RequestWrapper.GetAsyncWrapper<JpaFileList>(pager.Next);
+                result.AddRange(pager.Results);
+            }
+            return result;
+        }
+
+        public Task<JpaFile> CreateJpaHistoryAsync(JpaFile jpaEntry)
+        {
+            var parameters = CreateFormParametersJpa(jpaEntry);
+            var file = CreateFileJpa(jpaEntry);
+            var fileList = new List<FileToUpload>();
+            fileList.Add(file);
+            return RequestWrapper.PostFormAsync<JpaFile>(Endpoints.JpaHistoryAdminEndpoint, parameters, fileList);
+        }
+
+        public Task<bool> DeleteJpaHistoryAsync(JpaFile jpaEntry)
+        {
+            var url = string.Format(Endpoints.JpaHistoryUpdateAdminEndpoint, jpaEntry.Id.ToString());
+            return RequestWrapper.DeleteAsyncWrapper(url);
+        }
+
+        public Task<JpaFile> UpdateJpaHistoryAsync(JpaFile jpaEntry)
+        {
+            var parameters = CreateFormParametersJpa(jpaEntry);
+            var file = CreateFileJpa(jpaEntry);
+            var fileList = new List<FileToUpload>();
+            fileList.Add(file);
+            var url = string.Format(Endpoints.JpaHistoryUpdateAdminEndpoint, jpaEntry.Id.ToString());
+
+            return RequestWrapper.PutFormAsync<JpaFile>(url, parameters, fileList);
+        }
+
+        private FileToUpload CreateFileJpa(JpaFile jpaEntry)
+        {
+            var data = File.ReadAllBytes(jpaEntry.File.ToString());
+            return new FileToUpload
+            {
+                Data = data,
+                DataName = "file",
+                FileName = Path.GetFileName(jpaEntry.File.ToString())
+            };
+        }
+
+        private Dictionary<string, string> CreateFormParametersJpa(JpaFile jpaEntry)
+        {
+            var parameters = new Dictionary<string, string>();
+            parameters.Add("jpa_name", jpaEntry.JpaName);
+            parameters.Add("year", jpaEntry.Year.ToString());
+            parameters.Add("user", jpaEntry.UserName);
+            return parameters;
         }
     }
 }

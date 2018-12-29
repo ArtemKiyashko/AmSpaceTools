@@ -8,7 +8,7 @@ namespace AmSpaceTools.Infrastructure
 {
     public interface IProgressState
     {
-        int ProgressPercent { get ; }
+        decimal ProgressPercent { get ; }
         int ProgressTasksDone { get; set; }
         int ProgressTasksTotal { get; set; }
         string ProgressDescriptionText { get; set; }
@@ -16,7 +16,7 @@ namespace AmSpaceTools.Infrastructure
 
     public struct ProgressState : IProgressState
     {
-        public int ProgressPercent => Convert.ToInt32(ProgressTasksTotal != 0 ? (double)ProgressTasksDone / (double)ProgressTasksTotal * 100 : 0);
+        public decimal ProgressPercent => ProgressTasksTotal != 0 ? (decimal)ProgressTasksDone / (decimal)ProgressTasksTotal * 100 : 0;
         public int ProgressTasksDone { get ; set ; }
         public int ProgressTasksTotal { get ; set ; }
         public string ProgressDescriptionText { get ; set ; }

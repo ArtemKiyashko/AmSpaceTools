@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace ExcelWorker.Models
 {
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     public class EpplusIgnoreAttribute : Attribute
     {
     }
