@@ -1,4 +1,5 @@
 ﻿using AmSpaceModels;
+using EPPlus.Core.Extensions;
 using ExcelWorker.Models;
 using OfficeOpenXml;
 using System;
@@ -23,6 +24,13 @@ namespace ExcelWorker
                 OfficeOpenXml.Table.TableStyles.None,
                 BindingFlags.Instance | BindingFlags.Public,
                 membersToInclude);
+        }
+
+        public static bool AttributesExists<T>(this IEnumerable<T> data)
+        {
+            return typeof(T)
+                .GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                .Any(p => Attribute.IsDefined(p, typeof(ExcelTableColumnAttribute)));
         }
     }
 }

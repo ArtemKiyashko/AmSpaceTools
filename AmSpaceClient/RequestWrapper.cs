@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -10,6 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using AmSpaceModels;
+using Extensions.AmSpaceClient;
 using Newtonsoft.Json;
 using Polly;
 using Polly.Retry;
@@ -185,11 +187,34 @@ namespace AmSpaceClient
             httpcontent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             return httpcontent;
         }
+        
         private Policy<HttpResponseMessage> GetDefaultPolicy()
         {
             var statusCodeToHandle = new[] { HttpStatusCode.ServiceUnavailable, HttpStatusCode.BadGateway };
             return Policy.HandleResult<HttpResponseMessage>(responce => statusCodeToHandle.Contains(responce.StatusCode))
                 .WaitAndRetryAsync(3, (attempt) => TimeSpan.FromMilliseconds(attempt * attempt * 1000));
+        }
+
+        public async Task<TOutput> PostFormAsync<TOutput>(string endpoint, IEnumerable<KeyValuePair<string,string>> parameters, IEnumerable<FileToUpload> files) where TOutput : class
+        {
+            var result = await HttpResponcePolicy.ExecuteAsync(async () =>
+            {
+                var form = new MultipartFormDataContent();
+                form.FillForm(parameters, files);
+                return await AmSpaceHttpClient.PostAsync(endpoint, form);
+            });
+            return await result.ValidateAsync<TOutput>();
+        }
+
+        public async Task<TOutput> PutFormAsync<TOutput>(string endpoint, IEnumerable<KeyValuePair<string, string>> parameters, IEnumerable<FileToUpload> files) where TOutput : class
+        {
+            var result = await HttpResponcePolicy.ExecuteAsync(async () =>
+            {
+                var form = new MultipartFormDataContent();
+                form.FillForm(parameters, files);
+                return await AmSpaceHttpClient.PutAsync(endpoint, form);
+            });
+            return await result.ValidateAsync<TOutput>();
         }
     }
 }

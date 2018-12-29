@@ -66,6 +66,7 @@
     <Compile Include="Performance\Goal.cs" />
     <Compile Include="Performance\GoalNew.cs" />
     <Compile Include="Performance\GoalWeight.cs" />
+    <Compile Include="Performance\JpaFile.cs" />
     <Compile Include="Performance\Kpi.cs" />
     <Compile Include="Organization\People.cs" />
     <Compile Include="Performance\Roadmaps.cs" />
