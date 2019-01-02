@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using AmSpaceTools.Properties;
 using AmSpaceTools.Infrastructure.Extensions;
-using AmSpaceTools.Infrastructure.Providers;
+
 
 namespace AmSpaceTools.ViewModels
 {
@@ -85,13 +85,13 @@ namespace AmSpaceTools.ViewModels
         {
             if (inputRows.Any(_defaultPasswordRequiredCondition))
             {
-                _changePasswordVm.DescriptionText = $"Set default password";
+                _changePasswordVm.DescriptionText = Resources.PeopleUploadSetDefaultPassword;
                 var view = new ChangePassword()
                 {
                     DataContext = _changePasswordVm
                 };
                 var result = (bool)await DialogHost.Show(view, "ControlDialog");
-                if (!result) throw new ArgumentNullException("Default password not set!");
+                if (!result) throw new ArgumentNullException(Resources.PeopleUploadDefaultPasswordNotSet);
                 _defaultPassword = _changePasswordVm.Password;
             }
         }

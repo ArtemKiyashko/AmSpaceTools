@@ -195,4 +195,10 @@
   <data name="UserNameBoxToolTip" xml:space="preserve">
     <value>User name</value>
   </data>
+  <data name="PeopleUploadDefaultPasswordNotSet" xml:space="preserve">
+    <value>Default password not set!</value>
+  </data>
+  <data name="PeopleUploadSetDefaultPassword" xml:space="preserve">
+    <value>Set default password</value>
+  </data>
 </root>

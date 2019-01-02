@@ -196,6 +196,15 @@ namespace AmSpaceTools.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Default password not set!.
+        /// </summary>
+        public static string PeopleUploadDefaultPasswordNotSet {
+            get {
+                return ResourceManager.GetString("PeopleUploadDefaultPasswordNotSet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to All done!{0}Contracts uploaded: {1}.
         /// </summary>
         public static string PeopleUploadFinishUploadMessage {
@@ -246,6 +255,15 @@ namespace AmSpaceTools.Properties {
         public static string PeopleUploadReportUploadStatusMessage {
             get {
                 return ResourceManager.GetString("PeopleUploadReportUploadStatusMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set default password.
+        /// </summary>
+        public static string PeopleUploadSetDefaultPassword {
+            get {
+                return ResourceManager.GetString("PeopleUploadSetDefaultPassword", resourceCulture);
             }
         }
         
