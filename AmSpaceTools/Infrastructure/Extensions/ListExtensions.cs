@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AmSpaceTools.Infrastructure
+namespace AmSpaceTools.Infrastructure.Extensions
 {
     public static class ListExtensions
     {

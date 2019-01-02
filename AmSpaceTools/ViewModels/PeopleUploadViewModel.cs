@@ -20,7 +20,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using AmSpaceTools.Properties;
-
+using AmSpaceTools.Infrastructure.Extensions;
 
 namespace AmSpaceTools.ViewModels
 {

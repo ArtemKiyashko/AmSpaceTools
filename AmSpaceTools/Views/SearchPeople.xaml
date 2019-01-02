@@ -3,17 +3,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:AmSpaceTools.Views"
-             xmlns:modelsSap="clr-namespace:AmSpaceModels.Sap;assembly=AmSpaceModels"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             xmlns:infrastructure="clr-namespace:AmSpaceTools.Infrastructure"
              xmlns:system="clr-namespace:System;assembly=mscorlib"
              x:Class="AmSpaceTools.Views.SearchPeople"
              mc:Ignorable="d" 
              d:DesignHeight="800" d:DesignWidth="800">
-    <UserControl.Resources>
-        <infrastructure:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
-    </UserControl.Resources>
     <Grid Margin="10" IsEnabled="{Binding UIEnabled}"  FocusManager.FocusedElement="{Binding ElementName=NameTextBox}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>

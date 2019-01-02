@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AmSpaceModels;
 
-namespace AmSpaceTools.Infrastructure
+namespace AmSpaceTools.Infrastructure.Providers
 {
     public interface IAmSpaceEnvironmentsProvider
     {

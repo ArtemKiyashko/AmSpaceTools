@@ -144,25 +144,24 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Decorators\ExcelWorkerDecorator.cs" />
-    <Compile Include="Infrastructure\AmSpaceEnvironmentsProvider.cs" />
+    <Compile Include="Infrastructure\Providers\AmSpaceEnvironmentsProvider.cs" />
     <Compile Include="Infrastructure\ColumnDefinitionError.cs" />
     <Compile Include="Infrastructure\Converters\DecimalToStringPercentConverter.cs" />
     <Compile Include="Infrastructure\CsvLogAppender.cs" />
-    <Compile Include="Infrastructure\DictionaryExtensions.cs" />
-    <Compile Include="Infrastructure\IAmSpaceEnvironmentsProvider.cs" />
-    <Compile Include="Infrastructure\IdpExcelRowEqualityComparer.cs" />
+    <Compile Include="Infrastructure\Extensions\DictionaryExtensions.cs" />
+    <Compile Include="Infrastructure\Providers\IAmSpaceEnvironmentsProvider.cs" />
     <Compile Include="Infrastructure\IHavePassword.cs" />
-    <Compile Include="Infrastructure\BoolToVisibilityConverter.cs" />
-    <Compile Include="Infrastructure\ListExtensions.cs" />
+    <Compile Include="Infrastructure\Converters\BoolToVisibilityConverter.cs" />
+    <Compile Include="Infrastructure\Extensions\ListExtensions.cs" />
     <Compile Include="Infrastructure\MenuItem.cs" />
     <Compile Include="Infrastructure\NotEmptyValidationRule.cs" />
     <Compile Include="Infrastructure\PasswordBoxAssistant.cs" />
     <Compile Include="Infrastructure\ProgressState.cs" />
     <Compile Include="Infrastructure\RelayCommand.cs" />
     <Compile Include="Infrastructure\Services.cs" />
-    <Compile Include="Infrastructure\StringExtensions.cs" />
-    <Compile Include="Infrastructure\TreeExtensions.cs" />
-    <Compile Include="Infrastructure\TreeItem.cs" />
+    <Compile Include="Infrastructure\Extensions\StringExtensions.cs" />
+    <Compile Include="Infrastructure\Extensions\TreeExtensions.cs" />
+    <Compile Include="Infrastructure\Extensions\TreeItem.cs" />
     <Compile Include="ModelConverters\ActionToUpdateConverter.cs" />
     <Compile Include="ModelConverters\CompetencyActionsToExcelRowConverter.cs" />
     <Compile Include="ModelConverters\SapPersonExcelToAmspaceConverter.cs" />

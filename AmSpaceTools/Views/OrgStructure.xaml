@@ -10,9 +10,6 @@
              xmlns:infrastructure="clr-namespace:AmSpaceTools.Infrastructure"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <UserControl.Resources>
-        <infrastructure:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
-    </UserControl.Resources>
     <Grid IsEnabled="{Binding UIEnabled}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
