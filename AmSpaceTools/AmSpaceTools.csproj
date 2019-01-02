@@ -81,6 +81,7 @@
     <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.3.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.5.1\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
     </Reference>
+    <Reference Include="System.DirectoryServices.AccountManagement" />
     <Reference Include="System.Globalization.Calendars, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Globalization.Calendars.4.3.0\lib\net46\System.Globalization.Calendars.dll</HintPath>
     </Reference>
@@ -144,11 +145,13 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Decorators\ExcelWorkerDecorator.cs" />
+    <Compile Include="Infrastructure\Providers\ActiveDirectoryProvider.cs" />
     <Compile Include="Infrastructure\Providers\AmSpaceEnvironmentsProvider.cs" />
     <Compile Include="Infrastructure\ColumnDefinitionError.cs" />
     <Compile Include="Infrastructure\Converters\DecimalToStringPercentConverter.cs" />
     <Compile Include="Infrastructure\CsvLogAppender.cs" />
     <Compile Include="Infrastructure\Extensions\DictionaryExtensions.cs" />
+    <Compile Include="Infrastructure\Providers\IActiveDirectoryProvider.cs" />
     <Compile Include="Infrastructure\Providers\IAmSpaceEnvironmentsProvider.cs" />
     <Compile Include="Infrastructure\IHavePassword.cs" />
     <Compile Include="Infrastructure\Converters\BoolToVisibilityConverter.cs" />

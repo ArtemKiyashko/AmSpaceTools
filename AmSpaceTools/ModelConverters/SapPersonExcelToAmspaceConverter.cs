@@ -1,19 +1,21 @@
 ﻿using AmSpaceModels.Enums;
 using AmSpaceModels.Organization;
-using AmSpaceModels.Sap;
-using AmSpaceTools.Infrastructure;
+using AmSpaceTools.Infrastructure.Providers;
 using AutoMapper;
 using ExcelWorker.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace AmSpaceTools.ModelConverters
 {
     public class SapPersonExcelToAmspaceConverter : ITypeConverter<SapPersonExcelRow, ExternalAccount>
     {
+        private readonly IActiveDirectoryProvider _activeDirectoryProvider;
+
+        public SapPersonExcelToAmspaceConverter(IActiveDirectoryProvider activeDirectoryProvider)
+        {
+            _activeDirectoryProvider = activeDirectoryProvider;
+        }
+
         public ExternalAccount Convert(SapPersonExcelRow source, ExternalAccount destination, ResolutionContext context)
         {
 
@@ -33,6 +35,9 @@ namespace AmSpaceTools.ModelConverters
             externalUser.CountryCode = source.Country;
             externalUser.ContractNumber = source.ContractNumber;
             externalUser.Status = (AmSpaceUserStatus)source.Status;
+            externalUser.BackendType = _activeDirectoryProvider.FindOneByEmail(source.Email) != null
+               ? AccountBackendType.ActiveDirectory
+               : AccountBackendType.AmSpace;
             return externalUser;
         }
     }

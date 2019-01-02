@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using AmSpaceTools.Properties;
 using AmSpaceTools.Infrastructure.Extensions;
+using AmSpaceTools.Infrastructure.Providers;
 
 namespace AmSpaceTools.ViewModels
 {
@@ -190,7 +191,7 @@ namespace AmSpaceTools.ViewModels
                 _.ContractNumber == account.ContractNumber && 
                 _.Status == ContractStatus.ACTIVE)
                 .SingleOrDefault(_defaultPasswordRequiredCondition);
-            if (row == null) return false;
+            if (account.BackendType == AccountBackendType.ActiveDirectory || row == null) return false;
             var existingUser = await _client.FindUserByIdentityNumber(account.PersonLegalId);
             bool result = false;
             try
