@@ -62,7 +62,7 @@ namespace AmspaceClientUnitTests
             _moqHttpClientHandler = new Mock<HttpMessageHandler>();
             _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
                 .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(_defaultResponce));
+                .ReturnsAsync(_defaultResponce);
             var httpclient = new HttpClient(_moqHttpClientHandler.Object);
             var wrappermoq = new Mock<RequestWrapper> { CallBase = true };
             wrappermoq.SetupGet(wrapper => wrapper.AmSpaceHttpClient).Returns(httpclient);
@@ -106,9 +106,7 @@ namespace AmspaceClientUnitTests
         [Test]
         public async Task GetAsyncWrapperT_WhenCalled_MakeUseOfIAsyncPolicy()
         {
-            var policyMock = new Mock<IAsyncPolicy<HttpResponseMessage>>();
-            policyMock.Setup(policy => policy.ExecuteAsync(It.IsAny<Func<Task<HttpResponseMessage>>>())).Returns(Task.FromResult(_defaultResponce));
-            _requestWrapper.HttpResponcePolicy = policyMock.Object;
+            var policyMock = MockHttpResponcePolicy();
 
             var result = await _requestWrapper.GetAsyncWrapper<TestModelClass>(_testEndpoing);
 
@@ -118,11 +116,7 @@ namespace AmspaceClientUnitTests
         [Test]
         public async Task GetAsyncWrapperT_WhenReceiveValidJson_ReturnsCorrectlyDeserealizedObject()
         {
-            var incomingJson = "{\"property\": \"1\"}";
-            var incomingHttpResponce = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(incomingJson) };
-            _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
-                .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(incomingHttpResponce));
+            ChangeDefaultHttpResponce("{\"property\": \"1\"}", HttpStatusCode.OK);
             var expectedObject = new TestModelClass { Proprety = 1 };
             
             var result = await _requestWrapper.GetAsyncWrapper<TestModelClass>(_testEndpoing);
@@ -133,11 +127,8 @@ namespace AmspaceClientUnitTests
         [Test]
         public void GetAsyncWrapperT_WhenReceiveUnsuccessStatusCode_Throws()
         {
-            var incomingHttpResponce = new HttpResponseMessage(HttpStatusCode.NotFound);
-            _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
-                .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(incomingHttpResponce));
-
+            ChangeDefaultHttpResponce("", HttpStatusCode.NotFound);
+            
             Assert.ThrowsAsync<ArgumentException>(async () => await _requestWrapper.GetAsyncWrapper<TestModelClass>(_testEndpoing));
         }
 
@@ -156,9 +147,7 @@ namespace AmspaceClientUnitTests
         [Test]
         public async Task GetAsyncWrapper_WhenCalled_MakeUseOfIAsyncPolicy()
         {
-            var policyMock = new Mock<IAsyncPolicy<HttpResponseMessage>>();
-            policyMock.Setup(policy => policy.ExecuteAsync(It.IsAny<Func<Task<HttpResponseMessage>>>())).Returns(Task.FromResult(_defaultResponce));
-            _requestWrapper.HttpResponcePolicy = policyMock.Object;
+            var policyMock = MockHttpResponcePolicy();
 
             var result = await _requestWrapper.GetAsyncWrapper(_testEndpoing);
 
@@ -168,11 +157,8 @@ namespace AmspaceClientUnitTests
         [Test]
         public async Task GetAsyncWrapper_WhenCalled_ReturnsUnmodifiedHttpResponce()
         {
-            var incomingJson = "{\"[\"test\"]\"}";
-            var expectedObject = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(incomingJson) };
-            _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
-                .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(expectedObject));
+            var expectedObject = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent("{\"[\"test\"]\"}") };
+            ChangeDefaultHttpResponce(expectedObject);
 
             var result = await _requestWrapper.GetAsyncWrapper(_testEndpoing);
 
@@ -182,10 +168,7 @@ namespace AmspaceClientUnitTests
         [Test]
         public void GetAsyncWrapper_WhenReceiveUnsucessStatusCode_DoesNotThrows()
         {
-            var incomingHttpResponce = new HttpResponseMessage(HttpStatusCode.NotFound);
-            _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
-                .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(incomingHttpResponce));
+            ChangeDefaultHttpResponce("", HttpStatusCode.NotFound);
 
             Assert.DoesNotThrowAsync(async () => await _requestWrapper.GetAsyncWrapper(_testEndpoing));
         }
@@ -211,8 +194,11 @@ namespace AmspaceClientUnitTests
             var expectedContent = new StringContent(JsonConvert.SerializeObject(testModel, _commonSerializerSettings));
             _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
                 .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
-                .Callback<HttpRequestMessage, CancellationToken>(async (message, token) => sentContent = await message.Content.ReadAsStringAsync())
-                .Returns(Task.FromResult(_defaultResponce));
+                .Returns<HttpRequestMessage, CancellationToken>(async (message, token) =>
+                {
+                    sentContent = await message.Content.ReadAsStringAsync();
+                    return _defaultResponce;
+                });
 
             var result = await _requestWrapper.PutAsyncWrapper(testModel, _testEndpoing);
 
@@ -222,9 +208,7 @@ namespace AmspaceClientUnitTests
         [Test]
         public async Task PutAsyncWrapperT_WhenCalled_MakeUseOfIAsyncPolicy()
         {
-            var policyMock = new Mock<IAsyncPolicy<HttpResponseMessage>>();
-            policyMock.Setup(policy => policy.ExecuteAsync(It.IsAny<Func<Task<HttpResponseMessage>>>())).Returns(Task.FromResult(_defaultResponce));
-            _requestWrapper.HttpResponcePolicy = policyMock.Object;
+            var policyMock = MockHttpResponcePolicy();
             var testModel = new TestModelClass { Proprety = 0 };
 
             var result = await _requestWrapper.PutAsyncWrapper(testModel, _testEndpoing);
@@ -235,10 +219,7 @@ namespace AmspaceClientUnitTests
         [Test]
         public async Task PutAsyncWrapperT_WhenReceiveSucessStatusCode_ReturnTrue()
         {
-            var incomingHttpResponce = new HttpResponseMessage(HttpStatusCode.Created);
-            _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
-                .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(incomingHttpResponce));
+            ChangeDefaultHttpResponce("", HttpStatusCode.OK);
             var model = new TestModelClass { Proprety = 0 };
 
             var result = await _requestWrapper.PutAsyncWrapper(model, _testEndpoing);
@@ -249,10 +230,7 @@ namespace AmspaceClientUnitTests
         [Test]
         public void PutAsyncWrapperT_WhenReceiveUnsucessStatusCode_Throws()
         {
-            var incomingHttpResponce = new HttpResponseMessage(HttpStatusCode.NotFound);
-            _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
-                .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(incomingHttpResponce));
+            ChangeDefaultHttpResponce("", HttpStatusCode.NotFound);
             var model = new TestModelClass { Proprety = 0 };
 
             Assert.ThrowsAsync<ArgumentException>(async () => await _requestWrapper.PutAsyncWrapper(model, _testEndpoing));
@@ -279,8 +257,11 @@ namespace AmspaceClientUnitTests
             var expectedContent = new StringContent(JsonConvert.SerializeObject(testModel, _commonSerializerSettings));
             _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
                 .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
-                .Callback<HttpRequestMessage, CancellationToken>(async (message, token) => sentContent = await message.Content.ReadAsStringAsync())
-                .Returns(Task.FromResult(_defaultResponce));
+                .Returns<HttpRequestMessage, CancellationToken>(async (message, token) =>
+                {
+                    sentContent = await message.Content.ReadAsStringAsync();
+                    return _defaultResponce;
+                });
 
             var result = await _requestWrapper.PutAsyncWrapper<TestModelClass, TestModelClass>(testModel, _testEndpoing);
 
@@ -290,9 +271,7 @@ namespace AmspaceClientUnitTests
         [Test]
         public async Task PutAsyncWrapperTInTOut_WhenCalled_MakeUseOfIAsyncPolicy()
         {
-            var policyMock = new Mock<IAsyncPolicy<HttpResponseMessage>>();
-            policyMock.Setup(policy => policy.ExecuteAsync(It.IsAny<Func<Task<HttpResponseMessage>>>())).Returns(Task.FromResult(_defaultResponce));
-            _requestWrapper.HttpResponcePolicy = policyMock.Object;
+            var policyMock = MockHttpResponcePolicy();
             var testModel = new TestModelClass { Proprety = 0 };
 
             var result = await _requestWrapper.PutAsyncWrapper<TestModelClass, TestModelClass>(testModel, _testEndpoing);
@@ -303,12 +282,9 @@ namespace AmspaceClientUnitTests
         [Test]
         public async Task PutAsyncWrapperTInTOut_WhenReceiveValidJson_ReturnsCorrectlyDeserealizedObject()
         {
+
+            ChangeDefaultHttpResponce("{\"property\": \"1\"}", HttpStatusCode.OK);
             var modelToSend = new TestModelClass { Proprety = 0 };
-            var incomingJson = "{\"property\": \"1\"}";
-            var incomingHttpResponce = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(incomingJson) };
-            _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
-                .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(incomingHttpResponce));
             var expectedObject = new TestModelClass { Proprety = 1 };
 
             var result = await _requestWrapper.PutAsyncWrapper<TestModelClass, TestModelClass>(modelToSend, _testEndpoing);
@@ -319,10 +295,7 @@ namespace AmspaceClientUnitTests
         [Test]
         public void PutAsyncWrapperTInTOut_WhenReceiveUnsucessStatusCode_Throws()
         {
-            var incomingHttpResponce = new HttpResponseMessage(HttpStatusCode.NotFound);
-            _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
-                .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(incomingHttpResponce));
+            ChangeDefaultHttpResponce("", HttpStatusCode.NotFound);
             var model = new TestModelClass { Proprety = 0 };
 
             Assert.ThrowsAsync<ArgumentException>(async () => await _requestWrapper.PutAsyncWrapper<TestModelClass, TestModelClass>(model, _testEndpoing));
@@ -349,8 +322,11 @@ namespace AmspaceClientUnitTests
             var expectedContent = new StringContent(JsonConvert.SerializeObject(testModel, _commonSerializerSettings));
             _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
                 .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
-                .Callback<HttpRequestMessage, CancellationToken>(async (message, token) => sentContent = await message.Content.ReadAsStringAsync())
-                .Returns(Task.FromResult(_defaultResponce));
+                .Returns<HttpRequestMessage, CancellationToken>(async (message, token) =>
+                {
+                    sentContent = await message.Content.ReadAsStringAsync();
+                    return _defaultResponce;
+                });
 
             var result = await _requestWrapper.DeleteAsyncWrapper(testModel, _testEndpoing);
 
@@ -360,9 +336,7 @@ namespace AmspaceClientUnitTests
         [Test]
         public async Task DeleteAsyncWrapperT_WhenCalled_MakeUseOfIAsyncPolicy()
         {
-            var policyMock = new Mock<IAsyncPolicy<HttpResponseMessage>>();
-            policyMock.Setup(policy => policy.ExecuteAsync(It.IsAny<Func<Task<HttpResponseMessage>>>())).Returns(Task.FromResult(_defaultResponce));
-            _requestWrapper.HttpResponcePolicy = policyMock.Object;
+            var policyMock = MockHttpResponcePolicy();
             var testModel = new TestModelClass { Proprety = 0 };
 
             var result = await _requestWrapper.DeleteAsyncWrapper(testModel, _testEndpoing);
@@ -373,10 +347,7 @@ namespace AmspaceClientUnitTests
         [Test]
         public async Task DeleteAsyncWrapperT_WhenReceiveSucessStatusCode_ReturnTrue()
         {
-            var incomingHttpResponce = new HttpResponseMessage(HttpStatusCode.OK);
-            _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
-                .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(incomingHttpResponce));
+            ChangeDefaultHttpResponce("", HttpStatusCode.OK);
             var model = new TestModelClass { Proprety = 0 };
 
             var result = await _requestWrapper.DeleteAsyncWrapper(model, _testEndpoing);
@@ -387,10 +358,7 @@ namespace AmspaceClientUnitTests
         [Test]
         public void DeleteAsyncWrapperT_WhenReceiveUnsucessStatusCode_Throws()
         {
-            var incomingHttpResponce = new HttpResponseMessage(HttpStatusCode.NotFound);
-            _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
-                .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(incomingHttpResponce));
+            ChangeDefaultHttpResponce("", HttpStatusCode.NotFound);
             var model = new TestModelClass { Proprety = 0 };
 
             Assert.ThrowsAsync<ArgumentException>(async () => await _requestWrapper.DeleteAsyncWrapper(model, _testEndpoing));
@@ -411,9 +379,7 @@ namespace AmspaceClientUnitTests
         [Test]
         public async Task DeleteAsyncWrapper_WhenCalled_MakeUseOfIAsyncPolicy()
         {
-            var policyMock = new Mock<IAsyncPolicy<HttpResponseMessage>>();
-            policyMock.Setup(policy => policy.ExecuteAsync(It.IsAny<Func<Task<HttpResponseMessage>>>())).Returns(Task.FromResult(_defaultResponce));
-            _requestWrapper.HttpResponcePolicy = policyMock.Object;
+            var policyMock = MockHttpResponcePolicy();
 
             var result = await _requestWrapper.DeleteAsyncWrapper(_testEndpoing);
 
@@ -423,10 +389,7 @@ namespace AmspaceClientUnitTests
         [Test]
         public async Task DeleteAsyncWrapper_WhenReceiveSucessStatusCode_ReturnTrue()
         {
-            var incomingHttpResponce = new HttpResponseMessage(HttpStatusCode.OK);
-            _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
-                .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(incomingHttpResponce));
+            ChangeDefaultHttpResponce("", HttpStatusCode.OK);
 
             var result = await _requestWrapper.DeleteAsyncWrapper(_testEndpoing);
 
@@ -436,10 +399,7 @@ namespace AmspaceClientUnitTests
         [Test]
         public void DeleteAsyncWrapper_WhenReceiveUnsucessStatusCode_Throws()
         {
-            var incomingHttpResponce = new HttpResponseMessage(HttpStatusCode.NotFound);
-            _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
-                .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(incomingHttpResponce));
+            ChangeDefaultHttpResponce("", HttpStatusCode.NotFound);
 
             Assert.ThrowsAsync<ArgumentException>(async () => await _requestWrapper.DeleteAsyncWrapper(_testEndpoing));
         }
@@ -465,8 +425,11 @@ namespace AmspaceClientUnitTests
             var expectedContent = new StringContent(JsonConvert.SerializeObject(testModel, _commonSerializerSettings));
             _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
                 .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
-                .Callback<HttpRequestMessage, CancellationToken>(async (message, token) => sentContent = await message.Content.ReadAsStringAsync())
-                .Returns(Task.FromResult(_defaultResponce));
+                .Returns<HttpRequestMessage, CancellationToken>(async (message, token) =>
+                {
+                    sentContent = await message.Content.ReadAsStringAsync();
+                    return _defaultResponce;
+                });
 
             var result = await _requestWrapper.PostAsyncWrapper<TestModelClass, TestModelClass>(testModel, _testEndpoing);
 
@@ -476,9 +439,7 @@ namespace AmspaceClientUnitTests
         [Test]
         public async Task PostAsyncWrapperTInTOut_WhenCalled_MakeUseOfIAsyncPolicy()
         {
-            var policyMock = new Mock<IAsyncPolicy<HttpResponseMessage>>();
-            policyMock.Setup(policy => policy.ExecuteAsync(It.IsAny<Func<Task<HttpResponseMessage>>>())).Returns(Task.FromResult(_defaultResponce));
-            _requestWrapper.HttpResponcePolicy = policyMock.Object;
+            var policyMock = MockHttpResponcePolicy();
             var testModel = new TestModelClass { Proprety = 0 };
 
             var result = await _requestWrapper.PostAsyncWrapper<TestModelClass, TestModelClass>(testModel, _testEndpoing);
@@ -492,9 +453,7 @@ namespace AmspaceClientUnitTests
             var modelToSend = new TestModelClass { Proprety = 0 };
             var incomingJson = "{\"property\": \"1\"}";
             var incomingHttpResponce = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(incomingJson) };
-            _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
-                .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(incomingHttpResponce));
+            ChangeDefaultHttpResponce(incomingHttpResponce);
             var expectedObject = new TestModelClass { Proprety = 1 };
 
             var result = await _requestWrapper.PostAsyncWrapper<TestModelClass, TestModelClass>(modelToSend, _testEndpoing);
@@ -505,10 +464,8 @@ namespace AmspaceClientUnitTests
         [Test]
         public void PostAsyncWrapperTInTOut_WhenReceiveUnsucessStatusCode_Throws()
         {
-            var incomingHttpResponce = new HttpResponseMessage(HttpStatusCode.NotFound);
-            _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
-                .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(incomingHttpResponce));
+            ChangeDefaultHttpResponce("", HttpStatusCode.NotFound);
+
             var model = new TestModelClass { Proprety = 0 };
 
             Assert.ThrowsAsync<ArgumentException>(async () => await _requestWrapper.PostAsyncWrapper<TestModelClass, TestModelClass>(model, _testEndpoing));
@@ -535,8 +492,11 @@ namespace AmspaceClientUnitTests
             var expectedContent = new StringContent(JsonConvert.SerializeObject(testModel, _commonSerializerSettings));
             _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
                 .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
-                .Callback<HttpRequestMessage, CancellationToken>(async (message, token) => sentContent = await message.Content.ReadAsStringAsync())
-                .Returns(Task.FromResult(_defaultResponce));
+                .Returns<HttpRequestMessage, CancellationToken>(async (message, token) =>
+                {
+                    sentContent = await message.Content.ReadAsStringAsync();
+                    return _defaultResponce;
+                });
 
             var result = await _requestWrapper.PostAsyncWrapper(testModel, _testEndpoing);
 
@@ -546,9 +506,7 @@ namespace AmspaceClientUnitTests
         [Test]
         public async Task PostAsyncWrapperT_WhenCalled_MakeUseOfIAsyncPolicy()
         {
-            var policyMock = new Mock<IAsyncPolicy<HttpResponseMessage>>();
-            policyMock.Setup(policy => policy.ExecuteAsync(It.IsAny<Func<Task<HttpResponseMessage>>>())).Returns(Task.FromResult(_defaultResponce));
-            _requestWrapper.HttpResponcePolicy = policyMock.Object;
+            var policyMock = MockHttpResponcePolicy();
             var testModel = new TestModelClass { Proprety = 0 };
 
             var result = await _requestWrapper.PostAsyncWrapper(testModel, _testEndpoing);
@@ -559,10 +517,7 @@ namespace AmspaceClientUnitTests
         [Test]
         public async Task PostAsyncWrapperT_WhenReceiveSucessStatusCode_ReturnTrue()
         {
-            var incomingHttpResponce = new HttpResponseMessage(HttpStatusCode.OK);
-            _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
-                .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(incomingHttpResponce));
+            ChangeDefaultHttpResponce("", HttpStatusCode.OK);
             var model = new TestModelClass { Proprety = 0 };
 
             var result = await _requestWrapper.PostAsyncWrapper(model, _testEndpoing);
@@ -573,10 +528,7 @@ namespace AmspaceClientUnitTests
         [Test]
         public void PostAsyncWrapperT_WhenReceiveUnsucessStatusCode_Throws()
         {
-            var incomingHttpResponce = new HttpResponseMessage(HttpStatusCode.NotFound);
-            _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
-                .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(incomingHttpResponce));
+            ChangeDefaultHttpResponce("", HttpStatusCode.NotFound);
             var model = new TestModelClass { Proprety = 0 };
 
             Assert.ThrowsAsync<ArgumentException>(async () => await _requestWrapper.PostAsyncWrapper(model, _testEndpoing));
@@ -603,8 +555,11 @@ namespace AmspaceClientUnitTests
             var expectedContent = new FormUrlEncodedContent(testContent);
             _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
                 .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
-                .Callback<HttpRequestMessage, CancellationToken>(async (message, token) => sentContent = await message.Content.ReadAsStringAsync())
-                .Returns(Task.FromResult(_defaultResponce));
+                .Returns<HttpRequestMessage, CancellationToken>(async (message, token) =>
+                {
+                    sentContent = await message.Content.ReadAsStringAsync();
+                    return _defaultResponce;
+                });
 
             var result = await _requestWrapper.PostFormUrlEncodedContentAsyncWrapper(testContent, _testEndpoing);
 
@@ -614,9 +569,7 @@ namespace AmspaceClientUnitTests
         [Test]
         public async Task PostFormUrlEncodedContentAsyncWrapper_WhenCalled_MakeUseOfIAsyncPolicy()
         {
-            var policyMock = new Mock<IAsyncPolicy<HttpResponseMessage>>();
-            policyMock.Setup(policy => policy.ExecuteAsync(It.IsAny<Func<Task<HttpResponseMessage>>>())).Returns(Task.FromResult(_defaultResponce));
-            _requestWrapper.HttpResponcePolicy = policyMock.Object;
+            var policyMock = MockHttpResponcePolicy();
             var testContent = new Dictionary<string, string> { ["test"] = "test" };
 
             var result = await _requestWrapper.PostFormUrlEncodedContentAsyncWrapper(testContent, _testEndpoing);
@@ -627,12 +580,9 @@ namespace AmspaceClientUnitTests
         [Test]
         public async Task PostFormUrlEncodedContentAsyncWrapper_WhenCalled_ReturnsUnmodifiedHttpResponce()
         {
-            var incomingJson = "{\"[\"test\"]\"}";
+            var expectedObject = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent("{\"[\"test\"]\"}") };
+            ChangeDefaultHttpResponce(expectedObject);
             var testContent = new Dictionary<string, string> { ["test"] = "test" };
-            var expectedObject = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(incomingJson) };
-            _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
-                .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(expectedObject));
 
             var result = await _requestWrapper.PostFormUrlEncodedContentAsyncWrapper(testContent, _testEndpoing);
 
@@ -642,11 +592,8 @@ namespace AmspaceClientUnitTests
         [Test]
         public void PostFormUrlEncodedContentAsyncWrapper_WhenReceiveUnsucessStatusCode_DoesNotThrows()
         {
-            var incomingHttpResponce = new HttpResponseMessage(HttpStatusCode.NotFound);
+            ChangeDefaultHttpResponce("", HttpStatusCode.NotFound);
             var testContent = new Dictionary<string, string> { ["test"] = "test" };
-            _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
-                .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(incomingHttpResponce));
 
             Assert.DoesNotThrowAsync(async () => await _requestWrapper.PostFormUrlEncodedContentAsyncWrapper(testContent, _testEndpoing));
         }
@@ -672,8 +619,11 @@ namespace AmspaceClientUnitTests
             var expectedContent = new FormUrlEncodedContent(testContent);
             _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
                 .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
-                .Callback<HttpRequestMessage, CancellationToken>(async (message, token) => sentContent = await message.Content.ReadAsStringAsync())
-                .Returns(Task.FromResult(_defaultResponce));
+                .Returns<HttpRequestMessage, CancellationToken>(async (message, token) =>
+                {
+                    sentContent = await message.Content.ReadAsStringAsync();
+                    return _defaultResponce;
+                });
 
             var result = await _requestWrapper.PostFormUrlEncodedContentAsyncWrapper<TestModelClass>(testContent, _testEndpoing);
 
@@ -683,9 +633,7 @@ namespace AmspaceClientUnitTests
         [Test]
         public async Task PostFormUrlEncodedContentAsyncWrapperTout_WhenCalled_MakeUseOfIAsyncPolicy()
         {
-            var policyMock = new Mock<IAsyncPolicy<HttpResponseMessage>>();
-            policyMock.Setup(policy => policy.ExecuteAsync(It.IsAny<Func<Task<HttpResponseMessage>>>())).Returns(Task.FromResult(_defaultResponce));
-            _requestWrapper.HttpResponcePolicy = policyMock.Object;
+            var policyMock = MockHttpResponcePolicy();
             var testContent = new Dictionary<string, string> { ["test"] = "test" };
 
             var result = await _requestWrapper.PostFormUrlEncodedContentAsyncWrapper<TestModelClass>(testContent, _testEndpoing);
@@ -698,11 +646,8 @@ namespace AmspaceClientUnitTests
         public async Task PostFormUrlEncodedContentAsyncWrapperTout_WhenReceiveValidJson_ReturnsCorrectlyDeserealizedObject()
         {
             var testContent = new Dictionary<string, string> { ["test"] = "test" };
-            var incomingJson = "{\"property\": \"1\"}";
-            var incomingHttpResponce = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(incomingJson) };
-            _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
-                .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(incomingHttpResponce));
+            var incomingHttpResponce = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent("{\"property\": \"1\"}") };
+            ChangeDefaultHttpResponce(incomingHttpResponce);
             var expectedObject = new TestModelClass { Proprety = 1 };
 
             var result = await _requestWrapper.PostFormUrlEncodedContentAsyncWrapper<TestModelClass>(testContent, _testEndpoing);
@@ -713,10 +658,7 @@ namespace AmspaceClientUnitTests
         [Test]
         public void PostFormUrlEncodedContentAsyncWrapperTout_WhenReceiveUnsucessStatusCode_Throws()
         {
-            var incomingHttpResponce = new HttpResponseMessage(HttpStatusCode.NotFound);
-            _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
-                .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(incomingHttpResponce));
+            ChangeDefaultHttpResponce("", HttpStatusCode.NotFound);
             var testContent = new Dictionary<string, string> { ["test"] = "test" };
 
             Assert.ThrowsAsync<ArgumentException>(async () => await _requestWrapper.PostFormUrlEncodedContentAsyncWrapper<TestModelClass>(testContent, _testEndpoing));
@@ -743,8 +685,11 @@ namespace AmspaceClientUnitTests
             var expectedContent = new StringContent(JsonConvert.SerializeObject(testModel, _commonSerializerSettings));
             _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
                 .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
-                .Callback<HttpRequestMessage, CancellationToken>(async (message, token) => sentContent = await message.Content.ReadAsStringAsync())
-                .Returns(Task.FromResult(_defaultResponce));
+                .Returns<HttpRequestMessage, CancellationToken>(async (message, token) =>
+                {
+                    sentContent = await message.Content.ReadAsStringAsync();
+                    return _defaultResponce;
+                });
 
             var result = await _requestWrapper.PatchAsyncWrapper<TestModelClass, TestModelClass>(testModel, _testEndpoing);
 
@@ -754,9 +699,7 @@ namespace AmspaceClientUnitTests
         [Test]
         public async Task PatchAsyncWrapperTInTOut_WhenCalled_MakeUseOfIAsyncPolicy()
         {
-            var policyMock = new Mock<IAsyncPolicy<HttpResponseMessage>>();
-            policyMock.Setup(policy => policy.ExecuteAsync(It.IsAny<Func<Task<HttpResponseMessage>>>())).Returns(Task.FromResult(_defaultResponce));
-            _requestWrapper.HttpResponcePolicy = policyMock.Object;
+            var policyMock = MockHttpResponcePolicy();
             var testModel = new TestModelClass { Proprety = 0 };
 
             var result = await _requestWrapper.PatchAsyncWrapper<TestModelClass, TestModelClass>(testModel, _testEndpoing);
@@ -768,11 +711,8 @@ namespace AmspaceClientUnitTests
         public async Task PatchAsyncWrapperTInTOut_WhenReceiveValidJson_ReturnsCorrectlyDeserealizedObject()
         {
             var modelToSend = new TestModelClass { Proprety = 0 };
-            var incomingJson = "{\"property\": \"1\"}";
-            var incomingHttpResponce = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(incomingJson) };
-            _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
-                .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(incomingHttpResponce));
+            var incomingHttpResponce = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent("{\"property\": \"1\"}") };
+            ChangeDefaultHttpResponce(incomingHttpResponce);
             var expectedObject = new TestModelClass { Proprety = 1 };
 
             var result = await _requestWrapper.PatchAsyncWrapper<TestModelClass, TestModelClass>(modelToSend, _testEndpoing);
@@ -782,10 +722,7 @@ namespace AmspaceClientUnitTests
         [Test]
         public void PatchAsyncWrapperTInTOut_WhenReceiveUnsucessStatusCode_Throws()
         {
-            var incomingHttpResponce = new HttpResponseMessage(HttpStatusCode.NotFound);
-            _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
-                .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(incomingHttpResponce));
+            ChangeDefaultHttpResponce("", HttpStatusCode.NotFound);
             var model = new TestModelClass { Proprety = 0 };
 
             Assert.ThrowsAsync<ArgumentException>(async () => await _requestWrapper.PatchAsyncWrapper<TestModelClass, TestModelClass>(model, _testEndpoing));
@@ -812,8 +749,11 @@ namespace AmspaceClientUnitTests
             var expectedContent = new StringContent(JsonConvert.SerializeObject(testModel, _commonSerializerSettings));
             _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
                 .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
-                .Callback<HttpRequestMessage, CancellationToken>(async (message, token) => sentContent = await message.Content.ReadAsStringAsync())
-                .Returns(Task.FromResult(_defaultResponce));
+                .Returns<HttpRequestMessage, CancellationToken>(async (message, token) =>
+                {
+                    sentContent = await message.Content.ReadAsStringAsync();
+                    return _defaultResponce;
+                });
 
             var result = await _requestWrapper.PatchAsyncWrapper(testModel, _testEndpoing);
 
@@ -823,9 +763,7 @@ namespace AmspaceClientUnitTests
         [Test]
         public async Task PatchAsyncWrapperT_WhenCalled_MakeUseOfIAsyncPolicy()
         {
-            var policyMock = new Mock<IAsyncPolicy<HttpResponseMessage>>();
-            policyMock.Setup(policy => policy.ExecuteAsync(It.IsAny<Func<Task<HttpResponseMessage>>>())).Returns(Task.FromResult(_defaultResponce));
-            _requestWrapper.HttpResponcePolicy = policyMock.Object;
+            var policyMock = MockHttpResponcePolicy();
             var testModel = new TestModelClass { Proprety = 0 };
 
             var result = await _requestWrapper.PatchAsyncWrapper(testModel, _testEndpoing);
@@ -836,10 +774,7 @@ namespace AmspaceClientUnitTests
         [Test]
         public async Task PatchAsyncWrapperT_WhenReceiveSucessStatusCode_ReturnTrue()
         {
-            var incomingHttpResponce = new HttpResponseMessage(HttpStatusCode.Created);
-            _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
-                .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(incomingHttpResponce));
+            ChangeDefaultHttpResponce("", HttpStatusCode.OK);
             var model = new TestModelClass { Proprety = 0 };
 
             var result = await _requestWrapper.PatchAsyncWrapper(model, _testEndpoing);
@@ -850,10 +785,7 @@ namespace AmspaceClientUnitTests
         [Test]
         public void PatchAsyncWrapperT_WhenReceiveUnsucessStatusCode_Throws()
         {
-            var incomingHttpResponce = new HttpResponseMessage(HttpStatusCode.NotFound);
-            _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
-                .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(incomingHttpResponce));
+            ChangeDefaultHttpResponce("", HttpStatusCode.NotFound);
             var model = new TestModelClass { Proprety = 0 };
 
             Assert.ThrowsAsync<ArgumentException>(async () => await _requestWrapper.PatchAsyncWrapper(model, _testEndpoing));
@@ -1043,5 +975,29 @@ namespace AmspaceClientUnitTests
             Assert.ThrowsAsync<ArgumentException>(async () => await _requestWrapper.PutFormAsync<TestModelClass>(_testEndpoing, new List<KeyValuePair<string, string>>(), new List<FileToUpload>()));
         }
         #endregion
+          
+        private void ChangeDefaultHttpResponce(string expectedIncomingJson, HttpStatusCode statusCode)
+        {
+            var incomingHttpResponce = new HttpResponseMessage(statusCode) { Content = new StringContent(expectedIncomingJson) };
+            _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
+                .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(incomingHttpResponce);
+        }
+
+        private void ChangeDefaultHttpResponce(HttpResponseMessage incomingHttpResponce)
+        {
+            _moqHttpClientHandler.Protected().As<IHttpClientHandlerProtectedMembers>()
+                .Setup(handler => handler.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(incomingHttpResponce);
+        }
+
+        private Mock<IAsyncPolicy<HttpResponseMessage>> MockHttpResponcePolicy()
+        {
+            var policyMock = new Mock<IAsyncPolicy<HttpResponseMessage>>();
+            policyMock.Setup(policy => policy.ExecuteAsync(It.IsAny<Func<Task<HttpResponseMessage>>>())).ReturnsAsync(_defaultResponce);
+            _requestWrapper.HttpResponcePolicy = policyMock.Object;
+
+            return policyMock;
+        }
     }
 }
