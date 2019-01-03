@@ -2,8 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:AmSpaceTools.Views"
-             xmlns:modelsSap="clr-namespace:AmSpaceModels.Sap;assembly=AmSpaceModels"
+             xmlns:resources="clr-namespace:AmSpaceTools.Properties"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              x:Class="AmSpaceTools.Views.PeopleUpload"
@@ -31,7 +30,7 @@
                         Grid.Column="1"
                         Grid.Row="0">
                 <materialDesign:Chip
-                    Content="ActiveDirectory Status"
+                    Content="{x:Static resources:Resources.PeopleUploadActiveDirectoryStatusLabel}"
                     Margin="0 5 10 10">
                     <materialDesign:Chip.Icon>
                         <materialDesign:PackIcon

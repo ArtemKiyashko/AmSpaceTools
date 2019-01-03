@@ -39,9 +39,20 @@ namespace AmSpaceTools.ViewModels
         private Func<SapPersonExcelRow, bool> _defaultPasswordRequiredCondition => a => string.IsNullOrEmpty(a.Email) && a.Level < 5;
         private NewPassword _defaultPassword;
         private readonly IActiveDirectoryProvider _activeDirectoryProvider;
-        private readonly DispatcherTimer _activeDirectoryStatusTimer;
+        private bool _adConnected;
 
-        public bool AdConnected { get => _activeDirectoryProvider.IsConnected; }
+        public bool AdConnected
+        {
+            get
+            {
+                return _adConnected;
+            }
+            set
+            {
+                _adConnected = value;
+                OnPropertyChanged();
+            }
+        }
 
         public ProgressIndicatorViewModel ProgressVM { get; private set; }
 
@@ -76,10 +87,12 @@ namespace AmSpaceTools.ViewModels
             InputRows.CollectionChanged += InputRows_CollectionChanged;
             _changePasswordVm = changePasswordVm;
             _activeDirectoryProvider = activeDirectoryProvider;
-            _activeDirectoryStatusTimer = new DispatcherTimer();
-            _activeDirectoryStatusTimer.Interval = TimeSpan.FromSeconds(2);
-            _activeDirectoryStatusTimer.Tick += _activeDirectoryStatusTimer_Tick;
-            _activeDirectoryStatusTimer.Start();
+            _activeDirectoryProvider.ConnectionStatusChanged += _activeDirectoryProvider_ConnectionStatusChanged;
+        }
+
+        private void _activeDirectoryProvider_ConnectionStatusChanged(object sender, ConnectionStatusEventArgs e)
+        {
+            AdConnected = e.IsConnected;
         }
 
         private void _activeDirectoryStatusTimer_Tick(object sender, EventArgs e)

@@ -25,5 +25,9 @@ namespace AmSpaceTools.Infrastructure.Providers
         /// Return true if connected to LDAP server, otherwise false
         /// </summary>
         bool IsConnected { get; }
+        /// <summary>
+        /// Firing when connection status changed
+        /// </summary>
+        event EventHandler<ConnectionStatusEventArgs> ConnectionStatusChanged;
     }
 }

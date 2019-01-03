@@ -196,6 +196,15 @@ namespace AmSpaceTools.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ActiveDirectory Status.
+        /// </summary>
+        public static string PeopleUploadActiveDirectoryStatusLabel {
+            get {
+                return ResourceManager.GetString("PeopleUploadActiveDirectoryStatusLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Default password not set!.
         /// </summary>
         public static string PeopleUploadDefaultPasswordNotSet {

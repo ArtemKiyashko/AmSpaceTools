@@ -201,4 +201,7 @@
   <data name="PeopleUploadSetDefaultPassword" xml:space="preserve">
     <value>Set default password</value>
   </data>
+  <data name="PeopleUploadActiveDirectoryStatusLabel" xml:space="preserve">
+    <value>ActiveDirectory Status</value>
+  </data>
 </root>

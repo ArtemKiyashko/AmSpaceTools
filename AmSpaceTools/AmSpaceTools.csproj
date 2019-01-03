@@ -152,6 +152,7 @@
     <Compile Include="Infrastructure\Converters\DecimalToStringPercentConverter.cs" />
     <Compile Include="Infrastructure\CsvLogAppender.cs" />
     <Compile Include="Infrastructure\Extensions\DictionaryExtensions.cs" />
+    <Compile Include="Infrastructure\Providers\ConnectionStatusEventArgs.cs" />
     <Compile Include="Infrastructure\Providers\IActiveDirectoryProvider.cs" />
     <Compile Include="Infrastructure\Providers\IAmSpaceEnvironmentsProvider.cs" />
     <Compile Include="Infrastructure\IHavePassword.cs" />

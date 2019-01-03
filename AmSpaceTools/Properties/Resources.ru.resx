@@ -201,4 +201,7 @@
   <data name="PeopleUploadSetDefaultPassword" xml:space="preserve">
     <value>Назначьте стандартный пароль</value>
   </data>
+  <data name="PeopleUploadActiveDirectoryStatusLabel" xml:space="preserve">
+    <value>Статус ActiveDirectory</value>
+  </data>
 </root>

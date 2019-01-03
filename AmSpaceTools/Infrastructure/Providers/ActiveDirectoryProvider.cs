@@ -4,11 +4,16 @@ using System.DirectoryServices.AccountManagement;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 
 namespace AmSpaceTools.Infrastructure.Providers
 {
     public class ActiveDirectoryProvider : IActiveDirectoryProvider
     {
+        private PrincipalContext _principalContext;
+        private readonly DispatcherTimer _activeDirectoryStatusTimer;
+        private bool _connectionCurrentStatus;
+
         public bool IsConnected
         {
             get
@@ -27,7 +32,7 @@ namespace AmSpaceTools.Infrastructure.Providers
             }
         }
 
-        private PrincipalContext _principalContext;
+        public event EventHandler<ConnectionStatusEventArgs> ConnectionStatusChanged;
 
         public ActiveDirectoryProvider()
         {
@@ -39,6 +44,11 @@ namespace AmSpaceTools.Infrastructure.Providers
             {
                 _principalContext = null;
             }
+            _connectionCurrentStatus = false;
+            _activeDirectoryStatusTimer = new DispatcherTimer();
+            _activeDirectoryStatusTimer.Interval = TimeSpan.FromSeconds(2);
+            _activeDirectoryStatusTimer.Tick += _activeDirectoryStatusTimer_Tick;
+            _activeDirectoryStatusTimer.Start();
         }
 
         public void Dispose()
@@ -62,6 +72,21 @@ namespace AmSpaceTools.Infrastructure.Providers
             using (var searcher = new PrincipalSearcher(new UserPrincipal(_principalContext) { EmailAddress = email }))
             {
                 return searcher.FindOne();
+            }
+        }
+
+        private void OnConnectionStatusChanged(object sender, ConnectionStatusEventArgs e)
+        {
+            ConnectionStatusChanged?.Invoke(sender, e);
+        }
+
+        private void _activeDirectoryStatusTimer_Tick(object sender, EventArgs e)
+        {
+            var status = IsConnected;
+            if (_connectionCurrentStatus != status)
+            {
+                _connectionCurrentStatus = status;
+                OnConnectionStatusChanged(sender, new ConnectionStatusEventArgs(_connectionCurrentStatus));
             }
         }
     }
