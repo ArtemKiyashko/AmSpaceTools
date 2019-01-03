@@ -145,6 +145,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Decorators\ExcelWorkerDecorator.cs" />
+    <Compile Include="Infrastructure\Converters\BoolToIconConverter.cs" />
     <Compile Include="Infrastructure\Providers\ActiveDirectoryProvider.cs" />
     <Compile Include="Infrastructure\Providers\AmSpaceEnvironmentsProvider.cs" />
     <Compile Include="Infrastructure\ColumnDefinitionError.cs" />

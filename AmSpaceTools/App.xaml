@@ -20,6 +20,7 @@
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
             <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+            <converters:BoolToIconConverter x:Key="BoolToIconConverter"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

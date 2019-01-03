@@ -9,7 +9,23 @@ namespace AmSpaceTools.Infrastructure.Providers
 {
     public class ActiveDirectoryProvider : IActiveDirectoryProvider
     {
-        public bool IsConnected { get; private set; }
+        public bool IsConnected
+        {
+            get
+            {
+                if (_principalContext == null || string.IsNullOrEmpty(_principalContext.ConnectedServer))
+                    return false;
+                try
+                {
+                    new PrincipalContext(ContextType.Domain);
+                }
+                catch (PrincipalServerDownException)
+                {
+                    return false;
+                }
+                return true;
+            }
+        }
 
         private PrincipalContext _principalContext;
 
@@ -18,12 +34,10 @@ namespace AmSpaceTools.Infrastructure.Providers
             try
             {
                 _principalContext = new PrincipalContext(ContextType.Domain);
-                IsConnected = true;
             }
             catch (Exception)
             {
                 _principalContext = null;
-                IsConnected = false;
             }
         }
 
@@ -31,7 +45,6 @@ namespace AmSpaceTools.Infrastructure.Providers
         {
             _principalContext.Dispose();
             _principalContext = null;
-            IsConnected = false;
         }
 
         public IEnumerable<Principal> FindAllByEmail(string email)

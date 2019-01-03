@@ -14,7 +14,6 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -28,34 +27,38 @@
                 Margin="0 5 0 10">
                 People Batch Upload
             </TextBlock>
-            <Button Command="{Binding OpenFileCommand}"
+            <StackPanel Orientation="Horizontal"
                         Grid.Column="1"
-                        Grid.Row="0"
-                        Margin="0 5 10 10"
-                        Style="{StaticResource MaterialDesignFloatingActionButton}"
-                        ToolTip="Open File">
-                <StackPanel Orientation="Horizontal">
-                    <materialDesign:PackIcon
-                            Kind="FileExcel"
-                            Height="24"
-                            Width="24" />
-                </StackPanel>
-            </Button>
-            <Button Command="{Binding UploadDataCommand}"
-                        IsEnabled="{Binding IsUploadVisible}"
-                        Grid.Column="2"
-                        Grid.Row="0"
-                        Margin="0 5 5 10"
-                        Style="{StaticResource MaterialDesignFloatingActionButton}"
-                        ToolTip="Upload to AmSpace">
-                <StackPanel Orientation="Horizontal">
-                    <materialDesign:PackIcon
-                            Kind="CloudSync"
-                            Height="24"
-                            Width="24" />
-                </StackPanel>
-            </Button>
-
+                        Grid.Row="0">
+                <materialDesign:Chip
+                    Content="ActiveDirectory Status"
+                    Margin="0 5 10 10">
+                    <materialDesign:Chip.Icon>
+                        <materialDesign:PackIcon
+                            Kind="{Binding AdConnected, Converter={StaticResource BoolToIconConverter}, Mode=OneWay}"></materialDesign:PackIcon>
+                    </materialDesign:Chip.Icon>
+                </materialDesign:Chip>
+                <Button Command="{Binding OpenFileCommand}"
+                            
+                            Margin="0 5 10 10"
+                            Style="{StaticResource MaterialDesignFloatingActionButton}"
+                            ToolTip="Open File">
+                        <materialDesign:PackIcon
+                                Kind="FileExcel"
+                                Height="24"
+                                Width="24" />
+                </Button>
+                <Button Command="{Binding UploadDataCommand}"
+                            IsEnabled="{Binding IsUploadVisible}"
+                            Margin="0 5 5 10"
+                            Style="{StaticResource MaterialDesignFloatingActionButton}"
+                            ToolTip="Upload to AmSpace">
+                        <materialDesign:PackIcon
+                                Kind="CloudSync"
+                                Height="24"
+                                Width="24" />
+                </Button>
+            </StackPanel>
             <DataGrid
             Grid.Column="0"
             Grid.Row="1"

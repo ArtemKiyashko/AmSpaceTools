@@ -21,7 +21,8 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using AmSpaceTools.Properties;
 using AmSpaceTools.Infrastructure.Extensions;
-
+using AmSpaceTools.Infrastructure.Providers;
+using System.Windows.Threading;
 
 namespace AmSpaceTools.ViewModels
 {
@@ -37,6 +38,10 @@ namespace AmSpaceTools.ViewModels
         private readonly ChangePasswordViewModel _changePasswordVm;
         private Func<SapPersonExcelRow, bool> _defaultPasswordRequiredCondition => a => string.IsNullOrEmpty(a.Email) && a.Level < 5;
         private NewPassword _defaultPassword;
+        private readonly IActiveDirectoryProvider _activeDirectoryProvider;
+        private readonly DispatcherTimer _activeDirectoryStatusTimer;
+
+        public bool AdConnected { get => _activeDirectoryProvider.IsConnected; }
 
         public ProgressIndicatorViewModel ProgressVM { get; private set; }
 
@@ -51,7 +56,14 @@ namespace AmSpaceTools.ViewModels
 
         public bool IsUploadVisible => InputRows.Any();
         
-        public PeopleUploadViewModel(IAmSpaceClient client, IMapper mapper, IExcelWorker excelWorker, SearchPeopleViewModel searchVm, ProgressIndicatorViewModel progressVm, ChangePasswordViewModel changePasswordVm)
+        public PeopleUploadViewModel(
+            IAmSpaceClient client,
+            IMapper mapper,
+            IExcelWorker excelWorker,
+            SearchPeopleViewModel searchVm,
+            ProgressIndicatorViewModel progressVm,
+            ChangePasswordViewModel changePasswordVm,
+            IActiveDirectoryProvider activeDirectoryProvider)
         {
             ProgressVM = progressVm;
             _client = client;
@@ -63,6 +75,16 @@ namespace AmSpaceTools.ViewModels
             InputRows = new ObservableCollection<SapPersonExcelRow>();
             InputRows.CollectionChanged += InputRows_CollectionChanged;
             _changePasswordVm = changePasswordVm;
+            _activeDirectoryProvider = activeDirectoryProvider;
+            _activeDirectoryStatusTimer = new DispatcherTimer();
+            _activeDirectoryStatusTimer.Interval = TimeSpan.FromSeconds(2);
+            _activeDirectoryStatusTimer.Tick += _activeDirectoryStatusTimer_Tick;
+            _activeDirectoryStatusTimer.Start();
+        }
+
+        private void _activeDirectoryStatusTimer_Tick(object sender, EventArgs e)
+        {
+            OnPropertyChanged(nameof(AdConnected));
         }
 
         private void InputRows_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
