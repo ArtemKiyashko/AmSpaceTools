@@ -1,8 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.DirectoryServices.AccountManagement;
 using AmSpaceModels.Organization;
 using AmSpaceTools.Infrastructure;
+using AmSpaceTools.Infrastructure.Providers;
+using AmSpaceTools.ModelConverters;
 using AutoMapper;
 using ExcelWorker.Models;
+using Moq;
 using NUnit.Framework;
 
 namespace AmSpaceToolsTests.Infrastructure
@@ -11,11 +16,25 @@ namespace AmSpaceToolsTests.Infrastructure
     public class MapperTests
     {
         private IMapper _mapper;
+        private Mock<IActiveDirectoryProvider> _activeDirectoryProviderMock;
+        private Mock<PrincipalContext> _defaultPrincipalContextMock;
+        private MapperConfiguration _mapperConfiguration;
 
         [SetUp]
         public void SetUp()
         {
-            _mapper = Services.Container.GetInstance<IMapper>();
+            _defaultPrincipalContextMock = new Mock<PrincipalContext>(It.IsAny<ContextType>());
+            _activeDirectoryProviderMock = new Mock<IActiveDirectoryProvider>();
+            _activeDirectoryProviderMock
+                .Setup(_ => _.FindOneByEmail(It.IsAny<string>()))
+                .Returns(new UserPrincipal(_defaultPrincipalContextMock.Object));
+            _activeDirectoryProviderMock
+                .Setup(_ => _.FindAllByEmail(It.IsAny<string>()))
+                .Returns(new List<Principal> { new UserPrincipal(_defaultPrincipalContextMock.Object), new UserPrincipal(_defaultPrincipalContextMock.Object) });
+            _mapperConfiguration = new MapperConfiguration(cfg => {
+                cfg.CreateMap<SapPersonExcelRow, ExternalAccount>().ConvertUsing(new SapPersonExcelToAmspaceConverter(_activeDirectoryProviderMock.Object));
+            });
+            _mapper = _mapperConfiguration.CreateMapper();
         }
 
         [Test]
@@ -48,6 +67,25 @@ namespace AmSpaceToolsTests.Infrastructure
             var result = _mapper.Map<ExternalAccount>(input);
 
             Assert.IsTrue(input.CompareTo(result) == 0);
+        }
+
+        [Test]
+        public void ExternalAccount_ShouldSet_BackendType_ActiveDirectory()
+        {
+            var input = new SapPersonExcelRowComparable();
+            var result = _mapper.Map<ExternalAccount>(input);
+            Assert.AreEqual(AccountBackendType.ActiveDirectory, result.BackendType);
+        }
+
+        [Test]
+        public void ExternalAccount_ShouldSet_BackendType_AmSpace()
+        {
+            _activeDirectoryProviderMock
+                .Setup(_ => _.FindOneByEmail(It.IsAny<string>()))
+                .Returns(() => null);
+            var input = new SapPersonExcelRowComparable();
+            var result = _mapper.Map<ExternalAccount>(input);
+            Assert.AreEqual(AccountBackendType.AmSpace, result.BackendType);
         }
     }
 }
