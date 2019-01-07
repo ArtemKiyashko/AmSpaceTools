@@ -95,11 +95,6 @@ namespace AmSpaceTools.ViewModels
             AdConnected = e.IsConnected;
         }
 
-        private void _activeDirectoryStatusTimer_Tick(object sender, EventArgs e)
-        {
-            OnPropertyChanged(nameof(AdConnected));
-        }
-
         private void InputRows_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             OnPropertyChanged(nameof(IsUploadVisible));
