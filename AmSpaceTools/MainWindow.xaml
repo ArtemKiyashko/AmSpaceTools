@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:AmSpaceTools"
         xmlns:views="clr-namespace:AmSpaceTools.Views"
         xmlns:infrastructure="clr-namespace:AmSpaceTools.Infrastructure"
         xmlns:vm="clr-namespace:AmSpaceTools.ViewModels"
@@ -29,7 +28,6 @@
         <DataTemplate DataType="{x:Type vm:JobMapUploadViewModel}">
             <views:JobMapUpload/>
         </DataTemplate>
-        <infrastructure:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </Window.Resources>
     <materialDesign:DialogHost Identifier="RootDialog">
         <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">

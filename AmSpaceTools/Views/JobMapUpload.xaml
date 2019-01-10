@@ -6,13 +6,9 @@
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:resources="clr-namespace:AmSpaceTools.Properties"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             xmlns:infrastructure="clr-namespace:AmSpaceTools.Infrastructure"
              x:Class="AmSpaceTools.Views.JobMapUpload"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="600">
-    <UserControl.Resources>
-        <infrastructure:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
-    </UserControl.Resources>
     <materialDesign:DialogHost Identifier="ControlDialog">
         <Grid IsEnabled="{Binding UIEnabled}">
             <Grid.ColumnDefinitions>

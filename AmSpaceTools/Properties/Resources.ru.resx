@@ -195,4 +195,13 @@
   <data name="UserNameBoxToolTip" xml:space="preserve">
     <value>Имя пользователя</value>
   </data>
+  <data name="PeopleUploadDefaultPasswordNotSet" xml:space="preserve">
+    <value>Стандартный пароль не назначен!</value>
+  </data>
+  <data name="PeopleUploadSetDefaultPassword" xml:space="preserve">
+    <value>Назначьте стандартный пароль</value>
+  </data>
+  <data name="PeopleUploadActiveDirectoryStatusLabel" xml:space="preserve">
+    <value>Статус ActiveDirectory</value>
+  </data>
 </root>

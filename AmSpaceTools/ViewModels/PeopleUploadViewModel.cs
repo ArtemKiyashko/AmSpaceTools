@@ -20,7 +20,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using AmSpaceTools.Properties;
-
+using AmSpaceTools.Infrastructure.Extensions;
+using AmSpaceTools.Infrastructure.Providers;
+using System.Windows.Threading;
 
 namespace AmSpaceTools.ViewModels
 {
@@ -36,6 +38,21 @@ namespace AmSpaceTools.ViewModels
         private readonly ChangePasswordViewModel _changePasswordVm;
         private Func<SapPersonExcelRow, bool> _defaultPasswordRequiredCondition => a => string.IsNullOrEmpty(a.Email) && a.Level < 5;
         private NewPassword _defaultPassword;
+        private readonly IActiveDirectoryProvider _activeDirectoryProvider;
+        private bool _adConnected;
+
+        public bool AdConnected
+        {
+            get
+            {
+                return _adConnected;
+            }
+            set
+            {
+                _adConnected = value;
+                OnPropertyChanged();
+            }
+        }
 
         public ProgressIndicatorViewModel ProgressVM { get; private set; }
 
@@ -50,7 +67,14 @@ namespace AmSpaceTools.ViewModels
 
         public bool IsUploadVisible => InputRows.Any();
         
-        public PeopleUploadViewModel(IAmSpaceClient client, IMapper mapper, IExcelWorker excelWorker, SearchPeopleViewModel searchVm, ProgressIndicatorViewModel progressVm, ChangePasswordViewModel changePasswordVm)
+        public PeopleUploadViewModel(
+            IAmSpaceClient client,
+            IMapper mapper,
+            IExcelWorker excelWorker,
+            SearchPeopleViewModel searchVm,
+            ProgressIndicatorViewModel progressVm,
+            ChangePasswordViewModel changePasswordVm,
+            IActiveDirectoryProvider activeDirectoryProvider)
         {
             ProgressVM = progressVm;
             _client = client;
@@ -62,6 +86,13 @@ namespace AmSpaceTools.ViewModels
             InputRows = new ObservableCollection<SapPersonExcelRow>();
             InputRows.CollectionChanged += InputRows_CollectionChanged;
             _changePasswordVm = changePasswordVm;
+            _activeDirectoryProvider = activeDirectoryProvider;
+            _activeDirectoryProvider.ConnectionStatusChanged += _activeDirectoryProvider_ConnectionStatusChanged;
+        }
+
+        private void _activeDirectoryProvider_ConnectionStatusChanged(object sender, ConnectionStatusEventArgs e)
+        {
+            AdConnected = e.IsConnected;
         }
 
         private void InputRows_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -84,13 +115,13 @@ namespace AmSpaceTools.ViewModels
         {
             if (inputRows.Any(_defaultPasswordRequiredCondition))
             {
-                _changePasswordVm.DescriptionText = $"Set default password";
+                _changePasswordVm.DescriptionText = Resources.PeopleUploadSetDefaultPassword;
                 var view = new ChangePassword()
                 {
                     DataContext = _changePasswordVm
                 };
                 var result = (bool)await DialogHost.Show(view, "ControlDialog");
-                if (!result) throw new ArgumentNullException("Default password not set!");
+                if (!result) throw new ArgumentNullException(Resources.PeopleUploadDefaultPasswordNotSet);
                 _defaultPassword = _changePasswordVm.Password;
             }
         }
@@ -190,7 +221,7 @@ namespace AmSpaceTools.ViewModels
                 _.ContractNumber == account.ContractNumber && 
                 _.Status == ContractStatus.ACTIVE)
                 .SingleOrDefault(_defaultPasswordRequiredCondition);
-            if (row == null) return false;
+            if (account.BackendType == AccountBackendType.ActiveDirectory || row == null) return false;
             var existingUser = await _client.FindUserByIdentityNumber(account.PersonLegalId);
             bool result = false;
             try

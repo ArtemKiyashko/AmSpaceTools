@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 
-namespace AmSpaceTools.Infrastructure
+namespace AmSpaceTools.Infrastructure.Converters
 {
     public class BoolToVisibilityConverter : IValueConverter
     {

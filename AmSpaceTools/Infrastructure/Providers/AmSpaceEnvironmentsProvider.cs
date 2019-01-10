@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using AmSpaceModels;
 using Newtonsoft.Json;
 
-namespace AmSpaceTools.Infrastructure
+namespace AmSpaceTools.Infrastructure.Providers
 {
     public class AmSpaceEnvironmentsProvider : IAmSpaceEnvironmentsProvider
     {
