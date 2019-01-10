@@ -70,7 +70,7 @@ namespace AmSpaceToolsTests.Infrastructure
         }
 
         [Test]
-        public void ExternalAccount_ShouldSet_BackendType_ActiveDirectory()
+        public void Map_WhenUserPrincipalFound_ShouldSetBackendTypePropertyToActiveDirectory()
         {
             var input = new SapPersonExcelRowComparable();
             var result = _mapper.Map<ExternalAccount>(input);
@@ -78,7 +78,7 @@ namespace AmSpaceToolsTests.Infrastructure
         }
 
         [Test]
-        public void ExternalAccount_ShouldSet_BackendType_AmSpace()
+        public void Map_WhenUserPrincipalFound_ShouldSetBackendTypePropertyToAmSpace()
         {
             _activeDirectoryProviderMock
                 .Setup(_ => _.FindOneByEmail(It.IsAny<string>()))

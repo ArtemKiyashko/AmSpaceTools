@@ -22,7 +22,7 @@ namespace AmSpaceTools.Infrastructure.Providers
                     return false;
                 try
                 {
-                    new PrincipalContext(ContextType.Domain);
+                    new PrincipalContext(ContextType.Domain).Dispose();
                 }
                 catch (PrincipalServerDownException)
                 {
