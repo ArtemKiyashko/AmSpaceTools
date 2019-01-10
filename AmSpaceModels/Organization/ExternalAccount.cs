@@ -8,6 +8,12 @@ using Newtonsoft.Json.Converters;
 
 namespace AmSpaceModels.Organization
 {
+    public enum AccountBackendType
+    {
+        AmSpace,
+        ActiveDirectory
+    }
+
     public partial class ExternalAccount
     {
         [JsonProperty("first_name")]
@@ -26,7 +32,7 @@ namespace AmSpaceModels.Organization
         public string PhoneNumber { get; set; }
 
         [JsonProperty("date_of_birth")]
-        public DateTimeOffset? DateOfBirth { get; set; }
+        public DateTime? DateOfBirth { get; set; }
 
         [JsonProperty("nationality")]
         public string Nationality { get; set; }
@@ -35,7 +41,7 @@ namespace AmSpaceModels.Organization
         public string CountryCode { get; set; }
 
         [JsonProperty("sex")]
-        public SapSex Sex { get; set; }
+        public AmSpaceSex Sex { get; set; }
 
         [JsonProperty("mpk")]
         public long Mpk { get; set; }
@@ -56,13 +62,16 @@ namespace AmSpaceModels.Organization
         public long Level { get; set; }
 
         [JsonProperty("start_date")]
-        public DateTimeOffset StartDate { get; set; }
+        public DateTime StartDate { get; set; }
 
         [JsonProperty("end_date")]
-        public DateTimeOffset? EndDate { get; set; }
+        public DateTime? EndDate { get; set; }
 
         [JsonProperty("status")]
-        public SapUserStatus Status { get; set; }
+        public AmSpaceUserStatus Status { get; set; }
+
+        [JsonProperty("backend_type")]
+        public AccountBackendType BackendType { get; set; }
     }
 
     public partial class ExternalAccountResponse

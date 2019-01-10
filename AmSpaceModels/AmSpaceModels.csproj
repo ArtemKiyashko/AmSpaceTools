@@ -30,8 +30,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -43,12 +43,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Enums\AppDataFolders.cs" />
     <Compile Include="Enums\Enums.cs" />
     <Compile Include="Idp\ActionType.cs" />
-    <Compile Include="AmSpaceError.cs" />
     <Compile Include="JobMap\JobDescription.cs" />
     <Compile Include="JobMap\JobResponsibilities.cs" />
     <Compile Include="JobMap\JobSearchPager.cs" />
+    <Compile Include="JobMap\TranslationsMap.cs" />
     <Compile Include="Organization\AmspaceStructureData.cs" />
     <Compile Include="AmSpaceEnvironment.cs" />
     <Compile Include="BaseModel.cs" />
@@ -65,6 +66,7 @@
     <Compile Include="Performance\Goal.cs" />
     <Compile Include="Performance\GoalNew.cs" />
     <Compile Include="Performance\GoalWeight.cs" />
+    <Compile Include="Performance\JpaFile.cs" />
     <Compile Include="Performance\Kpi.cs" />
     <Compile Include="Organization\People.cs" />
     <Compile Include="Performance\Roadmaps.cs" />
@@ -80,10 +82,10 @@
     <Compile Include="Sap\SapUser.cs" />
     <Compile Include="Idp\Translation.cs" />
     <Compile Include="Idp\UpdateAction.cs" />
+    <Compile Include="Auth\NewPassword.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

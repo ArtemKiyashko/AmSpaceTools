@@ -8,14 +8,14 @@ namespace AmSpaceModels.Enums
 {
     public enum SapSex
     {
-        Male = 1,
-        Female = 2
+        MALE = 1,
+        FEMALE = 2
     }
 
     public enum AmSpaceSex
     {
-        Male = 0,
-        Female = 1
+        MALE,
+        FEMALE
     }
 
     public enum AmSpaceUserStatus

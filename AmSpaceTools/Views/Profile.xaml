@@ -5,9 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:AmSpaceTools.Views"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:resources="clr-namespace:AmSpaceTools.Properties"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800"
-             xmlns:infrastructure="clr-namespace:AmSpaceTools.Infrastructure">
+             d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
@@ -22,7 +22,7 @@
         </materialDesign:Chip>
         <materialDesign:PopupBox DockPanel.Dock="Right" PlacementMode="BottomAndAlignRightEdges" StaysOpen="False" Grid.Column="1">
             <StackPanel>
-                <Button Content="LogOut" Command="{Binding LogoutCommand}"/>
+                <Button Content="{x:Static resources:Resources.LogOutToolTip}" Command="{Binding LogoutCommand}"/>
             </StackPanel>
         </materialDesign:PopupBox>
     </Grid>

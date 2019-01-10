@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Polly;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -23,10 +24,14 @@ namespace AmSpaceClient
         Task<bool> DeleteAsyncWrapper<T>(T model, string endpoint);
         Task<bool> DeleteAsyncWrapper(string endpoint);
         Task<TOutput> PostAsyncWrapper<TInput, TOutput>(TInput model, string endpoint) where TOutput : class;
-        Task<TOutput> PostAsyncWrapper<TOutput>(string endpoint, FormUrlEncodedContent content) where TOutput : class;
-        Task<HttpResponseMessage> PostAsyncWrapper(string endpoint, FormUrlEncodedContent content);
+        Task<TOutput> PostFormUrlEncodedContentAsyncWrapper<TOutput>(IEnumerable<KeyValuePair<string, string>> content, string endpoint) where TOutput : class;
+        Task<HttpResponseMessage> PostFormUrlEncodedContentAsyncWrapper(IEnumerable<KeyValuePair<string, string>> content, string endpoint);
+        Task<bool> PostAsyncWrapper<TInput>(TInput model, string endpoint);
         Task<TOutput> PatchAsyncWrapper<TInput, TOutput>(TInput model, string endpoint) where TOutput : class;
         Task<bool> PatchAsyncWrapper<TInput>(TInput model, string endpoint);
         Task<TOutput> PutAsyncWrapper<TInput, TOutput>(TInput model, string endpoint) where TOutput : class;
+        IAsyncPolicy<HttpResponseMessage> HttpResponcePolicy { get; set; }
+        Task<TOutput> PostFormAsync<TOutput>(string endpoint, IEnumerable<KeyValuePair<string, string>> parameters, IEnumerable<FileToUpload> files) where TOutput : class;
+        Task<TOutput> PutFormAsync<TOutput>(string endpoint, IEnumerable<KeyValuePair<string, string>> parameters, IEnumerable<FileToUpload> files) where TOutput : class;
     }
 }

@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:AmSpaceTools.Views"
-             xmlns:infrastructure="clr-namespace:AmSpaceTools.Infrastructure"
+             xmlns:resources="clr-namespace:AmSpaceTools.Properties"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="300"
@@ -28,20 +28,20 @@
           Grid.Column="0"
           x:Name="NameTextBox"
           Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-          materialDesign:HintAssist.Hint="Name"
+          materialDesign:HintAssist.Hint="{x:Static resources:Resources.UserNameBoxToolTip}"
           Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}">
         </TextBox>
         <PasswordBox
             Grid.Row="2"
             Grid.Column="0"
             x:Name="PasswordTextBox"
-            materialDesign:HintAssist.Hint="Password"
+            materialDesign:HintAssist.Hint="{x:Static resources:Resources.PasswordBoxToolTip}"
             Style="{StaticResource MaterialDesignFloatingHintPasswordBox}" />
         <ComboBox
             Grid.Row="4"
             Grid.Column="0"
             Style="{StaticResource MaterialDesignFloatingHintComboBox}"
-            materialDesign:HintAssist.Hint="Select environment"
+            materialDesign:HintAssist.Hint="{x:Static resources:Resources.SelectEnvironmentToolTip}"
             ItemsSource="{Binding Environments}"
             SelectedItem="{Binding SelectedEnvironment}">
             <ComboBox.ItemsPanel>
@@ -59,8 +59,8 @@
             </ComboBox.ItemTemplate>
         </ComboBox>
         <Button
-          x:Name="LoginButton"
-            ToolTip="Login using Your AmSpace credentials"
+            x:Name="LoginButton"
+            ToolTip="{x:Static resources:Resources.LoginButtonToolTip}"
           IsDefault="True"
           IsEnabled="{Binding DefaultButtonIsEnabled}"
           Grid.Row="6"

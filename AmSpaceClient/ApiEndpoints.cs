@@ -100,6 +100,21 @@ namespace AmSpaceClient
         /// </summary>
         public string CoreValuesEndpoint { get { return $"{BaseAddress}/api/v1/organization/domains/{{0}}/levels/{{1}}/core_values/"; } }
 
+        public string DefaultAvatarEndpoint { get { return $"{BaseAddress}/static/avatar.png"; } }
+
+        /// <summary>
+        /// Change password for your subbordinate
+        /// </summary>
+        public string ChangePasswordTeamEndpoint { get { return $"{BaseAddress}/api/v1/team/user/{{0}}/change_password/"; } }
+
+        /// <summary>
+        /// Change password for user by UserId
+        /// </summary>
+        public string ChangePasswordEndpoint { get { return $"{BaseAddress}/api/v1/auth/change_password/{{0}}/"; } }
+
+        public string JpaHistoryAdminEndpoint { get { return $"{BaseAddress}/api/v1/jpa/forms/admin/history_user_forms/"; } }
+        public string JpaHistoryUpdateAdminEndpoint { get { return $"{BaseAddress}/api/v1/jpa/forms/admin/history_user_forms/{{0}}/"; } }
+
         public string BaseAddress { get; private set; }
 
         public ApiEndpoints(string baseAddress)

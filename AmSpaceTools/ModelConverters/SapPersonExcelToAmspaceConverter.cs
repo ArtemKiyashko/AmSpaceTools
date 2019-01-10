@@ -1,24 +1,21 @@
-﻿using AmSpaceModels.Organization;
-using AmSpaceModels.Sap;
-using AmSpaceTools.Infrastructure;
+﻿using AmSpaceModels.Enums;
+using AmSpaceModels.Organization;
+using AmSpaceTools.Infrastructure.Providers;
 using AutoMapper;
 using ExcelWorker.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace AmSpaceTools.ModelConverters
 {
     public class SapPersonExcelToAmspaceConverter : ITypeConverter<SapPersonExcelRow, ExternalAccount>
     {
-        private Dictionary<ContractStatus, AmSpaceModels.Enums.SapUserStatus> _statusMapping = new Dictionary<ContractStatus, AmSpaceModels.Enums.SapUserStatus>
+        private readonly IActiveDirectoryProvider _activeDirectoryProvider;
+
+        public SapPersonExcelToAmspaceConverter(IActiveDirectoryProvider activeDirectoryProvider)
         {
-            { ContractStatus.Active, AmSpaceModels.Enums.SapUserStatus.ACTIVE },
-            { ContractStatus.Terminated, AmSpaceModels.Enums.SapUserStatus.TERMINATED },
-            { ContractStatus.Suspended, AmSpaceModels.Enums.SapUserStatus.SUSPENDED }
-        };
+            _activeDirectoryProvider = activeDirectoryProvider;
+        }
+
         public ExternalAccount Convert(SapPersonExcelRow source, ExternalAccount destination, ResolutionContext context)
         {
 
@@ -30,14 +27,17 @@ namespace AmSpaceTools.ModelConverters
             externalUser.PersonLegalId = source.IdentityNumber;
             externalUser.DateOfBirth = source.BirthDate;
             externalUser.Nationality = source.Nationality;
-            externalUser.Sex = (AmSpaceModels.Enums.SapSex)source.Sex;
+            externalUser.Sex = (AmSpaceSex)source.Sex;
             externalUser.StartDate = source.ContractStartDate;
             externalUser.EndDate = source.ContractEndDate;
             externalUser.Level = source.Level;
             externalUser.Mpk = source.Mpk;
             externalUser.CountryCode = source.Country;
             externalUser.ContractNumber = source.ContractNumber;
-            externalUser.Status = _statusMapping[source.Status];
+            externalUser.Status = (AmSpaceUserStatus)source.Status;
+            externalUser.BackendType = _activeDirectoryProvider.FindOneByEmail(source.Email) != null
+               ? AccountBackendType.ActiveDirectory
+               : AccountBackendType.AmSpace;
             return externalUser;
         }
     }

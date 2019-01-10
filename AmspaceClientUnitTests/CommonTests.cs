@@ -43,13 +43,13 @@ namespace AmspaceClientUnitTests
             var secureString = new SecureString();
             var amspaceEnv = new AmSpaceEnvironment { BaseAddress = "http://b.c" };
             _requestsWrapper
-                .Setup(rw => rw.PostAsyncWrapper<LoginResult>(It.IsAny<string>(), It.IsAny<FormUrlEncodedContent>()))
+                .Setup(rw => rw.PostFormUrlEncodedContentAsyncWrapper<LoginResult>(It.IsAny<IEnumerable<KeyValuePair<string, string>>>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(loginResult));
 
             var result = await _amSpaceClient.LoginRequestAsync("a", secureString, amspaceEnv);
             var endpoint = _amSpaceClient.Endpoints.TokenEndpoint;
 
-            _requestsWrapper.Verify(rw => rw.PostAsyncWrapper<LoginResult>(endpoint, It.IsAny<FormUrlEncodedContent>()));
+            _requestsWrapper.Verify(rw => rw.PostFormUrlEncodedContentAsyncWrapper<LoginResult>(It.IsAny<IEnumerable<KeyValuePair<string, string>>>(), endpoint));
         }
 
         [Test]
@@ -57,7 +57,7 @@ namespace AmspaceClientUnitTests
         {
             var loginResult = new LoginResult();
             _requestsWrapper
-                .Setup(rw => rw.PostAsyncWrapper<LoginResult>(It.IsAny<string>(), It.IsAny<FormUrlEncodedContent>()))
+                .Setup(rw => rw.PostFormUrlEncodedContentAsyncWrapper<LoginResult>(It.IsAny<IEnumerable<KeyValuePair<string, string>>>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(loginResult));
             var secureString = new SecureString();
             var amspaceEnv = new AmSpaceEnvironment {BaseAddress = "http://a.b"};
@@ -71,7 +71,7 @@ namespace AmspaceClientUnitTests
         public void LoginRequestAsync_WhenCalledWithWrongCredentials_Throws()
         {
             _requestsWrapper
-                .Setup(rw => rw.PostAsyncWrapper<LoginResult>(It.IsAny<string>(), It.IsAny<FormUrlEncodedContent>()))
+                .Setup(rw => rw.PostFormUrlEncodedContentAsyncWrapper<LoginResult>(It.IsAny<IEnumerable<KeyValuePair<string, string>>>(), It.IsAny<string>()))
                 .Throws(new Exception());
             var secureString = new SecureString();
             var amspaceEnv = new AmSpaceEnvironment { BaseAddress = "http://a.b" };
@@ -86,7 +86,7 @@ namespace AmspaceClientUnitTests
         {
             var loginResult = new LoginResult();
             _requestsWrapper
-                .Setup(rw => rw.PostAsyncWrapper<LoginResult>(It.IsAny<string>(), It.IsAny<FormUrlEncodedContent>()))
+                .Setup(rw => rw.PostFormUrlEncodedContentAsyncWrapper<LoginResult>(It.IsAny<IEnumerable<KeyValuePair<string, string>>>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(loginResult));
             var secureString = new SecureString();
             var amspaceEnv = new AmSpaceEnvironment { BaseAddress = "http://a.b" };

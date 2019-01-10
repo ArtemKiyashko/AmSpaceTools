@@ -3,21 +3,16 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:AmSpaceTools.Views"
-             xmlns:modelsSap="clr-namespace:AmSpaceModels.Sap;assembly=AmSpaceModels"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             xmlns:infrastructure="clr-namespace:AmSpaceTools.Infrastructure"
              xmlns:system="clr-namespace:System;assembly=mscorlib"
              x:Class="AmSpaceTools.Views.SearchPeople"
              mc:Ignorable="d" 
              d:DesignHeight="800" d:DesignWidth="800">
-    <UserControl.Resources>
-        <infrastructure:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
-    </UserControl.Resources>
     <Grid Margin="10" IsEnabled="{Binding UIEnabled}"  FocusManager.FocusedElement="{Binding ElementName=NameTextBox}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="Auto"/>
+
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -30,7 +25,8 @@
         <StackPanel 
             Orientation="Vertical"
             Grid.Row="0"
-            Grid.Column="0">
+            Grid.Column="0"
+            Grid.ColumnSpan="2">
             <TextBlock
                 Margin="0 5 5 2"
                 Style="{StaticResource MaterialDesignHeadlineTextBlock}">
@@ -45,7 +41,7 @@
         
         <Button
             Grid.Row="0"
-            Grid.Column="2"
+            Grid.Column="1"
             HorizontalAlignment="Right"
             Style="{StaticResource MaterialDesignFlatButton}"
             ToolTip="Close"
@@ -61,7 +57,7 @@
         <TextBox
           Grid.Row="1"
           Grid.Column="0"
-          Grid.ColumnSpan="3"
+          Grid.ColumnSpan="2"
           x:Name="NameTextBox"
           Style="{StaticResource MaterialDesignFloatingHintTextBox}"
           materialDesign:HintAssist.Hint="Name"
@@ -70,7 +66,7 @@
         <TextBox
               Grid.Row="2"
               Grid.Column="0"
-              Grid.ColumnSpan="3"
+              Grid.ColumnSpan="2"
               x:Name="DomainTextBox"
               Style="{StaticResource MaterialDesignFloatingHintTextBox}"
               materialDesign:HintAssist.Hint="Domain">
@@ -91,7 +87,7 @@
         </Button>
         <Button
             Grid.Row="4"
-            Grid.Column="2"
+            Grid.Column="1"
             Style="{StaticResource MaterialDesignFlatButton}"
             Visibility="{Binding SearchButtonVisible, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"
             ToolTip="Search users"
@@ -102,7 +98,7 @@
         </Button>
         <Button
             Grid.Row="4"
-            Grid.Column="2"
+            Grid.Column="1"
             Visibility="{Binding ApplyButtonVisible, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"
             Style="{StaticResource MaterialDesignFlatButton}"
             ToolTip="Attach to that manager"
@@ -112,7 +108,8 @@
         <ListView
             Grid.Row="3"
             Grid.Column="0"
-            Grid.ColumnSpan="3"
+            Grid.ColumnSpan="2"
+            MinHeight="150"
             ItemsSource="{Binding SearchResultWithContract}"
             SelectedItem="{Binding SelectedUser}">
             <ListView.View>
@@ -135,6 +132,6 @@
         <ProgressBar IsIndeterminate="True" Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"
                      Grid.Column="0"
                      Grid.Row="3"
-                     Grid.ColumnSpan="3"/>
+                     Grid.ColumnSpan="2"/>
     </Grid>
 </UserControl>

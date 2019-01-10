@@ -9,11 +9,11 @@ using System.Windows.Data;
 
 namespace AmSpaceTools.Infrastructure.Converters
 {
-    public class IntToStringPercentConverter : IValueConverter
+    public class DecimalToStringPercentConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return $"{(int)value}%";
+            return $"{Math.Truncate((decimal)value)}%";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

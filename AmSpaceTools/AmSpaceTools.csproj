@@ -40,12 +40,15 @@
   <PropertyGroup>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>false</SignManifests>
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AutoMapper, Version=7.0.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
-      <HintPath>..\packages\AutoMapper.7.0.1\lib\net45\AutoMapper.dll</HintPath>
+    <Reference Include="AutoMapper, Version=8.0.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.8.0.0\lib\net461\AutoMapper.dll</HintPath>
     </Reference>
     <Reference Include="F23.StringSimilarity, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\F23.StringSimilarity.3.0.0\lib\netstandard1.0\F23.StringSimilarity.dll</HintPath>
+      <HintPath>..\packages\F23.StringSimilarity.3.1.0\lib\netstandard1.0\F23.StringSimilarity.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
@@ -59,8 +62,8 @@
     <Reference Include="Microsoft.Win32.Primitives, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Win32.Primitives.4.3.0\lib\net46\Microsoft.Win32.Primitives.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="StructureMap, Version=4.7.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\StructureMap.4.7.0\lib\net45\StructureMap.dll</HintPath>
@@ -75,9 +78,10 @@
       <HintPath>..\packages\System.Console.4.3.1\lib\net46\System.Console.dll</HintPath>
     </Reference>
     <Reference Include="System.Data" />
-    <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.5.0\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.3.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.5.1\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
     </Reference>
+    <Reference Include="System.DirectoryServices.AccountManagement" />
     <Reference Include="System.Globalization.Calendars, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Globalization.Calendars.4.3.0\lib\net46\System.Globalization.Calendars.dll</HintPath>
     </Reference>
@@ -94,8 +98,8 @@
     <Reference Include="System.IO.FileSystem.Primitives, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.IO.FileSystem.Primitives.4.3.0\lib\net46\System.IO.FileSystem.Primitives.dll</HintPath>
     </Reference>
-    <Reference Include="System.Net.Http, Version=4.1.1.2, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Net.Http.4.3.3\lib\net46\System.Net.Http.dll</HintPath>
+    <Reference Include="System.Net.Http, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Net.Http.4.3.4\lib\net46\System.Net.Http.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Sockets, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Net.Sockets.4.3.0\lib\net46\System.Net.Sockets.dll</HintPath>
@@ -141,30 +145,41 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Decorators\ExcelWorkerDecorator.cs" />
-    <Compile Include="Infrastructure\AmSpaceEnvironmentsProvider.cs" />
+    <Compile Include="Infrastructure\Converters\BoolToIconConverter.cs" />
+    <Compile Include="Infrastructure\Providers\ActiveDirectoryProvider.cs" />
+    <Compile Include="Infrastructure\Providers\AmSpaceEnvironmentsProvider.cs" />
     <Compile Include="Infrastructure\ColumnDefinitionError.cs" />
-    <Compile Include="Infrastructure\Converters\IntToStringPercentConverter.cs" />
+    <Compile Include="Infrastructure\Converters\DecimalToStringPercentConverter.cs" />
     <Compile Include="Infrastructure\CsvLogAppender.cs" />
-    <Compile Include="Infrastructure\DictionaryExtensions.cs" />
-    <Compile Include="Infrastructure\IAmSpaceEnvironmentsProvider.cs" />
-    <Compile Include="Infrastructure\IdpExcelRowEqualityComparer.cs" />
+    <Compile Include="Infrastructure\Extensions\DictionaryExtensions.cs" />
+    <Compile Include="Infrastructure\Providers\ConnectionStatusEventArgs.cs" />
+    <Compile Include="Infrastructure\Providers\IActiveDirectoryProvider.cs" />
+    <Compile Include="Infrastructure\Providers\IAmSpaceEnvironmentsProvider.cs" />
     <Compile Include="Infrastructure\IHavePassword.cs" />
-    <Compile Include="Infrastructure\BoolToVisibilityConverter.cs" />
-    <Compile Include="Infrastructure\ListExtensions.cs" />
+    <Compile Include="Infrastructure\Converters\BoolToVisibilityConverter.cs" />
+    <Compile Include="Infrastructure\Extensions\ListExtensions.cs" />
     <Compile Include="Infrastructure\MenuItem.cs" />
     <Compile Include="Infrastructure\NotEmptyValidationRule.cs" />
+    <Compile Include="Infrastructure\PasswordBoxAssistant.cs" />
     <Compile Include="Infrastructure\ProgressState.cs" />
     <Compile Include="Infrastructure\RelayCommand.cs" />
     <Compile Include="Infrastructure\Services.cs" />
-    <Compile Include="Infrastructure\StringExtensions.cs" />
-    <Compile Include="Infrastructure\TreeExtensions.cs" />
-    <Compile Include="Infrastructure\TreeItem.cs" />
+    <Compile Include="Infrastructure\Extensions\StringExtensions.cs" />
+    <Compile Include="Infrastructure\Extensions\TreeExtensions.cs" />
+    <Compile Include="Infrastructure\Extensions\TreeItem.cs" />
     <Compile Include="ModelConverters\ActionToUpdateConverter.cs" />
     <Compile Include="ModelConverters\CompetencyActionsToExcelRowConverter.cs" />
     <Compile Include="ModelConverters\SapPersonExcelToAmspaceConverter.cs" />
+    <Compile Include="Properties\Resources.ru.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.ru.resx</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\BaseViewModel.cs" />
+    <Compile Include="ViewModels\ChangePasswordViewModel.cs" />
     <Compile Include="ViewModels\ErrorViewModel.cs" />
     <Compile Include="ViewModels\IdpTranslationsPreviewViewModel.cs" />
+    <Compile Include="ViewModels\JobMapUploadViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\OrgStructureViewModel.cs" />
@@ -174,6 +189,9 @@
     <Compile Include="ViewModels\ProgressIndicatorViewModel.cs" />
     <Compile Include="ViewModels\SearchPeopleViewModel.cs" />
     <Compile Include="ViewModels\SearchUserResultWithContractViewModel.cs" />
+    <Compile Include="Views\ChangePassword.xaml.cs">
+      <DependentUpon>ChangePassword.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ConfirmUnitDelete.xaml.cs">
       <DependentUpon>ConfirmUnitDelete.xaml</DependentUpon>
     </Compile>
@@ -191,6 +209,9 @@
     </Compile>
     <Compile Include="Views\OrgStructure.xaml.cs">
       <DependentUpon>OrgStructure.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\JobMapUpload.xaml.cs">
+      <DependentUpon>JobMapUpload.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PeopleUpload.xaml.cs">
       <DependentUpon>PeopleUpload.xaml</DependentUpon>
@@ -216,6 +237,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\ChangePassword.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\ConfirmUnitDelete.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -239,6 +264,10 @@
     <Page Include="Views\OrgStructure.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\JobMapUpload.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\PeopleUpload.xaml">
       <SubType>Designer</SubType>
@@ -272,8 +301,12 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.ru.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.ru.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="Environments.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

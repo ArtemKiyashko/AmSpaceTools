@@ -2,6 +2,7 @@
 using AmSpaceModels.Enums;
 using AmSpaceModels.Organization;
 using AmSpaceModels.Sap;
+using AmSpaceModels.Auth;
 using AmSpaceTools.Infrastructure;
 using AmSpaceTools.Views;
 using AutoMapper;
@@ -14,9 +15,14 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using AmSpaceTools.Properties;
+using AmSpaceTools.Infrastructure.Extensions;
+using AmSpaceTools.Infrastructure.Providers;
+using System.Windows.Threading;
 
 namespace AmSpaceTools.ViewModels
 {
@@ -29,6 +35,24 @@ namespace AmSpaceTools.ViewModels
         private DataTable _workSheet;
         private ObservableCollection<SapPersonExcelRow> _inputRows;
         private readonly SearchPeopleViewModel _searchVm;
+        private readonly ChangePasswordViewModel _changePasswordVm;
+        private Func<SapPersonExcelRow, bool> _defaultPasswordRequiredCondition => a => string.IsNullOrEmpty(a.Email) && a.Level < 5;
+        private NewPassword _defaultPassword;
+        private readonly IActiveDirectoryProvider _activeDirectoryProvider;
+        private bool _adConnected;
+
+        public bool AdConnected
+        {
+            get
+            {
+                return _adConnected;
+            }
+            set
+            {
+                _adConnected = value;
+                OnPropertyChanged();
+            }
+        }
 
         public ProgressIndicatorViewModel ProgressVM { get; private set; }
 
@@ -41,16 +65,16 @@ namespace AmSpaceTools.ViewModels
 
         public ICommand UploadDataCommand { get; set; }
 
-        public bool IsUploadVisible
-        {
-            get
-            {
-                if (!InputRows.Any()) return false;
-                return true;
-            }
-        }
-
-        public PeopleUploadViewModel(IAmSpaceClient client, IMapper mapper, IExcelWorker excelWorker, SearchPeopleViewModel searchVm, ProgressIndicatorViewModel progressVm)
+        public bool IsUploadVisible => InputRows.Any();
+        
+        public PeopleUploadViewModel(
+            IAmSpaceClient client,
+            IMapper mapper,
+            IExcelWorker excelWorker,
+            SearchPeopleViewModel searchVm,
+            ProgressIndicatorViewModel progressVm,
+            ChangePasswordViewModel changePasswordVm,
+            IActiveDirectoryProvider activeDirectoryProvider)
         {
             ProgressVM = progressVm;
             _client = client;
@@ -61,6 +85,14 @@ namespace AmSpaceTools.ViewModels
             _searchVm = searchVm;
             InputRows = new ObservableCollection<SapPersonExcelRow>();
             InputRows.CollectionChanged += InputRows_CollectionChanged;
+            _changePasswordVm = changePasswordVm;
+            _activeDirectoryProvider = activeDirectoryProvider;
+            _activeDirectoryProvider.ConnectionStatusChanged += _activeDirectoryProvider_ConnectionStatusChanged;
+        }
+
+        private void _activeDirectoryProvider_ConnectionStatusChanged(object sender, ConnectionStatusEventArgs e)
+        {
+            AdConnected = e.IsConnected;
         }
 
         private void InputRows_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -76,31 +108,48 @@ namespace AmSpaceTools.ViewModels
             var existingMpks = flatDomains.Select(_ => _.Mpk).Distinct();
             var missingMpks = inputMpks.Except(existingMpks);
             if (missingMpks.Any())
-                throw new ArgumentException($"Those MPKs are missing: {missingMpks.Select(_ => _.ToString()).Aggregate((c, n) => c + ", " + n)}", nameof(SapPersonExcelRow.Mpk));
+                throw new ArgumentException($"{Resources.PeopleUploadMissingMpkMessage} {missingMpks.Select(_ => _.ToString()).Aggregate((c, n) => c + ", " + n)}", nameof(SapPersonExcelRow.Mpk));
+        }
 
+        private async Task RequestDefaultPassword(IEnumerable<SapPersonExcelRow> inputRows)
+        {
+            if (inputRows.Any(_defaultPasswordRequiredCondition))
+            {
+                _changePasswordVm.DescriptionText = Resources.PeopleUploadSetDefaultPassword;
+                var view = new ChangePassword()
+                {
+                    DataContext = _changePasswordVm
+                };
+                var result = (bool)await DialogHost.Show(view, "ControlDialog");
+                if (!result) throw new ArgumentNullException(Resources.PeopleUploadDefaultPasswordNotSet);
+                _defaultPassword = _changePasswordVm.Password;
+            }
         }
         private async void UploadData(object obj)
         {
             ProgressVM.ShowLoading();
-            ProgressVM.ReportProgress(new ProgressState { ProgressTasksDone = 0, ProgressDescriptionText = "Validating domains..." });
+            ProgressVM.ReportProgress(new ProgressState { ProgressTasksDone = 0, ProgressDescriptionText = Resources.PeopleUploadValidateDomainMessage });
             await ValidateDomainsAsync(InputRows);
+            if (ProgressVM.IsProgressCancelled) return;
             var inputRowsGroupedByContracts = InputRows.GroupBy(_ => new { _.IdentityNumber, _.ManagerId }, v => v);
-            ProgressVM.ReportProgress(new ProgressState { ProgressTasksDone = 0, ProgressDescriptionText = "Generating structure tree..." });
+            ProgressVM.ReportProgress(new ProgressState { ProgressTasksDone = 0, ProgressDescriptionText = Resources.PeopleUploadGenerateStructureTreeMessage });
             var tree = inputRowsGroupedByContracts.GenerateTree(c => c.Key.IdentityNumber, c => c.Key.ManagerId ?? string.Empty, string.Empty);
-            var i = 0;
+            await RequestDefaultPassword(InputRows);
+            if (ProgressVM.IsProgressCancelled) return;
             var descendantList = tree.Descendants(_ => _.Children).ToList();
-            var contactsCount = descendantList.Select(_ => _.Item).Count();
+            var contactsCount = descendantList.SelectMany(_ => _.Item).Count();
+            var uploadedContracts = 0;
             foreach (var account in descendantList)
             {
                 if (ProgressVM.IsProgressCancelled) break;
                 foreach (var contract in account.Item)
                 {
-                    ProgressVM.ReportProgress(new ProgressState { ProgressTasksDone = ++i, ProgressTasksTotal = contactsCount, ProgressDescriptionText = $"{contract.Name} {contract.Surname} ID:[{contract.IdentityNumber}] processing" });
                     var externalAccount = await FillAccount(contract);
                     var accountResult = await UploadAccount(externalAccount);
+                    ProgressVM.ReportProgress(new ProgressState { ProgressTasksDone = ++uploadedContracts, ProgressTasksTotal = contactsCount, ProgressDescriptionText = string.Format(Resources.PeopleUploadReportUploadStatusMessage, contract.Name, contract.Surname, contract.IdentityNumber) });
                 }
             }
-            ProgressVM.CloseLoading();
+            ProgressVM.ReportProgress(new ProgressState { ProgressTasksDone = uploadedContracts, ProgressTasksTotal = contactsCount, ProgressDescriptionText = string.Format(Resources.PeopleUploadFinishUploadMessage, Environment.NewLine, uploadedContracts) });
         }
 
         protected async Task<ExternalAccount> FillAccount(SapPersonExcelRow contract)
@@ -137,32 +186,53 @@ namespace AmSpaceTools.ViewModels
                 {
                     DataContext = _searchVm
                 };
-                var result = (bool)await DialogHost.Show(view, "RootDialog");
-                if (!result) throw new ArgumentNullException(nameof(contract.ManagerId), $"Manager for {contract.Name} {contract.Surname} not set");
+                var result = (bool)await DialogHost.Show(view, "ControlDialog");
+                if (!result) throw new ArgumentNullException(nameof(contract.ManagerId), string.Format(Resources.PeopleUploadManagerNotSetMessage, contract.Name, contract.Surname));
                 externalAccount.ManagerId = _searchVm.SelectedUser.User.Id;
             }
             else
             {
                 var manager = await _client.FindUserByIdentityNumber(contract.ManagerId);
-                externalAccount.ManagerId = manager == null ? throw new ArgumentException($"Manager for {contract.Name} {contract.Surname} not found!") : manager.Id;
+                externalAccount.ManagerId = manager == null ? throw new ArgumentException(string.Format(Resources.PeopleUploadManagerNotFoundMessage, contract.Name, contract.Surname)) : manager.Id;
             }
         }
 
         protected async Task<ExternalAccountResponse> UploadAccount(ExternalAccount externalAccount)
         {
-            var accountResult = new ExternalAccountResponse();
+            var contractResult = new ExternalAccountResponse();
             var existingUser = await _client.FindUserByIdentityNumber(externalAccount.PersonLegalId);
             if (existingUser == null)
-                accountResult = await _client.CreateExternalAccount(externalAccount);
+                contractResult = await _client.CreateExternalAccount(externalAccount);
             else
             {
                 var existingContract = existingUser.Contracts.Find(_ => _.ContractNumber == externalAccount.ContractNumber);
-                if (existingContract == null)
-                    accountResult = await _client.CreateExternalAccount(externalAccount);
-                else
-                    accountResult = await _client.UpdateExternalAccount(existingContract.Id, externalAccount);
+                contractResult = existingContract == null ?
+                    await _client.CreateExternalAccount(externalAccount) :
+                    await _client.UpdateExternalAccount(existingContract.Id, externalAccount);
             }
-            return accountResult;
+            var passwordChanged = await ChangePassword(externalAccount, InputRows);
+            return contractResult;
+        }
+
+        protected async Task<bool> ChangePassword(ExternalAccount account, IEnumerable<SapPersonExcelRow> inputRows)
+        {
+            var row = inputRows
+                .Where(_ => _.IdentityNumber == account.PersonLegalId && 
+                _.ContractNumber == account.ContractNumber && 
+                _.Status == ContractStatus.ACTIVE)
+                .SingleOrDefault(_defaultPasswordRequiredCondition);
+            if (account.BackendType == AccountBackendType.ActiveDirectory || row == null) return false;
+            var existingUser = await _client.FindUserByIdentityNumber(account.PersonLegalId);
+            bool result = false;
+            try
+            {
+                result = await _client.ChangePasswordAsync(_defaultPassword, existingUser);
+            }
+            catch (ArgumentException ex)
+            {
+                if (!ex.Message.Contains("New password cannot be the same as old password.")) throw;
+            }
+            return result;
         }
 
         private async void OpenFile(object obj)
@@ -179,8 +249,8 @@ namespace AmSpaceTools.ViewModels
                 using (_excelWorker)
                 {
                     _fileName = dialog.FileName;
-                    _excelWorker.OpenFile(_fileName);
-                    _workSheet = _excelWorker.GetWorkSheet(1);
+                    await _excelWorker.OpenFileAsync(_fileName);
+                    _workSheet = await _excelWorker.GetWorkSheetAsync(1);
                     InputRows.Clear();
                     var data = await _excelWorker.ExctractDataAsync<SapPersonExcelRow>(_workSheet.TableName);
                     data.ForEach(_ => InputRows.Add(_));

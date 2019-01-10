@@ -1,6 +1,7 @@
 ﻿using AmSpaceClient;
 using AmSpaceModels.Idp;
 using AmSpaceTools.Infrastructure;
+using AmSpaceTools.Infrastructure.Extensions;
 using AmSpaceTools.ModelConverters;
 using AmSpaceTools.Views;
 using AutoMapper;
@@ -161,25 +162,25 @@ namespace AmSpaceTools.ViewModels
 
         protected async void SaveUploadResults(IEnumerable<IdpExcelRow> missingActions, IEnumerable<IdpExcelRow> matchingActions)
         {
-            var fileName = Path.Combine("Reports",
+            var fileName =
                 $"{DateTime.Now.Year}_" +
                 $"{DateTime.Now.Month}_" +
                 $"{DateTime.Now.Day}_" +
                 $"{DateTime.Now.Hour}-" +
                 $"{DateTime.Now.Minute}-" +
                 $"{DateTime.Now.Second}" +
-                $"_Missing.xlsx");
-            await _excelWorker.SaveDataAsync(fileName, missingActions, "Missing");
+                $"_Missing.xlsx";
+            await _excelWorker.SaveDataAsync(fileName, AmSpaceModels.Enums.AppDataFolders.Reports, missingActions, "Missing");
 
-            fileName = Path.Combine("Reports",
+            fileName = 
                 $"{DateTime.Now.Year}_" +
                 $"{DateTime.Now.Month}_" +
                 $"{DateTime.Now.Day}_" +
                 $"{DateTime.Now.Hour}-" +
                 $"{DateTime.Now.Minute}-" +
                 $"{DateTime.Now.Second}" +
-                $"_Matching.xlsx");
-            await _excelWorker.SaveDataAsync(fileName, matchingActions, "Matching");
+                $"_Matching.xlsx";
+            await _excelWorker.SaveDataAsync(fileName, AmSpaceModels.Enums.AppDataFolders.Reports, matchingActions, "Matching");
         }
 
         public ICommand UploadDataCommand
@@ -198,7 +199,7 @@ namespace AmSpaceTools.ViewModels
             set { _openFileCommand = value; }
         }
 
-        private void OpenFile(object obj)
+        private async void OpenFile(object obj)
         {
             IsLoading = true;
             var dialog = new OpenFileDialog
@@ -210,7 +211,7 @@ namespace AmSpaceTools.ViewModels
             if (dialog.ShowDialog() == true)
             {
                 CurrentFilePath = dialog.FileName;
-                _excelWorker.OpenFile(CurrentFilePath);
+                await _excelWorker.OpenFileAsync(CurrentFilePath);
                 ExcelColumnsPreview = _excelWorker.GetColumnDataPreview(10);
                 foreach(var excelColumn in ExcelColumnsPreview)
                     excelColumn.PropertyChanged += ExcelColumn_PropertyChanged;
@@ -222,6 +223,5 @@ namespace AmSpaceTools.ViewModels
         {
             OnPropertyChanged(nameof(IsUploadVisible));
         }
-        
     }
 }

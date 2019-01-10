@@ -5,6 +5,7 @@ using AmSpaceModels.JobMap;
 using AmSpaceModels.Organization;
 using AmSpaceModels.Performance;
 using AmSpaceModels.Sap;
+using AmSpaceModels.Auth;
 using AmSpaceTools.Infrastructure;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,8 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using UriBuilderExtended;
+using System.IO;
+using System.IO.Compression;
 
 namespace AmSpaceClient
 {
@@ -58,8 +61,7 @@ namespace AmSpaceClient
                     { "grant_type", GrantPermissionType },
                     { "client_id", ClientId }
                 };
-            var content = new FormUrlEncodedContent(values);
-            LoginResult = await RequestWrapper.PostAsyncWrapper<LoginResult>(Endpoints.TokenEndpoint, content);
+            LoginResult = await RequestWrapper.PostFormUrlEncodedContentAsyncWrapper<LoginResult>(values, Endpoints.TokenEndpoint);
             RequestWrapper.AddAuthHeaders(new AuthenticationHeaderValue("Bearer", LoginResult.AccessToken));
             RequestWrapper.AddAuthCookies(new Uri(Endpoints.BaseAddress), new Cookie("accessToken", LoginResult.AccessToken));
             IsAthorized = true;
@@ -68,9 +70,12 @@ namespace AmSpaceClient
 
         public async Task<BitmapSource> GetAvatarAsync(string link)
         {
-            var result = await RequestWrapper.GetAsyncWrapper(link);
+            var result = string.IsNullOrEmpty(link) ?
+                await RequestWrapper.GetAsyncWrapper(Endpoints.DefaultAvatarEndpoint) :
+                await RequestWrapper.GetAsyncWrapper(link);
+
             if (!result.IsSuccessStatusCode)
-                result = await RequestWrapper.GetAsyncWrapper($"{Endpoints.BaseAddress}/static/avatar.png");
+                result = await RequestWrapper.GetAsyncWrapper(Endpoints.DefaultAvatarEndpoint);
             await result.ValidateAsync();
             var content = await result.Content.ReadAsByteArrayAsync();
             return (BitmapSource)new ImageSourceConverter().ConvertFrom(content);
@@ -109,8 +114,7 @@ namespace AmSpaceClient
                     { "token", LoginResult.AccessToken },
                     { "client_id", ClientId }
                 };
-            var content = new FormUrlEncodedContent(values);
-            var result = await RequestWrapper.PostAsyncWrapper(Endpoints.LogoutEndpoint, content);
+            var result = await RequestWrapper.PostFormUrlEncodedContentAsyncWrapper(values, Endpoints.LogoutEndpoint);
             await result.ValidateAsync();
             IsAthorized = false;
             return true;
@@ -421,6 +425,74 @@ namespace AmSpaceClient
         {
             var url = string.Format(Endpoints.CoreValuesEndpoint, brand.Id == 0 ? "rst" : brand.Id.ToString(), level.Id);
             return await RequestWrapper.PutAsyncWrapper<CoreValues, CoreValues>(values, url);
+        }
+
+        public Task<bool> ChangePasswordAsync(NewPassword password, SearchUserResult account)
+        {
+            password.UserId = null;
+            var url = string.Format(Endpoints.ChangePasswordEndpoint, account.Id);
+            return RequestWrapper.PostAsyncWrapper(password, url);
+        }
+
+        public async Task<IEnumerable<JpaFile>> GetJpaHistoryByUsernameAsync(string username)
+        {
+            var url = new UriBuilder(Endpoints.JpaHistoryAdminEndpoint);
+            url.AddQuery("username", username);
+            var pager = await RequestWrapper.GetAsyncWrapper<JpaFileList>(url.ToString());
+            var result = new List<JpaFile>();
+            result.AddRange(pager.Results);
+            while (!string.IsNullOrEmpty(pager.Next))
+            {
+                pager = await RequestWrapper.GetAsyncWrapper<JpaFileList>(pager.Next);
+                result.AddRange(pager.Results);
+            }
+            return result;
+        }
+
+        public Task<JpaFile> CreateJpaHistoryAsync(JpaFile jpaEntry)
+        {
+            var parameters = CreateFormParametersJpa(jpaEntry);
+            var file = CreateFileJpa(jpaEntry);
+            var fileList = new List<FileToUpload>();
+            fileList.Add(file);
+            return RequestWrapper.PostFormAsync<JpaFile>(Endpoints.JpaHistoryAdminEndpoint, parameters, fileList);
+        }
+
+        public Task<bool> DeleteJpaHistoryAsync(JpaFile jpaEntry)
+        {
+            var url = string.Format(Endpoints.JpaHistoryUpdateAdminEndpoint, jpaEntry.Id.ToString());
+            return RequestWrapper.DeleteAsyncWrapper(url);
+        }
+
+        public Task<JpaFile> UpdateJpaHistoryAsync(JpaFile jpaEntry)
+        {
+            var parameters = CreateFormParametersJpa(jpaEntry);
+            var file = CreateFileJpa(jpaEntry);
+            var fileList = new List<FileToUpload>();
+            fileList.Add(file);
+            var url = string.Format(Endpoints.JpaHistoryUpdateAdminEndpoint, jpaEntry.Id.ToString());
+
+            return RequestWrapper.PutFormAsync<JpaFile>(url, parameters, fileList);
+        }
+
+        private FileToUpload CreateFileJpa(JpaFile jpaEntry)
+        {
+            var data = File.ReadAllBytes(jpaEntry.File.ToString());
+            return new FileToUpload
+            {
+                Data = data,
+                DataName = "file",
+                FileName = Path.GetFileName(jpaEntry.File.ToString())
+            };
+        }
+
+        private Dictionary<string, string> CreateFormParametersJpa(JpaFile jpaEntry)
+        {
+            var parameters = new Dictionary<string, string>();
+            parameters.Add("jpa_name", jpaEntry.JpaName);
+            parameters.Add("year", jpaEntry.Year.ToString());
+            parameters.Add("user", jpaEntry.UserName);
+            return parameters;
         }
     }
 }

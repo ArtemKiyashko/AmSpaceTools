@@ -2,28 +2,23 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:AmSpaceTools.Views"
-             xmlns:modelsSap="clr-namespace:AmSpaceModels.Sap;assembly=AmSpaceModels"
+             xmlns:resources="clr-namespace:AmSpaceTools.Properties"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             xmlns:infrastructure="clr-namespace:AmSpaceTools.Infrastructure"
              x:Class="AmSpaceTools.Views.PeopleUpload"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <UserControl.Resources>
-        <infrastructure:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
-    </UserControl.Resources>
-    <Grid IsEnabled="{Binding UIEnabled}">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="Auto"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+    <materialDesign:DialogHost Identifier="ControlDialog">
+        <Grid IsEnabled="{Binding UIEnabled}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
             <TextBlock
                 Grid.Column="0"
                 Grid.Row="0"
@@ -31,35 +26,39 @@
                 Margin="0 5 0 10">
                 People Batch Upload
             </TextBlock>
-            <Button Command="{Binding OpenFileCommand}"
+            <StackPanel Orientation="Horizontal"
                         Grid.Column="1"
-                        Grid.Row="0"
-                        Margin="0 5 10 10"
-                        Style="{StaticResource MaterialDesignFloatingActionButton}"
-                        ToolTip="Open File">
-                <StackPanel Orientation="Horizontal">
-                    <materialDesign:PackIcon
-                            Kind="FileExcel"
-                            Height="24"
-                            Width="24" />
-                </StackPanel>
-            </Button>
-        <Button Command="{Binding UploadDataCommand}"
-                        IsEnabled="{Binding IsUploadVisible}"
-                        Grid.Column="2"
-                        Grid.Row="0"
-                        Margin="0 5 5 10"
-                        Style="{StaticResource MaterialDesignFloatingActionButton}"
-                        ToolTip="Upload to AmSpace">
-            <StackPanel Orientation="Horizontal">
-                <materialDesign:PackIcon
-                            Kind="CloudSync"
-                            Height="24"
-                            Width="24" />
+                        Grid.Row="0">
+                <materialDesign:Chip
+                    Content="{x:Static resources:Resources.PeopleUploadActiveDirectoryStatusLabel}"
+                    Margin="0 5 10 10">
+                    <materialDesign:Chip.Icon>
+                        <materialDesign:PackIcon
+                            Kind="{Binding AdConnected, Converter={StaticResource BoolToIconConverter}, Mode=OneWay}"></materialDesign:PackIcon>
+                    </materialDesign:Chip.Icon>
+                </materialDesign:Chip>
+                <Button Command="{Binding OpenFileCommand}"
+                            
+                            Margin="0 5 10 10"
+                            Style="{StaticResource MaterialDesignFloatingActionButton}"
+                            ToolTip="Open File">
+                        <materialDesign:PackIcon
+                                Kind="FileExcel"
+                                Height="24"
+                                Width="24" />
+                </Button>
+                <Button Command="{Binding UploadDataCommand}"
+                            IsEnabled="{Binding IsUploadVisible}"
+                            Margin="0 5 5 10"
+                            Style="{StaticResource MaterialDesignFloatingActionButton}"
+                            ToolTip="Upload to AmSpace">
+                        <materialDesign:PackIcon
+                                Kind="CloudSync"
+                                Height="24"
+                                Width="24" />
+                </Button>
             </StackPanel>
-        </Button>
-
-        <DataGrid
+            <DataGrid
             Grid.Column="0"
             Grid.Row="1"
             Grid.ColumnSpan="3"
@@ -69,9 +68,10 @@
             CanUserDeleteRows="True"
             CanUserAddRows="True" />
 
-        <ProgressBar IsIndeterminate="True" Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"
+            <ProgressBar IsIndeterminate="True" Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"
                      Grid.Column="0"
                      Grid.Row="1"
                      Grid.ColumnSpan="3"/>
-    </Grid>
+        </Grid>
+    </materialDesign:DialogHost>
 </UserControl>

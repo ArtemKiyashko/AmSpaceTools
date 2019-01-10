@@ -10,7 +10,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="240" d:DesignWidth="240">
     <UserControl.Resources>
-        <converters:IntToStringPercentConverter x:Key="IntToStringPercentConverter"/>
+        <converters:DecimalToStringPercentConverter x:Key="DecimalToStringPercentConverter"/>
     </UserControl.Resources>
     <StackPanel>
         <Grid>
@@ -39,7 +39,7 @@
             Grid.RowSpan="5"
             Grid.ColumnSpan="3"/>
             <TextBlock 
-                Text="{Binding Progress.ProgressPercent, Mode=OneWay, Converter={StaticResource IntToStringPercentConverter}}"
+                Text="{Binding Progress.ProgressPercent, Mode=OneWay, Converter={StaticResource DecimalToStringPercentConverter}}"
                 Style="{StaticResource MaterialDesignDisplay1TextBlock}"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
