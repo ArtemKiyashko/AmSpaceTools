@@ -53,7 +53,7 @@ namespace AmSpaceClient
         /// User name, Brand ID, Organizational group (crew, managers), User status (active, suspended, terminated), domain name (PL, CZ, etc), identity number (like passport number, unique)
         /// </remarks>
         /// </summary>
-        public string SearchUsersEndpoint { get { return $"{BaseAddress}/api/v1/search/users/?query={{0}}&brand={{1}}&organization_group={{2}}&status={{3}}&domain={{4}}&person_legal_id={{5}}"; } }
+        public string SearchUsersEndpoint { get { return $"{BaseAddress}/api/v1/search/users/"; } }
         public string OrganizationGroupsEndpoint { get { return $"{BaseAddress}/api/v1/organization/organization_groups/"; } }
         /// <summary>
         /// <remarks>
