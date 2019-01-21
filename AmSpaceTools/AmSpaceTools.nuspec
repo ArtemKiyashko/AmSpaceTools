@@ -12,6 +12,6 @@
     <description>Expand the possibilities of AmSpace by batch processing of some functions, like mass account creating, job maps uploading, etc.</description>
   </metadata>
   <files>
-    <file src="bin\Release\" target="\" />
+    <file src="bin\Release\" target="\" exclude="**\*.pdb" />
   </files>
 </package>
