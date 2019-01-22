@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>AmSpaceTools</id>
+    <title>AmSpaceTools</title>
+    <authors>Artem K., Alexey Knyazev</authors>
+    <owners>AmRest</owners>
+    <version>1.0.0</version>
+    <licenseUrl>https://github.com/ArtemKiyashko/AmSpaceTools</licenseUrl>
+    <projectUrl>https://github.com/ArtemKiyashko/AmSpaceTools</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Expand the possibilities of AmSpace by batch processing of some functions, like mass account creating, job maps uploading, etc.</description>
+  </metadata>
+  <files>
+    <file src="bin\Release\" target="\" exclude="**\*.pdb" />
+  </files>
+</package>

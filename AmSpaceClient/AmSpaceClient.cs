@@ -21,6 +21,7 @@ using System.Windows.Media.Imaging;
 using UriBuilderExtended;
 using System.IO;
 using System.IO.Compression;
+using AmSpaceClient.Extensions;
 
 namespace AmSpaceClient
 {
@@ -293,8 +294,15 @@ namespace AmSpaceClient
 
         public async Task<IEnumerable<SearchUserResult>> FindUsers(string query, Brand brand, OrganizationGroup orgGroup, AmSpaceUserStatus status, string domain, string identityNumber)
         {
-            var url = string.Format(Endpoints.SearchUsersEndpoint, query, brand?.Id, orgGroup?.Id, status == AmSpaceUserStatus.ANY ? (object)string.Empty : (int)status, domain, identityNumber);
-            var pager = await RequestWrapper.GetAsyncWrapper<SearchUsers>(url);
+            var url = new UriBuilder(Endpoints.SearchUsersEndpoint);
+            url.AddQuery("query", query);
+            if (status != AmSpaceUserStatus.ANY)
+                url.AddQuery("status", ((int)status).ToString());
+            url.AddQueryNotNull("brand", brand?.Id);
+            url.AddQueryNotNull("organization_group", orgGroup?.Id);
+            url.AddQueryNotNull("domain", domain);
+            url.AddQueryNotNull("person_legal_id", identityNumber);
+            var pager = await RequestWrapper.GetAsyncWrapper<SearchUsers>(url.ToString());
             var result = new List<SearchUserResult>();
             result.AddRange(pager.Results);
             while (!string.IsNullOrEmpty(pager.Next))
