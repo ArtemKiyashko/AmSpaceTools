@@ -308,6 +308,7 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.ru.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="AmSpaceTools.nuspec" />
     <None Include="Environments.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
