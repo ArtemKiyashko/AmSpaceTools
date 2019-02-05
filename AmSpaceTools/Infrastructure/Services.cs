@@ -52,7 +52,7 @@ namespace AmSpaceTools.Infrastructure
                 _.For<ILog>().Use(a => LogManager.GetLogger(typeof(App)));
                 _.For<IMapper>().Use(a => new Mapper(_mapperConfiguration)).Transient();
                 _.For<IAmSpaceEnvironmentsProvider>().Use<AmSpaceEnvironmentsProvider>().Singleton();
-                _.For<IActiveDirectoryProvider>().Use<ActiveDirectoryProvider>().Transient();
+                _.For<IActiveDirectoryProvider>().Use<ActiveDirectoryProvider>().Singleton();
                 _.Scan(scanner => {
                     scanner.TheCallingAssembly();
                     scanner.WithDefaultConventions();
