@@ -18,7 +18,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using UriBuilderExtended;
 using System.IO;
 using System.IO.Compression;
 using AmSpaceClient.Extensions;
