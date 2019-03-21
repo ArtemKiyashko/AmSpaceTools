@@ -9,6 +9,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Threading;
+using Autofac;
+using Autofac.Core.Activators.Reflection;
 
 namespace AmSpaceTools.ViewModels
 {
@@ -72,7 +74,7 @@ namespace AmSpaceTools.ViewModels
         public MainWindowViewModel()
         {
             Dispatcher.CurrentDispatcher.UnhandledException += CurrentDispatcher_UnhandledException;
-            SelectedViewModel = Services.Container.GetInstance<LoginViewModel>();
+            SelectedViewModel = Services.Container.Resolve<LoginViewModel>();
             MenuItems = new ObservableCollection<MenuItem>
             {
                 new MenuItem(Resources.LoginCaption, SelectedViewModel)
@@ -84,7 +86,7 @@ namespace AmSpaceTools.ViewModels
         {
             var view = new Error
             {
-                DataContext = Services.Container.With<string>(e.Exception.Message).GetInstance<ErrorViewModel>()
+                DataContext = Services.Container.Resolve<ErrorViewModel>(new NamedParameter("errorMsg", e.Exception.Message))
             };
             (SelectedViewModel as IProgressReporter)?.ProgressVM.CloseLoading();
 
@@ -104,15 +106,15 @@ namespace AmSpaceTools.ViewModels
             MainViewModel.SelectedViewModel = startupViewModel;
             MainViewModel.MenuItems.Clear();
             MainViewModel.MenuItems.Add(new MenuItem(Resources.IDPTranslationCaption, startupViewModel));
-            MainViewModel.MenuItems.Add(new MenuItem(Resources.OrgStructureCaption, Services.Container.GetInstance<OrgStructureViewModel>()));
-            MainViewModel.MenuItems.Add(new MenuItem(Resources.PeopleBatchUploadCaption, Services.Container.GetInstance<PeopleUploadViewModel>()));
-            MainViewModel.MenuItems.Add(new MenuItem(Resources.JobMapBatchUploadCaption, Services.Container.GetInstance<JobMapUploadViewModel>()));
+            MainViewModel.MenuItems.Add(new MenuItem(Resources.OrgStructureCaption, Services.Container.Resolve<OrgStructureViewModel>()));
+            MainViewModel.MenuItems.Add(new MenuItem(Resources.PeopleBatchUploadCaption, Services.Container.Resolve<PeopleUploadViewModel>()));
+            MainViewModel.MenuItems.Add(new MenuItem(Resources.JobMapBatchUploadCaption, Services.Container.Resolve<JobMapUploadViewModel>()));
             MainViewModel.SelectedMenuItem = MainViewModel.MenuItems.FirstOrDefault(item => item.Content == startupViewModel);
         }
 
         internal void HideMenu()
         {
-            var loginVm = Services.Container.GetInstance<LoginViewModel>();
+            var loginVm = Services.Container.Resolve<LoginViewModel>();
             MainViewModel.SelectedViewModel = loginVm;
             MainViewModel.MenuItems.Clear();
             MainViewModel.MenuItems.Add(new MenuItem(Resources.LoginCaption, loginVm));

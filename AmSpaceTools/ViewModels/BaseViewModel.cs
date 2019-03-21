@@ -10,6 +10,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Autofac;
 
 namespace AmSpaceTools.ViewModels
 {
@@ -40,7 +41,7 @@ namespace AmSpaceTools.ViewModels
 
         public MainWindowViewModel MainViewModel
         {
-            get => Services.Container.GetInstance<MainWindowViewModel>();
+            get => Services.Container.Resolve<MainWindowViewModel>();
         }
 
         public bool HasErrors => _validationErrors.Any();
