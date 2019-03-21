@@ -12,6 +12,12 @@
     "GrantPermissionType": "password"
   },
   {
+    "Name": "new test",
+    "ClientId": "o6V5rMReyX5t4AIfbMpZkYrY3G3wvGrKqnpprnbq",
+    "BaseAddress": "https://test.amspace.amrest.eu",
+    "GrantPermissionType": "password"
+  },
+  {
     "Name": "Production",
     "ClientId": "o6V5rMReyX5t4AIfbMpZkYrY3G3wvGrKqnpprnbq",
     "BaseAddress": "https://amspace.amrest.eu",

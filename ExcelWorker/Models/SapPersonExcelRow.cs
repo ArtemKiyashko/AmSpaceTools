@@ -24,7 +24,7 @@ namespace ExcelWorker.Models
 
         [ExcelTableColumn("Mpk")]
         [Required]
-        public long Mpk { get; set; }
+        public long? Mpk { get; set; }
 
         [ExcelTableColumn("Email")]
         public string Email { get; set; }

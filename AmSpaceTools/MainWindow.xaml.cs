@@ -15,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Autofac;
 
 namespace AmSpaceTools
 {
@@ -26,7 +27,7 @@ namespace AmSpaceTools
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = Services.Container.GetInstance<MainWindowViewModel>();
+            DataContext = Services.Container.Resolve<MainWindowViewModel>();
         }
 
         private void UIElement_OnPreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)

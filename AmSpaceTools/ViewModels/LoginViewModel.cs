@@ -3,7 +3,6 @@ using AmSpaceModels;
 using AmSpaceTools.Infrastructure;
 using AmSpaceTools.Infrastructure.Providers;
 using AmSpaceTools.Views;
-using StructureMap.Pipeline;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -14,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using Autofac;
 
 namespace AmSpaceTools.ViewModels
 {
@@ -90,8 +90,8 @@ namespace AmSpaceTools.ViewModels
         {
             IsLoading = true;
             MainViewModel.IsLoggedIn = await _client.LoginRequestAsync(Name, Password, SelectedEnvironment);
-            MainViewModel.ProfileViewModel = Services.Container.GetInstance<ProfileViewModel>();
-            var ipdTranslationViewModel = Services.Container.GetInstance<IdpTranslationsPreviewViewModel>();
+            MainViewModel.ProfileViewModel = Services.Container.Resolve<ProfileViewModel>();
+            var ipdTranslationViewModel = Services.Container.Resolve<IdpTranslationsPreviewViewModel>();
             MainViewModel.ShowMenu(ipdTranslationViewModel);
             IsLoading = false;
         }
