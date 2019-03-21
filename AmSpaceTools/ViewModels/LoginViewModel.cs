@@ -3,7 +3,6 @@ using AmSpaceModels;
 using AmSpaceTools.Infrastructure;
 using AmSpaceTools.Infrastructure.Providers;
 using AmSpaceTools.Views;
-using StructureMap.Pipeline;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
