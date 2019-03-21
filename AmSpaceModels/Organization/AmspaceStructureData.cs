@@ -16,7 +16,7 @@ namespace AmSpaceModels.Organization
         public string Name { get; set; }
 
         [JsonProperty("mpk")]
-        public long Mpk { get; set; }
+        public long? Mpk { get; set; }
 
         [JsonProperty("children")]
         public IEnumerable<AmspaceDomain> Children { get; set; }
