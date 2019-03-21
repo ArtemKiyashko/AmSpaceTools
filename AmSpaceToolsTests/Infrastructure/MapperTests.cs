@@ -73,6 +73,7 @@ namespace AmSpaceToolsTests.Infrastructure
         public void Map_WhenUserPrincipalFound_ShouldSetBackendTypePropertyToActiveDirectory()
         {
             var input = new SapPersonExcelRowComparable();
+            input.Email = "a@a.com";
             var result = _mapper.Map<ExternalAccount>(input);
             Assert.AreEqual(AccountBackendType.ActiveDirectory, result.BackendType);
         }
