@@ -86,7 +86,7 @@ namespace AmSpaceTools.ViewModels
         {
             var view = new Error
             {
-                DataContext = Services.Container.Resolve<ErrorViewModel>(new NamedParameter("errorMsg", e.Exception.Message))
+                DataContext = Services.Container.Resolve<ErrorViewModel>(new TypedParameter(typeof(string), e.Exception.Message))
             };
             (SelectedViewModel as IProgressReporter)?.ProgressVM.CloseLoading();
 

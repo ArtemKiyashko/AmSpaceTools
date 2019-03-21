@@ -105,7 +105,7 @@ namespace AmSpaceTools.ViewModels
         private async void EditDomainName(object obj)
         {
             var domain = (AmspaceDomain)obj;
-            var copy = new AmspaceDomain {Id = domain.Id, Mpk = domain.Mpk, Name = domain.Name, Children = domain.Children};
+            var copy = domain.ShallowCopy();
             var view = new EditUnitName()
             {
                 DataContext = copy
