@@ -95,6 +95,7 @@ namespace AmSpaceTools.ViewModels
             set
             {
                 _currentFilePath = value;
+                OnPropertyChanged();
                 OnPropertyChanged(nameof(IsUploadVisible));
                 OnPropertyChanged(nameof(PreviewIsNotLoaded));
             }
