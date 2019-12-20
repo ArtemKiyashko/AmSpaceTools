@@ -46,7 +46,7 @@ namespace AmSpaceModels
         public string PersonLegalId { get; set; }
 
         [JsonProperty("date_of_birth")]
-        public System.DateTimeOffset DateOfBirth { get; set; }
+        public System.DateTimeOffset? DateOfBirth { get; set; }
 
         [JsonProperty("nationality")]
         public string Nationality { get; set; }
@@ -403,13 +403,13 @@ namespace AmSpaceModels
     public partial class SelectedContract
     {
         [JsonProperty("domain_id")]
-        public long DomainId { get; set; }
+        public long? DomainId { get; set; }
 
         [JsonProperty("employee_id")]
-        public long EmployeeId { get; set; }
+        public long? EmployeeId { get; set; }
 
         [JsonProperty("start_date")]
-        public System.DateTimeOffset StartDate { get; set; }
+        public System.DateTimeOffset? StartDate { get; set; }
 
         [JsonProperty("status")]
         public string Status { get; set; }
