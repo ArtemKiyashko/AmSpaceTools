@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Enums\AppDataFolders.cs" />
     <Compile Include="Enums\Enums.cs" />
+    <Compile Include="ICopyable.cs" />
     <Compile Include="Idp\ActionType.cs" />
     <Compile Include="JobMap\JobDescription.cs" />
     <Compile Include="JobMap\JobResponsibilities.cs" />

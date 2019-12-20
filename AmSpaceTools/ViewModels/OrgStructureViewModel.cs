@@ -81,7 +81,6 @@ namespace AmSpaceTools.ViewModels
                 ParentDomainId = 0
             });
             if (deleteResult) DownloadTree(null);
-            IsLoading = false;
         }
 
         private async void CreateDomain(object obj)
@@ -101,29 +100,28 @@ namespace AmSpaceTools.ViewModels
             IsLoading = true;
             var createResult = await _client.PutDomainAsync(newDomain);
             if (createResult) DownloadTree(null);
-            IsLoading = false;
         }
 
         private async void EditDomainName(object obj)
         {
             var domain = (AmspaceDomain)obj;
+            var copy = domain.ShallowCopy();
             var view = new EditUnitName()
             {
-                DataContext = domain
+                DataContext = copy
             };
             var result = (bool)await DialogHost.Show(view, "RootDialog");
             if (!result) return;
             IsLoading = true;
             var editResult = await _client.PutDomainAsync(new SapDomain
                 {
-                    DomainId = domain.Id,
-                    Name = domain.Name,
-                    Mpk = -1,
+                    DomainId = copy.Id,
+                    Name = copy.Name,
+                    Mpk = Convert.ToInt32(copy.Mpk.GetValueOrDefault(-1)),
                     Status = true,
                     ParentDomainId = domain.FindParentNode(DomainTree, (_) => _.Children).Id
                 });
             if (editResult) DownloadTree(null);
-            IsLoading = false;
         }
 
         private void OpenTreeFromFile(object obj)

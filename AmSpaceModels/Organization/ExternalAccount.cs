@@ -44,7 +44,7 @@ namespace AmSpaceModels.Organization
         public AmSpaceSex Sex { get; set; }
 
         [JsonProperty("mpk")]
-        public long Mpk { get; set; }
+        public long? Mpk { get; set; }
 
         [JsonProperty("manager_user_id")]
         public long ManagerId { get; set; }

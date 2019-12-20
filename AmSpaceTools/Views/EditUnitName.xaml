@@ -11,7 +11,7 @@
     <StackPanel Margin="16">
         <TextBox
           materialDesign:HintAssist.Hint="Unit name"
-          Style="{StaticResource MaterialDesignFloatingHintTextBox}" Text="{Binding Name}" />
+          Style="{StaticResource MaterialDesignFloatingHintTextBox}" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" >
             <Button Style="{StaticResource MaterialDesignFlatButton}"
                                         IsDefault="True"

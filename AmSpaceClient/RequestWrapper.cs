@@ -190,7 +190,12 @@ namespace AmSpaceClient
         
         private Policy<HttpResponseMessage> GetDefaultPolicy()
         {
-            var statusCodeToHandle = new[] { HttpStatusCode.ServiceUnavailable, HttpStatusCode.BadGateway };
+            var statusCodeToHandle = new[] {
+                HttpStatusCode.InternalServerError,
+                HttpStatusCode.ServiceUnavailable,
+                HttpStatusCode.BadGateway,
+                HttpStatusCode.GatewayTimeout
+            };
             return Policy.HandleResult<HttpResponseMessage>(responce => statusCodeToHandle.Contains(responce.StatusCode))
                 .WaitAndRetryAsync(3, (attempt) => TimeSpan.FromMilliseconds(attempt * attempt * 1000));
         }

@@ -35,7 +35,7 @@ namespace AmSpaceTools.ModelConverters
             externalUser.CountryCode = source.Country;
             externalUser.ContractNumber = source.ContractNumber;
             externalUser.Status = (AmSpaceUserStatus)source.Status;
-            externalUser.BackendType = _activeDirectoryProvider.FindOneByEmail(source.Email) != null
+            externalUser.BackendType = !string.IsNullOrEmpty(source.Email) && _activeDirectoryProvider.FindOneByEmail(source.Email) != null
                ? AccountBackendType.ActiveDirectory
                : AccountBackendType.AmSpace;
             return externalUser;
