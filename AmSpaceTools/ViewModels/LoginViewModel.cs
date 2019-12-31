@@ -20,6 +20,7 @@ namespace AmSpaceTools.ViewModels
     public class LoginViewModel : BaseViewModel
     {
         private ICommand _loginCommand;
+        private IAsyncCommand<AmSpaceEnvironment> _loginADCommand;
         private SecureString _password;
         private string _name;
         private IAmSpaceClient _client;
@@ -35,6 +36,18 @@ namespace AmSpaceTools.ViewModels
             set
             {
                 _loginCommand = value;
+            }
+        }
+
+        public IAsyncCommand<AmSpaceEnvironment> LoginADCommand
+        {
+            get
+            {
+                return _loginADCommand;
+            }
+            set
+            {
+                _loginADCommand = value;
             }
         }
 
@@ -72,6 +85,7 @@ namespace AmSpaceTools.ViewModels
             _client = client;
             _environments = environmenProvider.Environments;
             LoginCommand = new RelayCommand(Login);
+            LoginADCommand = new RelayCommandAsync<AmSpaceEnvironment>(LoginAD);
             IsLoading = false;
         }
 
@@ -84,6 +98,13 @@ namespace AmSpaceTools.ViewModels
             }
             if (string.IsNullOrEmpty(Name) || SelectedEnvironment == null) return;
             LoginRequest();
+        }
+
+        private async Task LoginAD(AmSpaceEnvironment environment)
+        {
+            var loginAdVm = Services.Container.Resolve<MsWebLoginViewModel>();
+            MainViewModel.SelectedViewModel = loginAdVm;
+            var result = await loginAdVm.LoginAsync(environment);
         }
 
         private async void LoginRequest()

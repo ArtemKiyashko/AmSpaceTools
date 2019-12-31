@@ -11,7 +11,8 @@
              x:Name="root">
     <Grid VerticalAlignment="Center" HorizontalAlignment="Center" FocusManager.FocusedElement="{Binding ElementName=NameTextBox}">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="300" />
+            <ColumnDefinition Width="150" />
+            <ColumnDefinition Width="150" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -26,6 +27,7 @@
         <TextBox
           Grid.Row="0"
           Grid.Column="0"
+          Grid.ColumnSpan="2"
           x:Name="NameTextBox"
           Style="{StaticResource MaterialDesignFloatingHintTextBox}"
           materialDesign:HintAssist.Hint="{x:Static resources:Resources.UserNameBoxToolTip}"
@@ -34,12 +36,14 @@
         <PasswordBox
             Grid.Row="2"
             Grid.Column="0"
+            Grid.ColumnSpan="2"
             x:Name="PasswordTextBox"
             materialDesign:HintAssist.Hint="{x:Static resources:Resources.PasswordBoxToolTip}"
             Style="{StaticResource MaterialDesignFloatingHintPasswordBox}" />
         <ComboBox
             Grid.Row="4"
             Grid.Column="0"
+            Grid.ColumnSpan="2"
             Style="{StaticResource MaterialDesignFloatingHintComboBox}"
             materialDesign:HintAssist.Hint="{x:Static resources:Resources.SelectEnvironmentToolTip}"
             ItemsSource="{Binding Environments}"
@@ -73,6 +77,23 @@
           materialDesign:ButtonProgressAssist.IsIndeterminate="True">
             <materialDesign:PackIcon
                 Kind="LoginVariant"
+                Height="24"
+                Width="24" />
+        </Button>
+        <Button
+            x:Name="LoginADButton"
+            ToolTip="{x:Static resources:Resources.LoginADButtonToolTip}"
+          IsEnabled="True"
+          Grid.Row="6"
+          Grid.Column="1"
+          Command="{Binding LoginADCommand}"
+          CommandParameter="{Binding SelectedEnvironment}"
+          Style="{StaticResource MaterialDesignFloatingActionButton}"
+          materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding IsLoading}"
+          materialDesign:ButtonProgressAssist.Value="-1"
+          materialDesign:ButtonProgressAssist.IsIndeterminate="True">
+            <materialDesign:PackIcon
+                Kind="Windows"
                 Height="24"
                 Width="24" />
         </Button>

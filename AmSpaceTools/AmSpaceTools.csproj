@@ -146,6 +146,7 @@
     </ApplicationDefinition>
     <Compile Include="Decorators\ExcelWorkerDecorator.cs" />
     <Compile Include="Infrastructure\Converters\BoolToIconConverter.cs" />
+    <Compile Include="Infrastructure\IAsyncCommand.cs" />
     <Compile Include="Infrastructure\Providers\ActiveDirectoryProvider.cs" />
     <Compile Include="Infrastructure\Providers\AmSpaceEnvironmentsProvider.cs" />
     <Compile Include="Infrastructure\ColumnDefinitionError.cs" />
@@ -163,6 +164,7 @@
     <Compile Include="Infrastructure\PasswordBoxAssistant.cs" />
     <Compile Include="Infrastructure\ProgressState.cs" />
     <Compile Include="Infrastructure\RelayCommand.cs" />
+    <Compile Include="Infrastructure\RelayCommandAsync.cs" />
     <Compile Include="Infrastructure\Services.cs" />
     <Compile Include="Infrastructure\Extensions\StringExtensions.cs" />
     <Compile Include="Infrastructure\Extensions\TreeExtensions.cs" />
@@ -182,6 +184,7 @@
     <Compile Include="ViewModels\JobMapUploadViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="ViewModels\MsWebLoginViewModel.cs" />
     <Compile Include="ViewModels\OrgStructureViewModel.cs" />
     <Compile Include="ViewModels\PeopleUploadViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModel.cs" />
@@ -206,6 +209,9 @@
     </Compile>
     <Compile Include="Views\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MsWebLogin.xaml.cs">
+      <DependentUpon>MsWebLogin.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\OrgStructure.xaml.cs">
       <DependentUpon>OrgStructure.xaml</DependentUpon>
@@ -258,6 +264,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Login.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MsWebLogin.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

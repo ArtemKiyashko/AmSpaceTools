@@ -204,4 +204,7 @@
   <data name="PeopleUploadActiveDirectoryStatusLabel" xml:space="preserve">
     <value>Статус ActiveDirectory</value>
   </data>
+  <data name="LoginADButtonToolTip" xml:space="preserve">
+    <value>Войти используя аккаунт Microsoft</value>
+  </data>
 </root>

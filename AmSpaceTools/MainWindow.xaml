@@ -28,6 +28,9 @@
         <DataTemplate DataType="{x:Type vm:JobMapUploadViewModel}">
             <views:JobMapUpload/>
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:MsWebLoginViewModel}">
+            <views:MsWebLogin/>
+        </DataTemplate>
     </Window.Resources>
     <materialDesign:DialogHost Identifier="RootDialog">
         <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
