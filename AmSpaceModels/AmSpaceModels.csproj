@@ -43,8 +43,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Auth\LoginCodeFlowAuthResult.cs" />
     <Compile Include="Enums\AppDataFolders.cs" />
     <Compile Include="Enums\Enums.cs" />
+    <Compile Include="IAmSpaceSsoOptions.cs" />
     <Compile Include="ICopyable.cs" />
     <Compile Include="Idp\ActionType.cs" />
     <Compile Include="JobMap\JobDescription.cs" />
@@ -76,8 +78,7 @@
     <Compile Include="Idp\IdpColumn.cs" />
     <Compile Include="Idp\IdpAction.cs" />
     <Compile Include="Organization\Level.cs" />
-    <Compile Include="Login.cs" />
-    <Compile Include="LoginResult.cs" />
+    <Compile Include="Auth\LoginResult.cs" />
     <Compile Include="Profile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sap\SapUser.cs" />

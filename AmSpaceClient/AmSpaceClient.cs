@@ -21,6 +21,7 @@ using System.Windows.Media.Imaging;
 using System.IO;
 using System.IO.Compression;
 using AmSpaceClient.Extensions;
+using Newtonsoft.Json;
 
 namespace AmSpaceClient
 {
@@ -62,10 +63,15 @@ namespace AmSpaceClient
                     { "client_id", ClientId }
                 };
             LoginResult = await RequestWrapper.PostFormUrlEncodedContentAsyncWrapper<LoginResult>(values, Endpoints.TokenEndpoint);
-            RequestWrapper.AddAuthHeaders(new AuthenticationHeaderValue("Bearer", LoginResult.AccessToken));
-            RequestWrapper.AddAuthCookies(new Uri(Endpoints.BaseAddress), new Cookie("accessToken", LoginResult.AccessToken));
+            AddAuthorizationData();
             IsAthorized = true;
             return true;
+        }
+
+        private void AddAuthorizationData()
+        {
+            RequestWrapper.AddAuthHeaders(new AuthenticationHeaderValue("Bearer", LoginResult.AccessToken));
+            RequestWrapper.AddAuthCookies(new Uri(Endpoints.BaseAddress), new Cookie("accessToken", LoginResult.AccessToken));
         }
 
         public async Task<BitmapSource> GetAvatarAsync(string link)
@@ -500,6 +506,29 @@ namespace AmSpaceClient
             parameters.Add("year", jpaEntry.Year.ToString());
             parameters.Add("user", jpaEntry.UserName);
             return parameters;
+        }
+
+        public async Task<bool> LoginWithCodeFlow(LoginCodeFlowAuthResult model, IAmSpaceEnvironment environment)
+        {
+            if (IsAthorized) return true;
+            Endpoints = new ApiEndpoints(environment.BaseAddress);
+            var requestParams = CreateDictionay(model);
+            LoginResult = await RequestWrapper.PostFormUrlEncodedContentAsyncWrapper<LoginResult>(requestParams, Endpoints.SsoGetTokenEndpoint);
+            AddAuthorizationData();
+            IsAthorized = true;
+            return true;
+        }
+
+        private Dictionary<string, string> CreateDictionay(object source)
+        {
+            var result = new Dictionary<string, string>();
+            foreach (var prop in source.GetType().GetProperties())
+            {
+                var overwrittenPropertyNameAttribute = prop.GetCustomAttributes(true).OfType<JsonPropertyAttribute>().FirstOrDefault();
+                var value = prop.GetValue(source);
+                result.Add(overwrittenPropertyNameAttribute?.PropertyName ?? prop.Name, value.ToString());
+            }
+            return result;
         }
     }
 }

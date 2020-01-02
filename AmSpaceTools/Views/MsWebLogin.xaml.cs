@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AmSpaceTools.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,9 +26,10 @@ namespace AmSpaceTools.Views
             InitializeComponent();
         }
 
-        private void loginBrowser_Navigating(object sender, NavigatingCancelEventArgs e)
+        private async void loginBrowser_Navigating(object sender, NavigatingCancelEventArgs e)
         {
-
+            var vm = DataContext as MsWebLoginViewModel;
+            await vm.NavigationCommand.ExecuteAsync(e.Uri);
         }
     }
 }

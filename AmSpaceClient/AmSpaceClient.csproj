@@ -56,6 +56,7 @@
     <Compile Include="Extensions\UriBuilderExtensions.cs" />
     <Compile Include="FileToUpload.cs" />
     <Compile Include="IAmSpaceClient.cs" />
+    <Compile Include="IAmSpaceSsoClient.cs" />
     <Compile Include="IRequestWrapper.cs" />
     <Compile Include="Extensions\MultipartFormExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

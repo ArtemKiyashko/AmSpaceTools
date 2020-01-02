@@ -17,7 +17,7 @@ using System.Windows.Media.Imaging;
 
 namespace AmSpaceClient
 {
-    public interface IAmSpaceClient : IDisposable
+    public interface IAmSpaceClient : IAmSpaceSsoClient, IDisposable
     {
         Task<bool> LoginRequestAsync(string userName, SecureString password, IAmSpaceEnvironment environment);
         Task<Profile> GetProfileAsync();

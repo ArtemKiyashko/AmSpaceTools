@@ -12,5 +12,6 @@ namespace AmSpaceModels
         public string ClientId { get; set; }
         public string BaseAddress { get; set; }
         public string GrantPermissionType { get; set; }
+        public AmSpaceSsoOptions SsoOptions { get; set; }
     }
 }

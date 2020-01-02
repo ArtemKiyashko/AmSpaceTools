@@ -62,6 +62,7 @@ namespace AmSpaceTools.ViewModels
             set
             {
                 _selectedEnvironment = value;
+                OnPropertyChanged();
             }
         }
 
@@ -103,8 +104,7 @@ namespace AmSpaceTools.ViewModels
         private async Task LoginAD(AmSpaceEnvironment environment)
         {
             var loginAdVm = Services.Container.Resolve<MsWebLoginViewModel>();
-            MainViewModel.SelectedViewModel = loginAdVm;
-            var result = await loginAdVm.LoginAsync(environment);
+            loginAdVm.InitiateLogin(environment);
         }
 
         private async void LoginRequest()

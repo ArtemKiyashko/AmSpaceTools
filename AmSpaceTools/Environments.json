@@ -21,7 +21,18 @@
     "Name": "Production",
     "ClientId": "o6V5rMReyX5t4AIfbMpZkYrY3G3wvGrKqnpprnbq",
     "BaseAddress": "https://amspace.amrest.eu",
-    "GrantPermissionType": "password"
+    "GrantPermissionType": "password",
+    "SsoOptions": {
+      "TenantId": "0d0536cd-2abd-411b-a46e-b436075efeaf",
+      "ClientId": "1619d3b7-3530-40f4-ba29-246d1632f9c3",
+      "RedirectUrl": "https://amspace.amrest.eu",
+      "Scopes": [
+        "openid",
+        "email",
+        "profile",
+        "User.read"
+      ]
+    }
   }
 ]
 

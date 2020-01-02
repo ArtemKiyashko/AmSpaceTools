@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
@@ -45,6 +46,25 @@ namespace AmSpaceClient.Extensions
             // Set query
             builder.Query = Uri.EscapeUriString(HttpUtility.UrlDecode(queryValues.ToString()));
             return builder;
+        }
+
+        public static T GetObject<T>(this UriBuilder builder) where T : new()
+        {
+            var obj = new T();
+            var properties = typeof(T).GetProperties();
+            var query = HttpUtility.ParseQueryString(builder.Query);
+            foreach (var property in properties)
+            {
+                var overwrittenPropertyNameAttribute = property.GetCustomAttributes(true).OfType<JsonPropertyAttribute>().FirstOrDefault();
+                var valueAsString = query[overwrittenPropertyNameAttribute?.PropertyName ?? property.Name];
+                var value = Convert.ChangeType(valueAsString, property.PropertyType);
+
+                if (value == null)
+                    continue;
+
+                property.SetValue(obj, value, null);
+            }
+            return obj;
         }
     }
 }

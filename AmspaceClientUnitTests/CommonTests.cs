@@ -16,6 +16,7 @@ using System.Globalization;
 using AmspaceClientUnitTests.Extensions;
 using System.Windows.Media;
 using System.IO;
+using AmSpaceModels.Auth;
 
 namespace AmspaceClientUnitTests
 {

@@ -115,6 +115,8 @@ namespace AmSpaceClient
         public string JpaHistoryAdminEndpoint { get { return $"{BaseAddress}/api/v1/jpa/forms/admin/history_user_forms/"; } }
         public string JpaHistoryUpdateAdminEndpoint { get { return $"{BaseAddress}/api/v1/jpa/forms/admin/history_user_forms/{{0}}/"; } }
 
+        public string SsoGetTokenEndpoint { get => $"{BaseAddress}/api/v1/sso/"; }
+
         public string BaseAddress { get; private set; }
 
         public ApiEndpoints(string baseAddress)
