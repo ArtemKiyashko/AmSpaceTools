@@ -65,8 +65,10 @@ namespace AmSpaceTools.ViewModels
             uriBuilder.AddQueryNotNull("client_id", _currentEnvironment.SsoOptions.ClientId);
             uriBuilder.AddQueryNotNull("redirect_uri", _currentEnvironment.SsoOptions.RedirectUrl);
             uriBuilder.AddQueryNotNull("scope", _currentEnvironment.SsoOptions.Scopes.Aggregate((current, next) => $"{current}+{next}"));
+            //TODO: determine how to generate state property
             uriBuilder.AddQueryNotNull("state", "7orcc5cwAR6gyd4FkBxefI3SzJPNSHdumd1cfFKnij8r11n8R7aGMuOHb4AnumsN:1in0P8:pDV4NxHNvESfKOZEREuQuRNNKMw");
             uriBuilder.AddQueryNotNull("response_mode", "query");
+            uriBuilder.AddQueryNotNull("prompt", "login");
             SourceUrl = uriBuilder.ToString();
             MainViewModel.SelectedViewModel = this;
         }
