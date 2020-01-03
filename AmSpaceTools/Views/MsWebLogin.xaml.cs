@@ -29,6 +29,7 @@ namespace AmSpaceTools.Views
         private async void loginBrowser_Navigating(object sender, NavigatingCancelEventArgs e)
         {
             var vm = DataContext as MsWebLoginViewModel;
+            if (vm == null) return;
             await vm.NavigationCommand.ExecuteAsync(e.Uri);
         }
     }
